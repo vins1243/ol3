@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OL3 Ristorante Pizzeria | Villapiana Lido</title>
+  <meta name="description" content="OL3 Ristorante Pizzeria a Piazza Enrico Berlinguer, Villapiana Lido CS. Pizze artigianali a lunga lievitazione, carni podoliche selezionate e atmosfera calorosa.">
+  
+  <!-- Font Google: Playfair Display e Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Icone FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Fogli di Stile -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Barra Superiore Info Contatto -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-contact">
+        <span><i class="fa-solid fa-location-dot"></i> <span data-contact-address>Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS)</span></span>
+        <span><i class="fa-solid fa-phone"></i> Tel: <a href="tel:3520389996" data-contact-phone>352 038 9996</a></span>
+      </div>
+      <div class="top-bar-hours">
+        <span><i class="fa-regular fa-clock"></i> <span data-contact-hours>Tutti i giorni 19:00 - 23:30</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra di Navigazione Principale -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo" aria-label="OL3 Ristorante Pizzeria Home">
+        <img src="foto/logo-2.png" alt="OL3 Ristorante Pizzeria" class="navbar-logo-img">
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">HOME</a></li>
+        <li><a href="#il-locale">IL LOCALE</a></li>
+        <li><a href="menu.html">MENU</a></li>
+        <li><a href="prenota.html">PRENOTA UN TAVOLO</a></li>
+        <li><a href="#contatti">CONTATTI</a></li>
+      </ul>
+
+      <button class="mobile-toggle" aria-label="Menu Mobile">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Icone Social Fluttuanti Laterali -->
+  <aside class="floating-socials">
+    <a href="https://www.facebook.com/griglieria.ol3/?locale=it_IT" class="social-circle social-fb" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/ol3_ristorante/" class="social-circle social-ig" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+  </aside>
+
+  <!-- Hero Section -->
+  <header id="home" class="hero">
+    <div class="container hero-content">
+      <div class="hero-logo-container">
+        <img src="foto/logo.png" alt="OL3 Ristorante Pizzeria" class="hero-logo-img">
+      </div>
+      
+      <!-- 2 Bottoni al centro pagina -->
+      <div class="hero-buttons-stack">
+        <a href="menu.html" class="btn-primary">IL NOSTRO MENU</a>
+        <a href="prenota.html" class="btn-secondary-hero">PRENOTA UN TAVOLO</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sezione Il Ristorante (3 colonne) -->
+  <section id="il-locale" class="highlights-section">
+    <div class="container">
+      <div class="highlights-grid" id="highlights-container">
+        <!-- Generato dinamicamente da config.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Sezione La Nostra Storia (Sfondo Verde Oliva) -->
+  <section class="story-section">
+    <div class="container">
+      <div class="story-card">
+        <h2 class="section-title" id="story-title">LA NOSTRA STORIA & FILOSOFIA</h2>
+        <div id="story-paragraphs">
+          <!-- Paragrafi inseriti da config.js -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sezione La Perfezione Richiede Tempo (Filosofia) -->
+  <section class="philosophy-section">
+    <div class="container philosophy-container">
+      <h2 class="section-title" id="philosophy-title">LA PERFEZIONE RICHIEDE TEMPO</h2>
+      <p class="philosophy-text" id="philosophy-text">
+        <!-- Testo inserito da config.js -->
+      </p>
+    </div>
+  </section>
+
+  <!-- Sezione Galleria -->
+  <section class="gallery-section">
+    <div class="container">
+      <h2 class="section-title">GALLERIA</h2>
+      <div class="gallery-grid" id="gallery-container">
+        <!-- Immagini generate dinamicamente da config.js -->
+      </div>
+    </div>
+  </section>
+
+  <!-- Sezione Contatti & Mappa (senza modulo prenotazione) -->
+  <section id="contatti" class="contact-section">
+    <div class="container">
+      <h2 class="section-title">CONTATTACI</h2>
+
+      <div class="contact-grid">
+        <div class="contact-box">
+          <h3 class="contact-box-title">INDIRIZZO</h3>
+          <p>Piazza Enrico Berlinguer,</p>
+          <p>87076 Villapiana Lido CS</p>
+          <p style="color: #a8a29b; font-size: 0.85rem; margin-top: 4px;">Italia</p>
+        </div>
+
+        <div class="contact-box">
+          <h3 class="contact-box-title">CONTATTI</h3>
+          <p>Telefono: <a href="tel:3520389996" data-contact-phone style="color: var(--accent-gold); font-weight:600;">352 038 9996</a></p>
+          <p>Email: <span style="color: var(--text-muted);">info@ol3ristorante.it</span></p>
+        </div>
+
+        <div class="contact-box">
+          <h3 class="contact-box-title">ORARI DI APERTURA</h3>
+          <p>Tutti i giorni</p>
+          <p style="color: var(--accent-gold); font-weight:600;">19:00 – 23:30</p>
+        </div>
+      </div>
+
+      <!-- Mappa Google Maps Interattiva -->
+      <div class="map-wrapper">
+        <iframe id="maps-iframe" 
+          src="https://maps.google.com/maps?q=Piazza+Enrico+Berlinguer+87076+Villapiana+Lido+CS&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+          loading="lazy" 
+          allowfullscreen 
+          title="Mappa OL3 Ristorante Pizzeria">
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="privacy.html">Informativa sulla privacy</a>
+        <span>•</span>
+        <a href="termini.html">Termini e Condizioni</a>
+        <span>•</span>
+        <a href="cookie.html">Informativa sui cookie</a>
+        <span>•</span>
+        <a href="accessibilita.html">Dichiarazione di accessibilità</a>
+      </div>
+      <p class="footer-copy">© 2026 by <span data-brand-name>OL3 Ristorante Pizzeria</span>. Tutti i diritti riservati.</p>
+    </div>
+  </footer>
+
+  <!-- File JavaScript -->
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

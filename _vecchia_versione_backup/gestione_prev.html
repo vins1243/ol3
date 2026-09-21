@@ -102,7 +102,7 @@
     }
 
     .date-input-styled {
-      background: #141213; color: #ffffff;
+      background: #ffffff;
       border: 1.5px solid rgba(43, 39, 41, 0.25);
       color: #ffffff;
       font-weight: 700;
@@ -482,7 +482,7 @@
     <div class="restaurant-hall-frame">
       <div class="hall-top-boundary">
         <span><i class="fa-solid fa-cash-register"></i> BANCONE CASSA & ORDINI</span>
-        <span>FORNO A LEGNA & CUCINA <i class="fa-solid fa-fire-burner"></i></span>
+        <span>CUCINA & GRIGLIE <i class="fa-solid fa-fire-burner"></i></span>
       </div>
 
       <!-- I 50 Tavoli già pronti in HTML -->
@@ -776,22 +776,22 @@
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
           <div>
             <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Nome e Cognome *</label>
-            <input type="text" id="admin-book-name" required placeholder="Es. Marco Rossi" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #141213; color: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
+            <input type="text" id="admin-book-name" required placeholder="Es. Marco Rossi" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
           </div>
           <div>
             <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Telefono *</label>
-            <input type="tel" id="admin-book-phone" required placeholder="Es. 333 123 4567" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #141213; color: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
+            <input type="tel" id="admin-book-phone" required placeholder="Es. 333 123 4567" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
           </div>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
           <div>
             <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Numero Persone (digita il numero) *</label>
-            <input type="number" id="admin-book-guests" min="1" max="100" value="2" required placeholder="Es. 4" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #141213; color: #ffffff; color: #ffffff; font-size: 1rem; font-weight: 700; box-sizing: border-box;">
+            <input type="number" id="admin-book-guests" min="1" max="100" value="2" required placeholder="Es. 4" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-size: 1rem; font-weight: 700; box-sizing: border-box;">
           </div>
           <div>
             <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Turno *</label>
-            <select id="admin-book-shift" required style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #141213; color: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
+            <select id="admin-book-shift" required style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
               <option value="20:00">1° Turno (20:00 - 21:30)</option>
               <option value="21:30">2° Turno (dalle 21:30)</option>
             </select>
@@ -805,7 +805,7 @@
 
         <div style="margin-bottom: 18px;">
           <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Note / Richieste</label>
-          <input type="text" id="admin-book-notes" placeholder="Es. Tavolo vicino al bancone, seggiolino..." style="width: 100%; height: 40px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #141213; color: #ffffff; color: #ffffff; box-sizing: border-box;">
+          <input type="text" id="admin-book-notes" placeholder="Es. Tavolo vicino al bancone, seggiolino..." style="width: 100%; height: 40px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; box-sizing: border-box;">
         </div>
 
         <div style="display: flex; gap: 10px; justify-content: flex-end;">
@@ -854,7 +854,7 @@
     (function() {
       const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
       const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
-      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec';
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywuk8Mgl7oeB8vrXjmsftYINLiRTpuRNToJYdur0TDXJTXAvJXA_9GfmGeuQuwT80h/exec';
 
       // Azzeramento totale memoria locale residua
       try {

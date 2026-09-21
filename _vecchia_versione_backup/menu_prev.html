@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Menu Completo | OL3 Ristorante Pizzeria</title>
+  <meta name="description" content="Consulta il menu completo di OL3 Ristorante Pizzeria: pizze classiche e gourmet, carni frollate, tomahawk, panini artigianali, fritti e birre alla spina.">
+  
+  <!-- Font Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Icone FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stili -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Barra Superiore Info Contatto -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-contact">
+        <span><i class="fa-solid fa-location-dot"></i> <span data-contact-address>Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS)</span></span>
+        <span><i class="fa-solid fa-phone"></i> Tel: <a href="tel:3520389996" data-contact-phone>352 038 9996</a></span>
+      </div>
+      <div class="top-bar-hours">
+        <span><i class="fa-regular fa-clock"></i> <span data-contact-hours>Tutti i giorni 19:00 - 23:30</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra di Navigazione Principale -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo" aria-label="OL3 Ristorante Pizzeria Home">
+        <img src="foto/logo-2.png" alt="OL3 Ristorante Pizzeria" class="navbar-logo-img">
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="index.html#il-locale">IL LOCALE</a></li>
+        <li><a href="menu.html" class="active">MENU</a></li>
+        <li><a href="prenota.html">PRENOTA UN TAVOLO</a></li>
+        <li><a href="index.html#contatti">CONTATTI</a></li>
+      </ul>
+
+      <button class="mobile-toggle" aria-label="Menu Mobile">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Banner Introduttivo Pagina Menu -->
+  <section class="page-banner">
+    <div class="container">
+      <h1 class="page-banner-title">IL NOSTRO MENU</h1>
+      <p class="page-banner-subtitle">Materie prime d'eccellenza, pizze a lunga maturazione, tagli nobili di carne e specialità tipiche calabresi.</p>
+    </div>
+  </section>
+
+  <!-- Sezione Menu con Filtri e Portate -->
+  <main class="menu-section">
+    <div class="container">
+      <!-- Filtri Menu Categorie -->
+      <div class="menu-tabs" id="menu-tabs">
+        <!-- Generato dinamicamente da config.js -->
+      </div>
+
+      <!-- Elenco Categorie e Piatti -->
+      <div id="menu-category-list">
+        <!-- Generato dinamicamente da config.js -->
+      </div>
+      
+      <!-- Box Invito a Prenotare -->
+      <div style="text-align: center; margin-top: 60px; padding: 40px 20px; background-color: var(--bg-card); border-radius: 8px; border: 1px solid var(--border-card);">
+        <h3 style="font-family: var(--font-serif); font-size: 1.6rem; color: #fff; margin-bottom: 12px;">Hai già scelto i tuoi piatti preferiti?</h3>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">Prenota subito un tavolo online per assicurarti il posto per questa sera.</p>
+        <a href="prenota.html" class="btn-primary" style="display: inline-block; width: auto;">PRENOTA UN TAVOLO ORA</a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="privacy.html">Informativa sulla privacy</a>
+        <span>•</span>
+        <a href="termini.html">Termini e Condizioni</a>
+        <span>•</span>
+        <a href="cookie.html">Informativa sui cookie</a>
+        <span>•</span>
+        <a href="accessibilita.html">Dichiarazione di accessibilità</a>
+      </div>
+      <p class="footer-copy">© 2026 by <span data-brand-name>OL3 Ristorante Pizzeria</span>. Tutti i diritti riservati.</p>
+    </div>
+  </footer>
+
+  <!-- File JavaScript -->
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>

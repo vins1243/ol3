@@ -110,13 +110,13 @@
             <div class="form-group">
               <label for="res-date"><i class="fa-solid fa-calendar-day" style="color: var(--accent-red);"></i> 1. Data della Prenotazione *</label>
               <input type="date" id="res-date" name="data" required autocomplete="off">
-              <small style="display: block; margin-top: 6px; font-size: 0.80rem; color: var(--accent-gold); font-weight: 600;">
+              <small style="display: block; margin-top: 6px; font-size: 0.80rem; color: var(--text-dark); font-weight: 600;">
                 👉 Scegli il giorno per verificare i turni disponibili
               </small>
             </div>
             <div class="form-group">
               <label for="res-time"><i class="fa-solid fa-clock" style="color: var(--accent-red);"></i> 2. Orario Desiderato (Turno) *</label>
-              <select id="res-time" name="orario" required disabled style="opacity: 0.8; cursor: not-allowed; background-color: #141213; color: #8c8580; font-weight: 700; border: 1.5px solid rgba(255,255,255,0.18);">
+              <select id="res-time" name="orario" required disabled style="opacity: 0.8; cursor: not-allowed; background-color: #2b2527; color: #b8b1a9; font-weight: 700;">
                 <option value="" disabled selected>⚠️ Seleziona prima la data a sinistra</option>
               </select>
               <small id="time-hint" style="display: block; margin-top: 6px; font-size: 0.80rem; color: var(--text-muted);">
@@ -289,7 +289,7 @@
         timeSelect.disabled = true;
         timeSelect.style.opacity = '0.8';
         timeSelect.style.cursor = 'not-allowed';
-        timeSelect.style.backgroundColor = '#141213'; timeSelect.style.color = '#8c8580';
+        timeSelect.style.backgroundColor = '#f1e1c0';
         timeSelect.innerHTML = '<option value="" disabled selected>⚠️ Seleziona prima la data a sinistra</option>';
       }
 
@@ -387,7 +387,7 @@
             timeSelect.disabled = true;
             timeSelect.style.opacity = '0.8';
             timeSelect.style.cursor = 'not-allowed';
-            timeSelect.style.backgroundColor = '#141213'; timeSelect.style.color = '#8c8580';
+            timeSelect.style.backgroundColor = '#f1e1c0';
             timeSelect.innerHTML = '<option value="" disabled selected>⚠️ Seleziona prima la data a sinistra</option>';
           }
           if (noticeEl) noticeEl.style.display = 'none';
@@ -402,7 +402,7 @@
           timeSelect.disabled = true;
           timeSelect.style.opacity = '0.85';
           timeSelect.style.cursor = 'wait';
-          timeSelect.style.backgroundColor = '#141213'; timeSelect.style.color = '#8c8580';
+          timeSelect.style.backgroundColor = '#faf2e1';
           timeSelect.innerHTML = '<option value="" disabled selected>⏳ Controllo posti disponibili...</option>';
         }
 
@@ -432,7 +432,7 @@
           timeSelect.disabled = false;
           timeSelect.style.opacity = '1';
           timeSelect.style.cursor = 'pointer';
-          timeSelect.style.backgroundColor = '#141213'; timeSelect.style.color = '#ffffff'; timeSelect.style.borderColor = 'var(--accent-gold)';
+          timeSelect.style.backgroundColor = '#ffffff';
 
           let optionsHtml = '<option value="" disabled selected>Seleziona il turno desiderato</option>';
 
@@ -440,14 +440,14 @@
           if (canBook1) {
             optionsHtml += '<option value="20:00">1° Turno (20:00 - 21:30)</option>';
           } else {
-            optionsHtml += '<option value="20:00" disabled style="color: #736d6a; background-color: #141213; font-style: italic;">1° Turno (20:00 - 21:30) (posti esauriti)</option>';
+            optionsHtml += '<option value="20:00" disabled style="color: #8e888b; background-color: #ede4d1; font-style: italic;">1° Turno (20:00 - 21:30) (posti esauriti)</option>';
           }
 
           // 2° Turno
           if (canBook2) {
             optionsHtml += '<option value="21:30">2° Turno (dalle 21:30 in poi)</option>';
           } else {
-            optionsHtml += '<option value="21:30" disabled style="color: #736d6a; background-color: #141213; font-style: italic;">2° Turno (dalle 21:30 in poi) (posti esauriti)</option>';
+            optionsHtml += '<option value="21:30" disabled style="color: #8e888b; background-color: #ede4d1; font-style: italic;">2° Turno (dalle 21:30 in poi) (posti esauriti)</option>';
           }
 
           timeSelect.innerHTML = optionsHtml;
