@@ -686,13 +686,24 @@ const SITE_CONFIG = {
           "image": "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80"
         },
         {
-          "name": "Coca Cola / Coca Cola Zero (in vetro)",
+          "name": "Coca Cola (in vetro)",
           "price": "3,00 €",
           "description": "Servita fredda con ghiaccio e fetta di limone",
           "tags": [
-            "Bibite"
+            "Bibite",
+            "Classica"
           ],
           "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80"
+        },
+        {
+          "name": "Coca Cola Zero (in vetro)",
+          "price": "3,00 €",
+          "description": "Servita fredda con ghiaccio e fetta di limone, zero zuccheri e zero calorie",
+          "tags": [
+            "Bibite",
+            "Zero Zuccheri"
+          ],
+          "image": "https://images.unsplash.com/photo-1554866585-cd94860890b7?auto=format&fit=crop&w=400&q=80"
         },
         {
           "name": "Fanta / Sprite / Lemon Soda (in vetro)",
