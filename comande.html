@@ -459,34 +459,132 @@
       gap: 5px;
     }
 
+    /* Box Anteprima Ordinazione Registrata nella Card del Tavolo */
     .order-preview-box {
-      background: rgba(0, 0, 0, 0.35);
-      border-radius: 8px;
-      padding: 10px 12px;
+      background: rgba(14, 12, 13, 0.88);
+      border-radius: 10px;
+      padding: 12px 14px;
       margin-bottom: 14px;
-      font-size: 0.86rem;
-      border: 1px dashed rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(214, 175, 93, 0.3);
+      box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.5);
     }
     .order-preview-box .order-preview-header {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-weight: 800;
       color: var(--accent-gold);
-      margin-bottom: 6px;
-      font-size: 0.88rem;
+      margin-bottom: 10px;
+      font-size: 0.85rem;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.14);
+      padding-bottom: 6px;
     }
-    .order-preview-box ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-      max-height: 85px;
+    .preview-total-tag {
+      background: rgba(214, 175, 93, 0.18);
+      color: var(--accent-gold);
+      border: 1px solid rgba(214, 175, 93, 0.45);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.80rem;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+    }
+    .order-preview-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 180px;
       overflow-y: auto;
+      padding-right: 4px;
+      scrollbar-width: thin;
     }
-    .order-preview-box li {
-      color: #ede9de;
-      padding: 2px 0;
+    .order-preview-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .order-preview-list::-webkit-scrollbar-thumb {
+      background: rgba(214, 175, 93, 0.3);
+      border-radius: 4px;
+    }
+    .order-preview-item {
       display: flex;
       justify-content: space-between;
+      align-items: center;
+      font-size: 0.84rem;
+      line-height: 1.35;
+      padding: 3px 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    .order-preview-item:last-child {
+      border-bottom: none;
+    }
+    .preview-item-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      flex: 1;
+    }
+    .preview-badge-qty {
+      background: #2b2527;
+      border: 1px solid rgba(255, 255, 255, 0.25);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.74rem;
+      padding: 2px 6px;
+      border-radius: 6px;
+      flex-shrink: 0;
+    }
+    .preview-dish-title {
+      color: #ede9de;
+      font-weight: 600;
+      word-break: break-word;
+    }
+    .preview-item-cost {
+      color: #baa898;
+      font-size: 0.80rem;
+      font-weight: 700;
+      white-space: nowrap;
+      margin-left: 8px;
+    }
+    .order-preview-notes {
+      margin-top: 8px;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.12);
+      font-size: 0.78rem;
+      color: #ffbc6b;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      line-height: 1.3;
+    }
+
+    /* Divisori di Sezione per Griglia Tavoli (Tavoli Da Servire sopra, Già Presi sotto) */
+    .tables-section-divider {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 14px 0 6px;
+      padding: 9px 14px;
+      font-size: 0.84rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+    .tables-section-divider.section-da-servire {
+      color: #ffaa5b;
+      background: rgba(230, 107, 34, 0.14);
+      border-left: 4px solid var(--order-orange);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+    .tables-section-divider.section-comande-prese {
+      color: #b0b0b0;
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 4px solid rgba(255, 255, 255, 0.35);
+      margin-top: 24px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .card-action-btn {
@@ -1925,29 +2023,37 @@
 
       // Parser avanzato per estrarre e ricostruire le portate esistenti dal Foglio Google
       function parseOrderDetails(detailsStr) {
-        if (!detailsStr) return { items: [], notes: '' };
+        if (!detailsStr) return { items: [], notes: '', total: '' };
 
-        // 1. Prova estrazione JSON strutturato ad alta precisione
-        const mJson = detailsStr.match(/\[JSON:(.*?)\]/);
-        if (mJson) {
-          try {
-            const parsed = JSON.parse(mJson[1]);
-            if (parsed && Array.isArray(parsed.items)) {
-              return { items: parsed.items, notes: parsed.notes || '' };
-            }
-          } catch(e) {}
+        // 1. Estrazione JSON strutturato ad alta precisione (ricerca fino all'ultimo ] della stringa)
+        const jsonIndex = detailsStr.indexOf('[JSON:');
+        if (jsonIndex !== -1) {
+          const lastBracket = detailsStr.lastIndexOf(']');
+          if (lastBracket > jsonIndex + 6) {
+            try {
+              const jsonStr = detailsStr.substring(jsonIndex + 6, lastBracket);
+              const parsed = JSON.parse(jsonStr);
+              if (parsed && Array.isArray(parsed.items)) {
+                return { items: parsed.items, notes: parsed.notes || '', total: parsed.total || '' };
+              }
+            } catch(e) {}
+          }
         }
 
-        // 2. Parser di fallback testuale per stringhe esistenti
+        // 2. Parser di fallback testuale per stringhe preesistenti
         let notes = '';
+        let total = '';
         let text = detailsStr;
+
         if (text.includes('| Note:')) {
           const parts = text.split('| Note:');
           text = parts[0];
           notes = parts[1].split('[JSON:')[0].trim();
         }
         if (text.includes('| Totale:')) {
-          text = text.split('| Totale:')[0];
+          const parts = text.split('| Totale:');
+          text = parts[0];
+          total = parts[1].split('[JSON:')[0].split('| Note:')[0].trim();
         }
 
         const items = [];
@@ -1973,7 +2079,7 @@
           }
         });
 
-        return { items, notes };
+        return { items, notes, total };
       }
 
       // Switcher Vista per Mobile (Menu vs Comanda)
@@ -2314,40 +2420,142 @@
         let countDaServire = 0;
         let countPresa = 0;
 
+        // Calcola i contatori complessivi per i filtri
         activeShiftTables.forEach(t => {
           const order = savedOrders[t.bookingId];
           const isOrderTaken = (order && order.status === 'presa') ||
                                (t.orderStatus && (t.orderStatus.toLowerCase().includes('prenotat') || t.orderStatus.toLowerCase().includes('ordinat') || t.orderStatus.toLowerCase().includes('pres')));
-
           if (isOrderTaken) {
             countPresa++;
           } else {
             countDaServire++;
           }
+        });
 
-          if (currentFilter === 'da-servire' && isOrderTaken) return;
-          if (currentFilter === 'presa' && !isOrderTaken) return;
+        // Filtra i tavoli in base al filtro selezionato e alla ricerca
+        const filteredTables = activeShiftTables.filter(t => {
+          const order = savedOrders[t.bookingId];
+          const isOrderTaken = (order && order.status === 'presa') ||
+                               (t.orderStatus && (t.orderStatus.toLowerCase().includes('prenotat') || t.orderStatus.toLowerCase().includes('ordinat') || t.orderStatus.toLowerCase().includes('pres')));
+
+          if (currentFilter === 'da-servire' && isOrderTaken) return false;
+          if (currentFilter === 'presa' && !isOrderTaken) return false;
 
           if (searchVal) {
             const matchLabel = t.tableLabel.toLowerCase().includes(searchVal) || t.tableKey.toLowerCase().includes(searchVal);
             const matchName = t.customerName.toLowerCase().includes(searchVal);
             const matchPhone = (t.phone || '').includes(searchVal);
-            if (!matchLabel && !matchName && !matchPhone) return;
+            if (!matchLabel && !matchName && !matchPhone) return false;
+          }
+
+          return true;
+        });
+
+        // ORDINAMENTO RICHIESTO: i tavoli DA SERVIRE in alto, le ORDINAZIONI PRESE in basso
+        filteredTables.sort((a, b) => {
+          const orderA = savedOrders[a.bookingId];
+          const isTakenA = (orderA && orderA.status === 'presa') ||
+                           (a.orderStatus && (a.orderStatus.toLowerCase().includes('prenotat') || a.orderStatus.toLowerCase().includes('ordinat') || a.orderStatus.toLowerCase().includes('pres')));
+
+          const orderB = savedOrders[b.bookingId];
+          const isTakenB = (orderB && orderB.status === 'presa') ||
+                           (b.orderStatus && (b.orderStatus.toLowerCase().includes('prenotat') || b.orderStatus.toLowerCase().includes('ordinat') || b.orderStatus.toLowerCase().includes('pres')));
+
+          if (isTakenA !== isTakenB) {
+            return isTakenA ? 1 : -1; // Da Servire (false) prima di Ordinazione Presa (true)
+          }
+
+          return (a.tableNum || 0) - (b.tableNum || 0);
+        });
+
+        let hasRenderedDaServireHeader = false;
+        let hasRenderedPresaHeader = false;
+
+        filteredTables.forEach(t => {
+          const order = savedOrders[t.bookingId];
+          const isOrderTaken = (order && order.status === 'presa') ||
+                               (t.orderStatus && (t.orderStatus.toLowerCase().includes('prenotat') || t.orderStatus.toLowerCase().includes('ordinat') || t.orderStatus.toLowerCase().includes('pres')));
+
+          // Se siamo nella vista 'Tutti', inserisci i divisori visivi di sezione
+          if (currentFilter === 'all') {
+            if (!isOrderTaken && !hasRenderedDaServireHeader) {
+              const divHeader = document.createElement('div');
+              divHeader.className = 'tables-section-divider section-da-servire';
+              divHeader.innerHTML = `<i class="fa-solid fa-bell"></i> Tavoli da Servire (${countDaServire})`;
+              grid.appendChild(divHeader);
+              hasRenderedDaServireHeader = true;
+            } else if (isOrderTaken && !hasRenderedPresaHeader) {
+              const divHeader = document.createElement('div');
+              divHeader.className = 'tables-section-divider section-comande-prese';
+              divHeader.innerHTML = `<i class="fa-solid fa-circle-check"></i> Ordinazioni Già Prese (${countPresa})`;
+              grid.appendChild(divHeader);
+              hasRenderedPresaHeader = true;
+            }
           }
 
           const card = document.createElement('div');
           card.className = `table-card ${isOrderTaken ? 'status-presa' : 'status-da-servire'}`;
           card.onclick = () => openOrderModal(t);
 
+          // ANTEPRIMA PRODOTTI ORDINATI: Chiara, ordinata riga per riga, senza codici JSON
           let previewHtml = '';
           if (isOrderTaken) {
-            const det = t.orderDetails || (order && order.details) || 'Ordinazione salvata sul Foglio Google';
+            const det = t.orderDetails || (order && order.details) || '';
+            const parsed = parseOrderDetails(det);
+            const items = (parsed && Array.isArray(parsed.items) && parsed.items.length > 0)
+              ? parsed.items
+              : ((order && Array.isArray(order.items)) ? order.items : []);
+            const notes = (parsed && parsed.notes) ? parsed.notes : ((order && order.notes) ? order.notes : '');
+
+            let totalFormatted = '';
+            if (parsed && parsed.total) {
+              totalFormatted = parsed.total;
+            } else if (items.length > 0) {
+              const sum = items.reduce((s, it) => s + ((it.priceNum || 0) * (it.qty || 1)), 0);
+              if (sum > 0) totalFormatted = `${sum.toFixed(2).replace('.', ',')} €`;
+            } else if (det) {
+              const mTot = det.match(/Totale:\s*([\d.,\s€]+)/i);
+              if (mTot) totalFormatted = mTot[1].split('[JSON:')[0].trim();
+            }
+
+            let listHtml = '';
+            if (items.length > 0) {
+              listHtml = items.map(it => {
+                const itemTotal = (it.priceNum && it.priceNum > 0)
+                  ? `${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €`
+                  : (it.price || '');
+                return `
+                  <div class="order-preview-item">
+                    <div class="preview-item-left">
+                      <span class="preview-badge-qty">${it.qty}x</span>
+                      <span class="preview-dish-title">${escapeHtml(it.name)}</span>
+                    </div>
+                    ${itemTotal ? `<span class="preview-item-cost">${itemTotal}</span>` : ''}
+                  </div>
+                `;
+              }).join('');
+            } else {
+              let cleanText = det.split('[JSON:')[0].trim();
+              if (cleanText.includes('| Totale:')) {
+                cleanText = cleanText.split('| Totale:')[0].trim();
+              }
+              listHtml = `<p style="margin: 0; font-size: 0.82rem; color: #ede9de; line-height: 1.4;">${escapeHtml(cleanText || 'Ordinazione salvata sul Foglio Google')}</p>`;
+            }
+
             previewHtml = `
               <div class="order-preview-box">
                 <div class="order-preview-header">
                   <span><i class="fa-solid fa-receipt"></i> Ordinazione Registrata</span>
+                  ${totalFormatted ? `<span class="preview-total-tag">${escapeHtml(totalFormatted)}</span>` : ''}
                 </div>
-                <p style="margin: 0; font-size: 0.82rem; color: #ede9de; line-height: 1.35;">${escapeHtml(det)}</p>
+                <div class="order-preview-list">
+                  ${listHtml}
+                </div>
+                ${notes ? `
+                  <div class="order-preview-notes">
+                    <i class="fa-solid fa-circle-info"></i> <span><strong>Note:</strong> ${escapeHtml(notes)}</span>
+                  </div>
+                ` : ''}
               </div>
             `;
           }
@@ -2379,9 +2587,10 @@
               ${previewHtml}
             </div>
 
-            <div style="margin-top: 10px;">
-              <button class="card-action-btn" onclick="event.stopPropagation(); openOrderModal(${JSON.stringify(t).replace(/"/g, '&quot;')})">
-                ${isOrderTaken ? '<i class="fa-solid fa-pen-to-square"></i> Modifica Comanda' : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
+            <div class="card-actions">
+              <button class="card-action-btn" type="button">
+                <i class="fa-solid ${isOrderTaken ? 'fa-pen-to-square' : 'fa-plus'}"></i>
+                ${isOrderTaken ? 'Modifica Comanda' : 'Prendi Ordinazione'}
               </button>
             </div>
           `;
