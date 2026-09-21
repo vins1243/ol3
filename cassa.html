@@ -952,12 +952,12 @@
       </button>
       <button class="stat-pill-btn" id="filter-da-incassare-btn" onclick="setCassaFilter('da-incassare')">
         <i class="fa-solid fa-clock" style="color: #ffaa5b;"></i>
-        <span>Da Incassare</span>
+        <span>Da Saldare</span>
         <span class="count-bubble" id="count-da-incassare">0</span>
       </button>
       <button class="stat-pill-btn" id="filter-pagati-btn" onclick="setCassaFilter('pagati')">
         <i class="fa-solid fa-circle-check" style="color: #43d692;"></i>
-        <span>Saldati / Pagati</span>
+        <span>Saldati</span>
         <span class="count-bubble" id="count-pagati">0</span>
       </button>
       <button class="stat-pill-btn" id="filter-attesa-btn" onclick="setCassaFilter('attesa')">
@@ -1272,15 +1272,16 @@
                 };
                 const id = String(val(0)).trim();
                 if (!id || id.toLowerCase().includes('id') || id.toLowerCase().includes('prenotazione')) return;
-                const st = String(val(10) || '').trim();
-                const det = String(val(11) || '').trim();
+                const st = String(val(10) || '').trim(); // Col K: Stato Ordinazione
+                const det = String(val(11) || '').trim(); // Col L: Dettaglio Piatti Comanda
+                const paySt = String(val(12) || '').trim(); // Col M: Stato Pagamento (Da Saldare / Saldato)
                 const tbl = String(val(5) || '').trim();
                 const d = toIso(val(2));
                 const nm = String(val(6) || '').trim().toLowerCase();
 
-                comandeMap[id] = { status: st, details: det, table: tbl };
+                comandeMap[id] = { status: st, details: det, table: tbl, paymentStatus: paySt };
                 if (d && nm) {
-                  comandeMap[`${d}_${nm}`] = { status: st, details: det, table: tbl };
+                  comandeMap[`${d}_${nm}`] = { status: st, details: det, table: tbl, paymentStatus: paySt };
                 }
               });
             }
@@ -1317,15 +1318,18 @@
 
                 let orderStatus = '';
                 let orderDetails = '';
+                let paymentStatus = '';
                 let tableFromComande = '';
 
                 if (comandeMap[id]) {
                   orderStatus = comandeMap[id].status;
                   orderDetails = comandeMap[id].details;
+                  paymentStatus = comandeMap[id].paymentStatus;
                   tableFromComande = comandeMap[id].table;
                 } else if (isoDate && comandeMap[`${isoDate}_${name.toLowerCase()}`]) {
                   orderStatus = comandeMap[`${isoDate}_${name.toLowerCase()}`].status;
                   orderDetails = comandeMap[`${isoDate}_${name.toLowerCase()}`].details;
+                  paymentStatus = comandeMap[`${isoDate}_${name.toLowerCase()}`].paymentStatus;
                   tableFromComande = comandeMap[`${isoDate}_${name.toLowerCase()}`].table;
                 }
 
@@ -1340,7 +1344,8 @@
                   notes: notesVal,
                   tableLabel: tableFromComande || '',
                   orderStatus: orderStatus,
-                  orderDetails: orderDetails
+                  orderDetails: orderDetails,
+                  paymentStatus: paymentStatus
                 });
               });
             }
@@ -1402,8 +1407,10 @@
             calculatedTotal = parsed.items.reduce((sum, it) => sum + ((it.priceNum || 0) * it.qty), 0);
           }
 
-          let isPaid = (b.orderStatus && b.orderStatus.toLowerCase().includes('pagat'));
+          const payCol = String(b.paymentStatus || '').trim().toLowerCase();
+          let isPaid = payCol.includes('saldat') || payCol.includes('pagat') || (b.orderStatus && b.orderStatus.toLowerCase().includes('pagat'));
           let isTaken = hasItems || (b.orderStatus && (b.orderStatus.toLowerCase().includes('prenotat') || b.orderStatus.toLowerCase().includes('ordinat') || b.orderStatus.toLowerCase().includes('pres')));
+          let paymentStatus = isPaid ? 'Saldato' : (isTaken && hasItems ? 'Da Saldare' : '');
 
           tables.push({
             id: b.id,
@@ -1418,6 +1425,7 @@
             notes: b.notes,
             orderStatus: b.orderStatus || '',
             orderDetails: b.orderDetails || '',
+            paymentStatus: paymentStatus,
             items: parsed.items,
             orderNotes: parsed.notes,
             totalNum: calculatedTotal,
@@ -1501,7 +1509,7 @@
             if (!t.isPaid && t.isTaken && t.items.length > 0 && !hasHeaderDaIncassare) {
               const div = document.createElement('div');
               div.className = 'tables-section-divider section-da-incassare';
-              div.innerHTML = `<i class="fa-solid fa-clock"></i> Conti Aperti da Incassare (${countDaIncassare})`;
+              div.innerHTML = `<i class="fa-solid fa-clock"></i> Conti Aperti da Saldare (${countDaIncassare})`;
               grid.appendChild(div);
               hasHeaderDaIncassare = true;
             } else if (!t.isPaid && (!t.isTaken || t.items.length === 0) && !hasHeaderAttesa) {
@@ -1520,11 +1528,11 @@
           }
 
           let cardStatusClass = 'status-da-incassare';
-          let badgeHtml = '<span class="cassa-status-badge badge-da-incassare"><i class="fa-solid fa-receipt"></i> DA INCASSARE</span>';
+          let badgeHtml = '<span class="cassa-status-badge badge-da-incassare"><i class="fa-solid fa-clock"></i> DA SALDARE</span>';
 
           if (t.isPaid) {
             cardStatusClass = 'status-pagato';
-            badgeHtml = '<span class="cassa-status-badge badge-pagato"><i class="fa-solid fa-circle-check"></i> SALDATO ✓</span>';
+            badgeHtml = '<span class="cassa-status-badge badge-pagato"><i class="fa-solid fa-circle-check"></i> SALDATO</span>';
           } else if (!t.isTaken || t.items.length === 0) {
             cardStatusClass = 'status-attesa';
             badgeHtml = '<span class="cassa-status-badge badge-attesa"><i class="fa-solid fa-hourglass-start"></i> NESSUNA COMANDA</span>';
@@ -1775,22 +1783,27 @@
         const table = activeTables.find(t => t.id === tableId);
         if (!table) return;
 
-        const newStatus = markPaid ? 'Pagato' : 'Prenotato';
-        showToast(markPaid ? `Incasso registrato per ${table.tableLabel}!` : `Conto riaperto per ${table.tableLabel}`);
+        const newPayStatus = markPaid ? 'Saldato' : 'Da Saldare';
+        table.isPaid = markPaid;
+        table.paymentStatus = newPayStatus;
 
-        // Invia aggiornamento direttamente al Foglio Google 2
+        showToast(markPaid ? `Conto saldato per ${table.tableLabel}!` : `Conto riaperto come Da Saldare per ${table.tableLabel}`);
+        renderCassaCards(); // Aggiornamento visivo immediato a schermo
+
+        // Invia aggiornamento direttamente alla nuova Colonna M (Stato Pagamento) del Foglio 2
         await sendUpdateToAppsScript({
-          action: 'update_order',
+          action: 'update_payment_status',
           id: table.id,
           table: table.tableLabel,
           date: currentDate,
-          status: newStatus,
+          payment_status: newPayStatus,
+          status: 'Prenotato',
           details: table.orderDetails
         });
 
         setTimeout(() => {
           syncFromGoogleSheet(false);
-        }, 1200);
+        }, 1500);
       }
 
       async function markActiveTablePaid() {
@@ -1821,6 +1834,7 @@
           table: params.table || '',
           date: params.date || currentDate,
           status: (params.status !== undefined) ? params.status : 'Prenotato',
+          payment_status: params.payment_status || '',
           details: params.details || '',
           _ts: Date.now()
         }).toString();

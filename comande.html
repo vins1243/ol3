@@ -2135,6 +2135,7 @@
           phone: data.phone || '',
           guests: String(data.guests || ''),
           status: (data.status !== undefined) ? data.status : 'Prenotato',
+          payment_status: (data.payment_status !== undefined) ? data.payment_status : ((data.status === 'Prenotato') ? 'Da Saldare' : ''),
           details: data.details || ''
         };
 
@@ -2151,6 +2152,7 @@
           date: data.date || '',
           name: data.name || '',
           status: (data.status !== undefined) ? data.status : 'Prenotato',
+          payment_status: (data.payment_status !== undefined) ? data.payment_status : ((data.status === 'Prenotato') ? 'Da Saldare' : ''),
           details: data.details || '',
           _ts: Date.now()
         }).toString();

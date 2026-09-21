@@ -89,8 +89,15 @@ function ensureComandeSheet(ss) {
       "Numero Ospiti",
       "Note",
       "Stato Ordinazione",
-      "Dettaglio Piatti Comanda"
+      "Dettaglio Piatti Comanda",
+      "Stato Pagamento" // Colonna M: Da Saldare / Saldato
     ]);
+  } else {
+    // Verifica e imposta la testata della Colonna M (indice 13)
+    const h13 = sheet.getRange(1, 13).getValue();
+    if (!h13) {
+      sheet.getRange(1, 13).setValue("Stato Pagamento").setFontWeight("bold");
+    }
   }
   return sheet;
 }
@@ -145,7 +152,8 @@ function syncBookingsToComande(ss) {
           guests,
           String(r[9] || r[7] || ''),
           orderStatus,
-          ''
+          '',
+          orderStatus === 'Prenotato' ? 'Da Saldare' : '' // Col M: Stato Pagamento
         ]);
         existingIds.add(bId);
       }
@@ -239,7 +247,8 @@ function processBooking(payload) {
     guests,
     payload.notes || '',
     '', // Cella inizialmente vuota (ordinazione non ancora presa)
-    ''  // Dettaglio piatti vuoto
+    '', // Dettaglio piatti vuoto
+    ''  // Col M: Stato Pagamento inizialmente vuoto
   ]);
 
   return {
@@ -275,10 +284,21 @@ function updateOrderStatus(params) {
 
     if (matchId || matchTable) {
       // Col K: Stato Ordinazione (indice 11 in Apps Script 1-based)
-      comandeSheet.getRange(i + 1, 11).setValue(targetStatus);
+      if (params.status !== undefined) {
+        comandeSheet.getRange(i + 1, 11).setValue(targetStatus);
+      }
+      // Col L: Dettaglio Piatti Comanda (indice 12)
       if (targetDetails) {
-        // Col L: Dettaglio Piatti Comanda (indice 12)
         comandeSheet.getRange(i + 1, 12).setValue(targetDetails);
+      }
+      // Col M: Stato Pagamento (indice 13) - 'Da Saldare' / 'Saldato'
+      const targetPayStatus = String(params.payment_status || params.paymentStatus || '').trim();
+      if (targetPayStatus) {
+        comandeSheet.getRange(i + 1, 13).setValue(targetPayStatus);
+      } else if (targetStatus === 'Pagato' || targetStatus === 'Saldato') {
+        comandeSheet.getRange(i + 1, 13).setValue('Saldato');
+      } else if (targetStatus === 'Prenotato' && !comandeSheet.getRange(i + 1, 13).getValue()) {
+        comandeSheet.getRange(i + 1, 13).setValue('Da Saldare');
       }
       updated = true;
       break;
@@ -299,7 +319,8 @@ function updateOrderStatus(params) {
       params.guests || '',
       '', // Note
       targetStatus, // Col K: Stato Ordinazione
-      targetDetails // Col L: Dettaglio Piatti Comanda
+      targetDetails, // Col L: Dettaglio Piatti Comanda
+      (String(params.payment_status || params.paymentStatus || '').trim()) || (targetStatus === 'Prenotato' ? 'Da Saldare' : '') // Col M: Stato Pagamento
     ]);
     updated = true;
   }
@@ -456,7 +477,7 @@ function doPost(e) {
     }
 
     // 1. Aggiornamento stato ordinazione (da comande.html)
-    if (payload.action === "update_order" || payload.action === "save_order") {
+    if (payload.action === "update_order" || payload.action === "save_order" || payload.action === "update_payment_status") {
       const res = updateOrderStatus(payload);
       return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
     }
