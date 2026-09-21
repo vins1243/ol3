@@ -2139,11 +2139,7 @@
           details: data.details || ''
         };
 
-        const payloadStatus = {
-          action: 'update_status',
-          id: data.id || '',
-          status: data.status === 'Prenotato' ? 'Ordinazione Presa' : 'Confermata'
-        };
+        // payloadStatus rimosso: non tocca mai Foglio 1!
 
         const qParams = new URLSearchParams({
           action: 'update_order',
@@ -2167,14 +2163,7 @@
             }).catch(() => {});
           } catch(e) {}
 
-          try {
-            fetch(ep, {
-              method: 'POST',
-              mode: 'no-cors',
-              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-              body: JSON.stringify(payloadStatus)
-            }).catch(() => {});
-          } catch(e) {}
+
 
           try {
             fetch(`${ep}?${qParams}`, { mode: 'no-cors' }).catch(() => {});
@@ -2187,71 +2176,22 @@
         });
       }
 
-      // Connessione reale al Foglio Google
+      // Connessione reale al Foglio Google UNIFICATO (Prenotazioni - 15 Colonne)
       async function syncFromGoogleSheet(showToast = false) {
         if (syncEl) syncEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google in corso...';
         
-        let comandeMap = {};
-        const GVIZ_COMANDE_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Comande&tqx=out:json`;
-        const GVIZ_FOGLIO1_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Foglio1&tqx=out:json`;
-        const GVIZ_DEF_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-
-        // 1. Lettura Foglio Comande (recupera lo Stato Ordinazione 'Prenotato' e il Dettaglio Piatti)
-        try {
-          const res = await fetch(GVIZ_COMANDE_URL);
-          const txt = await res.text();
-          const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
-          if (match) {
-            const json = JSON.parse(match[1]);
-            if (json && json.table && Array.isArray(json.table.rows)) {
-              json.table.rows.forEach(r => {
-                if (!r || !r.c) return;
-                const c = r.c;
-                const val = idx => {
-                  if (!c[idx]) return '';
-                  return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
-                };
-                const id = String(val(0)).trim();
-                if (!id || id.toLowerCase().includes('id') || id.toLowerCase().includes('prenotazione')) return;
-                const st = String(val(10) || '').trim();
-                const det = String(val(11) || '').trim();
-                const tbl = String(val(5) || '').trim();
-                const d = toIso(val(2));
-                const nm = String(val(6) || '').trim().toLowerCase();
-
-                // Protezione anti-sovrascrittura: se abbiamo già dati validi, una riga vuota non li sovrascrive
-                if (!comandeMap[id] || det || st) {
-                  comandeMap[id] = {
-                    status: st || (comandeMap[id] ? comandeMap[id].status : ''),
-                    details: det || (comandeMap[id] ? comandeMap[id].details : ''),
-                    table: tbl || (comandeMap[id] ? comandeMap[id].table : '')
-                  };
-                }
-                if (d && nm) {
-                  const k = `${d}_${nm}`;
-                  if (!comandeMap[k] || det || st) {
-                    comandeMap[k] = {
-                      status: st || (comandeMap[k] ? comandeMap[k].status : ''),
-                      details: det || (comandeMap[k] ? comandeMap[k].details : ''),
-                      table: tbl || (comandeMap[k] ? comandeMap[k].table : '')
-                    };
-                  }
-                }
-              });
-            }
-          }
-        } catch(e) {
-          console.warn('Lettura GVIZ Comande:', e);
-        }
-
-        // 2. Lettura Foglio 1 (Master assoluto di tutte le prenotazioni del ristorante)
         let loaded = [];
         try {
-          let res = await fetch(GVIZ_FOGLIO1_URL);
+          let res;
+          try {
+            res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Prenotazioni&tqx=out:json`);
+          } catch(e) {
+            res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`);
+          }
           let txt = await res.text();
           let match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
-          if (!match) {
-            res = await fetch(GVIZ_DEF_URL);
+          if (!match || (match[1] && match[1].includes('"status":"error"'))) {
+            res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`);
             txt = await res.text();
             match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
           }
@@ -2267,89 +2207,42 @@
                   return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
                 };
                 const id = String(val(0)).trim();
-                const name = String(val(2) || '').trim();
+                const name = String(val(6) || '').trim();
                 if (!id || id.toLowerCase().includes('id') || !name) return;
 
-                const rawDate = val(4);
+                const rawDate = val(2);
                 const isoDate = toIso(rawDate);
-                const timeVal = String(val(5) || '').trim();
-                const guestsVal = parseInt(val(6), 10) || 2;
-                const statusSheet = String(val(8) || 'In attesa').trim();
-                const notesVal = String(val(7) || '').trim();
+                const timeVal = String(val(4) || val(3) || '').trim();
+                const tableAssigned = String(val(5) || '').trim();
+                const guestsVal = parseInt(val(8), 10) || 2;
+                const tablesVal = parseInt(val(9), 10) || Math.ceil(guestsVal / 2);
+                const notesVal = String(val(10) || '').trim();
 
-                // Verifica stato comanda da Foglio Comande o da Foglio 1
-                let orderStatus = '';
-                let orderDetails = '';
-                let tableFromComande = '';
-
-                if (comandeMap[id]) {
-                  orderStatus = comandeMap[id].status;
-                  orderDetails = comandeMap[id].details;
-                  tableFromComande = comandeMap[id].table;
-                } else if (isoDate && comandeMap[`${isoDate}_${name.toLowerCase()}`]) {
-                  orderStatus = comandeMap[`${isoDate}_${name.toLowerCase()}`].status;
-                  orderDetails = comandeMap[`${isoDate}_${name.toLowerCase()}`].details;
-                  tableFromComande = comandeMap[`${isoDate}_${name.toLowerCase()}`].table;
-                }
-
-                if (!orderStatus && (statusSheet.toLowerCase().includes('ordinat') || statusSheet.toLowerCase().includes('pres') || statusSheet.toLowerCase().includes('prenotat'))) {
-                  orderStatus = 'Prenotato';
-                }
+                const bookingStatus = String(val(11) || 'Confermata').trim();
+                const orderStatus = String(val(12) || '').trim();
+                const orderDetails = String(val(13) || '').trim();
+                const paymentStatus = String(val(14) || '').trim();
 
                 loaded.push({
                   id: id,
-                  created_at: String(val(1)),
                   name: name,
-                  phone: String(val(3)),
+                  phone: String(val(7)),
                   date: isoDate,
                   time: timeVal,
                   guests: guestsVal,
-                  tables: Math.ceil(guestsVal / 2),
-                  status: statusSheet,
+                  tables: tablesVal,
                   notes: notesVal,
-                  tableLabel: tableFromComande || '',
+                  status: bookingStatus,
+                  tableLabel: tableAssigned,
                   orderStatus: orderStatus,
-                  orderDetails: orderDetails
+                  orderDetails: orderDetails,
+                  paymentStatus: paymentStatus
                 });
               });
             }
           }
         } catch(e) {
-          console.warn('Lettura GVIZ Foglio1:', e);
-        }
-
-        // 3. Fallback Apps Script
-        if (loaded.length === 0) {
-          try {
-            const endpoint = (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.googleSheetEndpoint)
-              ? window.SITE_CONFIG.googleSheetEndpoint
-              : APPS_SCRIPT_URL;
-
-            const resp = await fetch(endpoint);
-            const res = await resp.json();
-            if (res && res.status === 'success' && Array.isArray(res.data)) {
-              res.data.forEach(b => {
-                if (!b || !b.id || !b.name) return;
-                loaded.push({
-                  id: String(b.id),
-                  created_at: b.created_at || '',
-                  name: b.name || 'Cliente',
-                  phone: b.phone || '',
-                  date: toIso(b.date),
-                  time: String(b.time || b.turno || ''),
-                  tableLabel: b.table || '',
-                  guests: parseInt(b.guests, 10) || 2,
-                  tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
-                  status: b.status || 'Confermata',
-                  notes: b.notes || '',
-                  orderStatus: String(b.order_status || '').trim(),
-                  orderDetails: String(b.order_details || '').trim()
-                });
-              });
-            }
-          } catch(err) {
-            console.warn('Apps Script fallback:', err);
-          }
+          console.warn('Errore lettura Foglio Unificato:', e);
         }
 
         allBookings = loaded;

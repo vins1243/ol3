@@ -1057,14 +1057,17 @@
       function toIso(d) {
         if (!d) return '';
         const s = String(d).trim();
-        if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
-        const parts = s.split('/');
-        if (parts.length === 3) {
-          const day = parts[0].padStart(2, '0');
-          const mon = parts[1].padStart(2, '0');
-          const yr = parts[2].length === 2 ? '20' + parts[2] : parts[2];
-          return `${yr}-${mon}-${day}`;
+        const mGviz = s.match(/Date\s*\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+        if (mGviz) {
+          const y = mGviz[1];
+          const m = String(parseInt(mGviz[2], 10) + 1).padStart(2, '0');
+          const day = String(parseInt(mGviz[3], 10)).padStart(2, '0');
+          return `${y}-${m}-${day}`;
         }
+        const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (mIso) return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
+        const mIt = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+        if (mIt) return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
         return s;
       }
 
@@ -1257,10 +1260,19 @@
 
         let loaded = [];
         try {
-          const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
-          const res = await fetch(GVIZ_URL);
-          const txt = await res.text();
-          const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+          let res;
+          try {
+            res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Prenotazioni&tqx=out:json`);
+          } catch(e) {
+            res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`);
+          }
+          let txt = await res.text();
+          let match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+          if (!match || (match[1] && match[1].includes('"status":"error"'))) {
+            res = await fetch(`https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`);
+            txt = await res.text();
+            match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+          }
           if (match) {
             const json = JSON.parse(match[1]);
             if (json && json.table && Array.isArray(json.table.rows)) {
