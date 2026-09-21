@@ -2247,6 +2247,29 @@
 
         allBookings = loaded;
 
+        // Auto-selezione data più attiva se la data attuale non ha tavoli (turno notturno)
+        if (allBookings.length > 0) {
+          const onDate = allBookings.filter(b => toIso(b.date) === currentDate);
+          if (onDate.length === 0) {
+            const dateCounts = {};
+            allBookings.forEach(b => {
+              const d = toIso(b.date);
+              if (!d) return;
+              dateCounts[d] = (dateCounts[d] || 0) + 1;
+              if (b.orderDetails || (b.orderStatus && b.orderStatus.toLowerCase().includes('pres'))) {
+                dateCounts[d] += 10;
+              }
+            });
+            const sortedByActivity = Object.keys(dateCounts).sort((a, b) => dateCounts[b] - dateCounts[a]);
+            if (sortedByActivity.length > 0) {
+              currentDate = sortedByActivity[0];
+              const dateInput = document.getElementById('admin-target-date');
+              if (dateInput) dateInput.value = currentDate;
+              updateDateDisplay();
+            }
+          }
+        }
+
         // Ricostruzione savedOrders in memoria RAM direttamente dal Foglio Google
         savedOrders = {};
         allBookings.forEach(b => {

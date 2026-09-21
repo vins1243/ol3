@@ -1156,7 +1156,7 @@
       // Stato globale in RAM (zero localStorage)
       let allBookings = [];
       let currentDate = getLocalTodayIso();
-      let currentShift = '20:00'; // '20:00', '21:30', 'all'
+      let currentShift = 'all'; // '20:00', '21:30', 'all'
       let currentFilter = 'all';  // 'all', 'da-incassare', 'pagati', 'attesa'
       let activeTables = [];
       let currentModalTable = null;
@@ -1251,7 +1251,7 @@
 
       // Sincronizzazione in tempo reale dal Foglio Google UNIFICATO (Prenotazioni - 15 Colonne)
       async function syncFromGoogleSheet(notify = false) {
-        const syncIndicator = document.getElementById('sync-indicator');
+        const syncIndicator = document.getElementById('sync-status-indicator');
         const syncIcon = document.getElementById('sync-icon');
         if (syncIcon) syncIcon.classList.add('fa-spin');
         if (syncIndicator) {
@@ -1322,12 +1322,66 @@
           console.warn('Errore lettura Foglio Unificato:', e);
         }
 
+        // Canale 2: Fallback Apps Script in tempo reale se GViz è vuoto o in cache
+        if (loaded.length === 0) {
+          try {
+            const resp = await fetch(APPS_SCRIPT_URL);
+            const resData = await resp.json();
+            if (resData && resData.status === 'success' && Array.isArray(resData.data)) {
+              resData.data.forEach(b => {
+                if (!b || !b.id) return;
+                loaded.push({
+                  id: String(b.id).trim(),
+                  name: String(b.name || 'Cliente').trim(),
+                  phone: String(b.phone || ''),
+                  date: toIso(b.date),
+                  time: String(b.time || b.turno || '20:00').trim(),
+                  guests: parseInt(b.guests, 10) || 2,
+                  tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
+                  notes: String(b.notes || '').trim(),
+                  bookingStatus: String(b.booking_status || 'Confermata').trim(),
+                  tableLabel: String(b.table || '').trim(),
+                  orderStatus: String(b.order_status || '').trim(),
+                  orderDetails: String(b.order_details || '').trim(),
+                  paymentStatus: String(b.payment_status || '').trim()
+                });
+              });
+            }
+          } catch(errAs) {
+            console.warn('Apps Script direct fetch fallback:', errAs);
+          }
+        }
+
         allBookings = loaded;
 
+        // Auto-selezione data: se la data odierna non ha tavoli (es. servizio serale dopo mezzanotte),
+        // aggancia automaticamente la data con le prenotazioni e comande attive!
+        if (allBookings.length > 0) {
+          const onDate = allBookings.filter(b => toIso(b.date) === currentDate);
+          if (onDate.length === 0) {
+            const dateCounts = {};
+            allBookings.forEach(b => {
+              const d = toIso(b.date);
+              if (!d) return;
+              dateCounts[d] = (dateCounts[d] || 0) + 1;
+              if (b.orderDetails || (b.orderStatus && b.orderStatus.toLowerCase().includes('pres'))) {
+                dateCounts[d] += 10;
+              }
+            });
+            const sortedByActivity = Object.keys(dateCounts).sort((a, b) => dateCounts[b] - dateCounts[a]);
+            if (sortedByActivity.length > 0) {
+              currentDate = sortedByActivity[0];
+              const dateInput = document.getElementById('admin-target-date');
+              if (dateInput) dateInput.value = currentDate;
+            }
+          }
+        }
+
         if (syncIcon) syncIcon.classList.remove('fa-spin');
-        if (syncIndicator) {
+        const syncInd = document.getElementById('sync-status-indicator');
+        if (syncInd) {
           const nowStr = new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' });
-          syncIndicator.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Sincronizzato con Foglio 2 Comande (${allBookings.length} tavoli alle ${nowStr})`;
+          syncInd.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Sincronizzato con Foglio Prenotazioni (${allBookings.length} tavoli alle ${nowStr})`;
         }
 
         renderCassaCards();
@@ -1557,26 +1611,24 @@
           }
 
           let actionButtons = '';
-          if (t.items.length > 0) {
-            if (!t.isPaid) {
-              actionButtons = `
-                <button type="button" class="btn-cassa-action btn-cassa-secondary" onclick="openReceiptModal('${t.id}')">
-                  <i class="fa-solid fa-eye"></i> Dettaglio & Modifica
-                </button>
-                <button type="button" class="btn-cassa-action btn-cassa-primary" onclick="setTablePaymentStatus('${t.id}', true)">
-                  <i class="fa-solid fa-check"></i> Salda (${t.totalStr})
-                </button>
-              `;
-            } else {
-              actionButtons = `
-                <button type="button" class="btn-cassa-action btn-cassa-secondary" onclick="openReceiptModal('${t.id}')">
-                  <i class="fa-solid fa-print"></i> Vedi Pre-Conto
-                </button>
-                <button type="button" class="btn-cassa-action btn-cassa-revert" onclick="setTablePaymentStatus('${t.id}', false)">
-                  <i class="fa-solid fa-rotate-left"></i> Riapri Conto
-                </button>
-              `;
-            }
+          if (!t.isPaid) {
+            actionButtons = `
+              <button type="button" class="btn-cassa-action btn-cassa-secondary" onclick="openReceiptModal('${t.id}')">
+                <i class="fa-solid fa-eye"></i> Dettaglio & Modifica
+              </button>
+              <button type="button" class="btn-cassa-action btn-cassa-primary" onclick="setTablePaymentStatus('${t.id}', true)">
+                <i class="fa-solid fa-check"></i> Salda (${t.totalStr})
+              </button>
+            `;
+          } else {
+            actionButtons = `
+              <button type="button" class="btn-cassa-action btn-cassa-secondary" onclick="openReceiptModal('${t.id}')">
+                <i class="fa-solid fa-print"></i> Vedi Pre-Conto
+              </button>
+              <button type="button" class="btn-cassa-action btn-cassa-revert" onclick="setTablePaymentStatus('${t.id}', false)">
+                <i class="fa-solid fa-rotate-left"></i> Riapri Conto
+              </button>
+            `;
           }
 
           const card = document.createElement('div');
