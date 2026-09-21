@@ -206,9 +206,9 @@ function updateOrderStatus(params) {
     const rowTable = String(data[i][5]).trim();
 
     const matchId = targetId && (rowId === targetId);
-    const matchTableDate = !targetId && targetDate && targetTable && (rowDate === targetDate && (rowTable.includes(targetTable) || targetTable.includes(rowTable)));
+    const matchTable = targetDate && targetTable && (rowDate === targetDate && (rowTable.includes(targetTable) || targetTable.includes(rowTable)));
 
-    if (matchId || matchTableDate) {
+    if (matchId || matchTable) {
       // Col K: Stato Ordinazione (indice 11 in Apps Script 1-based)
       comandeSheet.getRange(i + 1, 11).setValue(targetStatus);
       if (targetDetails) {
@@ -218,6 +218,25 @@ function updateOrderStatus(params) {
       updated = true;
       break;
     }
+  }
+
+  // Fallback: se la riga non esiste ancora in Comande, la inserisce per non perdere l'ordinazione
+  if (!updated && (targetId || (targetDate && targetTable))) {
+    comandeSheet.appendRow([
+      targetId || ('OL3_' + Date.now()),
+      new Date().toLocaleString('it-IT'),
+      targetDate || '',
+      '', // Turno
+      '', // Orario
+      targetTable || '',
+      params.name || '',
+      params.phone || '',
+      params.guests || '',
+      '', // Note
+      targetStatus, // Col K: Stato Ordinazione
+      targetDetails // Col L: Dettaglio Piatti Comanda
+    ]);
+    updated = true;
   }
 
   return {
