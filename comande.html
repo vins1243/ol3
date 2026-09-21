@@ -10,8 +10,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=6">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Comande Personale • Tavoli Serata | OL3 Ristorante Pizzeria</title>
-  <meta name="description" content="Interfaccia riservata al personale di sala per la gestione delle comande e presa ordinazioni tavoli della serata.">
+  <title>Comande & Ordinazioni Serata • Personale Sala | OL3 Ristorante Pizzeria</title>
+  <meta name="description" content="Interfaccia riservata al personale di sala per la gestione delle comande collegate in tempo reale al Foglio Google delle prenotazioni per 1° e 2° turno.">
 
   <!-- Font Google -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,8 +21,9 @@
   <!-- FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- Stili Principali -->
+  <!-- Stili Principali (Dual Link Failsafe) -->
   <link rel="stylesheet" href="css/styles.css?v=7.0">
+  <link rel="stylesheet" href="styles.css?v=7.0">
 
   <style>
     :root {
@@ -38,16 +39,17 @@
     body {
       background-color: #171415;
       color: #f5f2eb;
-      font-family: var(--font-sans);
+      font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
       min-height: 100vh;
       padding-bottom: 90px;
+      margin: 0;
     }
 
-    /* Navbar Personale */
+    /* Barra Superiore Personale */
     .staff-navbar {
       background: rgba(22, 19, 20, 0.98);
       border-bottom: 1px solid rgba(214, 175, 93, 0.3);
-      padding: 12px 24px;
+      padding: 12px 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -62,19 +64,22 @@
       gap: 14px;
     }
     .staff-brand img {
-      height: 42px;
+      height: 44px;
       width: auto;
     }
     .staff-badge {
       background: var(--bg-card);
       border: 1px solid var(--accent-gold);
       color: var(--accent-gold);
-      font-size: 0.75rem;
+      font-size: 0.76rem;
       font-weight: 800;
-      padding: 4px 10px;
+      padding: 4px 12px;
       border-radius: 20px;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
     .staff-nav-actions {
       display: flex;
@@ -87,24 +92,34 @@
       color: #fff;
       font-size: 0.85rem;
       font-weight: 700;
-      padding: 7px 14px;
+      padding: 8px 15px;
       border-radius: 6px;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: all 0.2s ease;
+      cursor: pointer;
     }
     .btn-nav-staff:hover {
       background: var(--accent-gold);
       color: #141213;
       border-color: var(--accent-gold);
     }
+    .btn-nav-staff.btn-highlight {
+      background: rgba(214, 175, 93, 0.18);
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
+    }
+    .btn-nav-staff.btn-highlight:hover {
+      background: var(--accent-gold);
+      color: #141213;
+    }
 
-    /* Subheader & Riepilogo Serata */
+    /* Subheader Serata Odierna & Turni */
     .shift-header {
       background: #1e1a1c;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 18px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 18px 28px;
     }
     .shift-header-inner {
       max-width: 1400px;
@@ -117,7 +132,7 @@
     }
     .shift-info h1 {
       font-family: var(--font-serif);
-      font-size: 1.55rem;
+      font-size: 1.6rem;
       color: #ffffff;
       margin: 0 0 4px;
       display: flex;
@@ -126,24 +141,98 @@
     }
     .shift-info p {
       color: var(--text-muted);
-      font-size: 0.9rem;
+      font-size: 0.92rem;
       margin: 0;
     }
-    .shift-stats-pills {
+
+    /* Tasti Switch Turno (1° e 2° Turno) */
+    .shift-switch-container {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #141213;
+      padding: 4px;
+      border-radius: 10px;
+      border: 1px solid rgba(214, 175, 93, 0.25);
+    }
+    .shift-btn {
+      padding: 8px 18px;
+      border-radius: 7px;
+      border: none;
+      font-weight: 800;
+      font-size: 0.88rem;
+      cursor: pointer;
+      color: #bbb;
+      background: transparent;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .shift-btn.active {
+      background: linear-gradient(135deg, var(--accent-red), #b32a1e);
+      color: #fff;
+      box-shadow: 0 2px 10px rgba(209, 56, 43, 0.45);
+    }
+    .shift-btn:hover:not(.active) {
+      color: #fff;
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    /* Barra Controlli, Ricerca e Filtri Stato */
+    .controls-bar {
+      max-width: 1400px;
+      margin: 20px auto 12px;
+      padding: 0 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .search-tables-wrapper {
+      position: relative;
+      flex: 1;
+      max-width: 360px;
+      min-width: 240px;
+    }
+    .search-tables-wrapper input {
+      width: 100%;
+      background: #242022;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #fff;
+      padding: 11px 16px 11px 40px;
+      border-radius: 8px;
+      font-size: 0.92rem;
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+    .search-tables-wrapper input:focus {
+      border-color: var(--accent-gold);
+    }
+    .search-tables-wrapper i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+
+    .filter-pills-row {
       display: flex;
       gap: 10px;
       flex-wrap: wrap;
     }
     .stat-pill-btn {
-      background: #272224;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      background: #252123;
+      border: 1px solid rgba(255, 255, 255, 0.12);
       border-radius: 8px;
       padding: 8px 14px;
       display: flex;
       align-items: center;
       gap: 8px;
       cursor: pointer;
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       color: #fff;
       font-weight: 700;
       transition: all 0.2s ease;
@@ -154,7 +243,7 @@
     }
     .stat-pill-btn.pill-red {
       border-color: var(--order-red);
-      background: rgba(209, 56, 43, 0.15);
+      background: rgba(209, 56, 43, 0.16);
     }
     .stat-pill-btn.pill-red.active {
       background: var(--order-red);
@@ -169,103 +258,73 @@
       color: #fff;
     }
     .count-bubble {
-      background: rgba(0,0,0,0.4);
+      background: rgba(0,0,0,0.45);
       padding: 2px 7px;
       border-radius: 12px;
       font-size: 0.8rem;
     }
 
-    /* Barra Strumenti & Ricerca */
-    .controls-bar {
-      max-width: 1400px;
-      margin: 20px auto 10px;
-      padding: 0 24px;
+    .action-tools-group {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      gap: 10px;
     }
-    .search-box {
-      position: relative;
-      flex: 1;
-      max-width: 380px;
-      min-width: 240px;
-    }
-    .search-box input {
-      width: 100%;
-      background: #272224;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+    .btn-action-tool {
+      background: #252123;
+      border: 1px solid rgba(255, 255, 255, 0.15);
       color: #fff;
-      padding: 10px 14px 10px 38px;
+      padding: 10px 14px;
       border-radius: 8px;
-      font-size: 0.9rem;
-      outline: none;
+      cursor: pointer;
+      font-size: 0.88rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
     }
-    .search-box input:focus {
+    .btn-action-tool:hover {
       border-color: var(--accent-gold);
-    }
-    .search-box i {
-      position: absolute;
-      left: 14px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: var(--text-muted);
+      color: var(--accent-gold);
     }
     .btn-add-walkin {
       background: linear-gradient(135deg, #d6af5d, #b88d3d);
       color: #1a1718;
       font-weight: 800;
       border: none;
-      padding: 10px 18px;
+      padding: 10px 16px;
       border-radius: 8px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       transition: all 0.2s ease;
     }
     .btn-add-walkin:hover {
       transform: translateY(-2px);
       box-shadow: 0 4px 16px rgba(214, 175, 93, 0.35);
     }
-    .btn-refresh {
-      background: #272224;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      padding: 10px 14px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .btn-refresh:hover {
-      border-color: #fff;
-    }
 
     /* Griglia Tavoli Serata */
     .tables-container {
       max-width: 1400px;
       margin: 16px auto;
-      padding: 0 24px;
+      padding: 0 28px;
     }
     .tables-grid-cards {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 22px;
     }
 
     /* Card Tavolo */
     .table-card {
       border-radius: 12px;
-      padding: 18px 20px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      min-height: 220px;
+      min-height: 230px;
       transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       cursor: pointer;
       position: relative;
@@ -275,14 +334,14 @@
       transform: translateY(-4px);
     }
 
-    /* STATO ROSSO: DA SERVIRE */
+    /* STATO ROSSO: DA SERVIRE / ORDINAZIONE DA PRENDERE */
     .table-card.status-da-servire {
-      background: linear-gradient(145deg, #381a1d, #251214);
+      background: linear-gradient(145deg, #3a1c1f, #251214);
       border: 2px solid var(--order-red-border);
-      box-shadow: 0 6px 22px rgba(209, 56, 43, 0.3);
+      box-shadow: 0 6px 22px rgba(209, 56, 43, 0.32);
     }
     .table-card.status-da-servire:hover {
-      box-shadow: 0 10px 28px rgba(209, 56, 43, 0.45);
+      box-shadow: 0 10px 30px rgba(209, 56, 43, 0.5);
       border-color: #ff5240;
     }
     .table-card.status-da-servire .status-pill {
@@ -290,7 +349,7 @@
       color: #fff;
       font-weight: 800;
       border-radius: 20px;
-      padding: 4px 12px;
+      padding: 5px 12px;
       font-size: 0.78rem;
       letter-spacing: 0.5px;
       display: inline-flex;
@@ -304,23 +363,23 @@
       100% { box-shadow: 0 0 0 0 rgba(209, 56, 43, 0); }
     }
 
-    /* STATO GRIGIO: ORDINAZIONE PRESA */
+    /* STATO GRIGIO: ORDINAZIONE GIÀ PRESA */
     .table-card.status-presa {
-      background: linear-gradient(145deg, #2a2628, #1f1d1e);
+      background: linear-gradient(145deg, #2b2729, #201d1f);
       border: 2px solid var(--order-grey-border);
-      opacity: 0.92;
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+      opacity: 0.94;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
     }
     .table-card.status-presa:hover {
-      border-color: #82797e;
+      border-color: #8c8388;
       opacity: 1;
     }
     .table-card.status-presa .status-pill {
-      background: #474144;
+      background: #4a4447;
       color: #ded9dc;
       font-weight: 700;
       border-radius: 20px;
-      padding: 4px 12px;
+      padding: 5px 12px;
       font-size: 0.78rem;
       letter-spacing: 0.5px;
       display: inline-flex;
@@ -336,18 +395,28 @@
       margin-bottom: 12px;
     }
     .table-num-title {
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       font-weight: 900;
       letter-spacing: 0.5px;
       color: #ffffff;
       font-family: var(--font-serif);
       margin: 0;
     }
+    .table-shift-tag {
+      font-size: 0.74rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--accent-gold);
+      display: inline-block;
+      margin-top: 3px;
+    }
     .table-customer-name {
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1.15rem;
+      font-weight: 800;
       color: #ffffff;
-      margin: 4px 0 6px;
+      margin: 6px 0 6px;
       display: flex;
       align-items: center;
       gap: 8px;
@@ -356,7 +425,7 @@
       display: flex;
       gap: 12px;
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       margin-bottom: 14px;
       flex-wrap: wrap;
     }
@@ -366,14 +435,14 @@
       gap: 5px;
     }
 
-    /* Box Anteprima Ordinazione (nel caso grigio) */
+    /* Box Anteprima Ordinazione (Card Grigia) */
     .order-preview-box {
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.35);
       border-radius: 8px;
       padding: 10px 12px;
       margin-bottom: 14px;
       font-size: 0.86rem;
-      border: 1px dashed rgba(255, 255, 255, 0.1);
+      border: 1px dashed rgba(255, 255, 255, 0.12);
     }
     .order-preview-box .order-preview-header {
       display: flex;
@@ -387,7 +456,7 @@
       list-style: none;
       padding: 0;
       margin: 0;
-      max-height: 80px;
+      max-height: 85px;
       overflow-y: auto;
     }
     .order-preview-box li {
@@ -401,7 +470,7 @@
     .card-action-btn {
       width: 100%;
       border: none;
-      padding: 11px 16px;
+      padding: 12px 16px;
       border-radius: 8px;
       font-weight: 800;
       font-size: 0.95rem;
@@ -423,7 +492,7 @@
     .table-card.status-presa .card-action-btn {
       background: #3e383b;
       color: #ede9de;
-      border: 1px solid rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.12);
     }
     .table-card.status-presa .card-action-btn:hover {
       background: #50494d;
@@ -431,7 +500,7 @@
     }
 
     /* ==========================================================================
-       POPUP / MODAL PRESA ORDINAZIONI CIBO
+       POPUP MODALE: PRESA ORDINAZIONI CON VISUALIZZAZIONE MENU COMPLETA
        ========================================================================== */
     .modal-overlay {
       position: fixed;
@@ -439,8 +508,8 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(10, 8, 9, 0.85);
-      backdrop-filter: blur(10px);
+      background: rgba(10, 8, 9, 0.88);
+      backdrop-filter: blur(12px);
       z-index: 2000;
       display: none;
       align-items: center;
@@ -452,15 +521,15 @@
     }
 
     .order-modal-window {
-      background: #211c1e;
+      background: #1f1b1d;
       border: 2px solid var(--accent-gold);
       border-radius: 16px;
       width: 100%;
-      max-width: 1180px;
-      max-height: 92vh;
+      max-width: 1220px;
+      max-height: 94vh;
       display: flex;
       flex-direction: column;
-      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75);
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85);
       overflow: hidden;
       animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
@@ -471,7 +540,7 @@
 
     /* Header del Modal */
     .modal-head {
-      background: #191617;
+      background: #171415;
       padding: 16px 24px;
       border-bottom: 1px solid rgba(255, 255, 255, 0.1);
       display: flex;
@@ -481,9 +550,9 @@
     }
     .modal-head-title h2 {
       font-family: var(--font-serif);
-      font-size: 1.5rem;
+      font-size: 1.55rem;
       color: #fff;
-      margin: 0 0 4px;
+      margin: 0 0 3px;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -503,7 +572,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 1.25rem;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -511,48 +580,67 @@
       background: var(--order-red);
     }
 
-    /* Corpo del Modal (Layout a 2 Colonne: Menu a sinistra, Comanda a destra) */
+    /* Layout a 2 Colonne: Menu identico a menu.html a sinistra, Comanda a destra */
     .modal-body-layout {
       display: grid;
-      grid-template-columns: 1fr 380px;
+      grid-template-columns: 1fr 390px;
       flex: 1;
       overflow: hidden;
     }
-    @media (max-width: 900px) {
+    @media (max-width: 960px) {
       .modal-body-layout {
         grid-template-columns: 1fr;
         overflow-y: auto;
       }
     }
 
-    /* Colonna Sinistra: Ricerca, Categorie e Lista Cibo */
+    /* Colonna Sinistra: Menu (Strutturato esattamente come menu.html) */
     .menu-selection-col {
       display: flex;
       flex-direction: column;
       overflow-y: auto;
       padding: 20px 24px;
       border-right: 1px solid rgba(255, 255, 255, 0.08);
-      max-height: calc(92vh - 150px);
+      max-height: calc(94vh - 150px);
     }
 
+    /* Barra di Ricerca Piatto */
     .modal-search-wrapper {
-      margin-bottom: 16px;
+      position: relative;
+      margin-bottom: 14px;
     }
     .modal-search-wrapper input {
       width: 100%;
-      background: #2b2528;
-      border: 1px solid rgba(255, 255, 255, 0.14);
+      background: #282325;
+      border: 1px solid rgba(255, 255, 255, 0.16);
       color: #fff;
-      padding: 12px 16px 12px 42px;
+      padding: 12px 42px 12px 42px;
       border-radius: 10px;
       font-size: 0.95rem;
       outline: none;
+      transition: border-color 0.2s ease;
     }
     .modal-search-wrapper input:focus {
       border-color: var(--accent-gold);
     }
+    .modal-search-wrapper .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .modal-search-wrapper .clear-icon {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: none;
+    }
 
-    /* Barra Categorie Cibo (Pills Orizzontali) */
+    /* Barra Categorie Cibo (Pills identiche ai bottoni del menu) */
     .food-categories-pills {
       display: flex;
       gap: 8px;
@@ -560,12 +648,13 @@
       padding-bottom: 12px;
       margin-bottom: 16px;
       scrollbar-width: thin;
+      -webkit-overflow-scrolling: touch;
     }
     .food-cat-pill {
-      background: #2d272a;
+      background: #2a2527;
       border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #f5f2eb;
-      padding: 7px 14px;
+      color: #ede9de;
+      padding: 7px 16px;
       border-radius: 20px;
       font-size: 0.82rem;
       font-weight: 700;
@@ -579,92 +668,144 @@
       border-color: var(--accent-gold);
     }
 
-    /* Lista Piatti Cibo */
-    .food-category-section {
-      margin-bottom: 24px;
+    /* Sezioni Categoria */
+    .menu-category-group {
+      margin-bottom: 28px;
     }
-    .food-category-heading {
+    .category-title {
       font-family: var(--font-serif);
-      font-size: 1.2rem;
-      color: var(--accent-gold);
+      font-size: 1.35rem;
+      color: #ffffff;
       border-bottom: 1px solid rgba(214, 175, 93, 0.25);
       padding-bottom: 6px;
-      margin-bottom: 14px;
+      margin-bottom: 4px;
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .food-items-grid {
+    .category-subtitle {
+      font-size: 0.86rem;
+      color: var(--accent-gold);
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+
+    /* Griglia Piatti (identica a .menu-items-grid del sito) */
+    .modal-menu-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 14px;
     }
 
-    /* Card Piatto Singolo */
-    .food-item-card {
-      background: #282225;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 12px 14px;
+    /* Card Piatto (Modellata su .menu-card del sito reale) */
+    .menu-card-item {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      transition: border-color 0.2s ease;
+      background-color: #262124;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 14px;
+      transition: all 0.2s ease;
+      position: relative;
     }
-    .food-item-card.has-qty {
+    .menu-card-item:hover {
+      border-color: rgba(214, 175, 93, 0.4);
+      background-color: #2c272a;
+    }
+    .menu-card-item.has-qty {
       border-color: var(--accent-gold);
-      background: #30292d;
+      background: #2e282c;
     }
-    .food-item-header {
+
+    .menu-card-main-content {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .menu-card-info-col {
+      flex: 1;
+    }
+    .menu-card-thumb-col {
+      width: 72px;
+      height: 72px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #171415;
+    }
+    .menu-card-thumb-col img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .menu-item-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
       gap: 8px;
       margin-bottom: 4px;
     }
-    .food-item-title {
+    .menu-item-name {
       font-size: 0.98rem;
       font-weight: 800;
-      color: #fff;
+      color: #ffffff;
+      margin: 0;
     }
-    .food-item-price {
+    .menu-item-price {
+      font-size: 0.95rem;
       font-weight: 800;
       color: var(--accent-gold);
-      font-size: 0.95rem;
       white-space: nowrap;
     }
-    .food-item-desc {
-      font-size: 0.8rem;
+    .menu-item-desc {
+      font-size: 0.80rem;
       color: var(--text-muted);
       line-height: 1.4;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       display: -webkit-box;
       -webkit-line-clamp: 2;
       -webkit-box-orient: vertical;
       overflow: hidden;
     }
-
-    /* Controlli Aggiungi / Stepper + e - */
-    .food-action-row {
+    .menu-tags-list {
       display: flex;
-      justify-content: flex-end;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .tag-badge {
+      font-size: 0.70rem;
+      padding: 2px 7px;
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 12px;
+      color: var(--accent-gold);
+      font-weight: 700;
+    }
+
+    /* Barra Azione: Tasto Aggiungi o Stepper + / - */
+    .card-footer-action {
+      display: flex;
+      justify-content: space-between;
       align-items: center;
-      gap: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      padding-top: 10px;
       margin-top: auto;
     }
     .btn-add-food {
-      background: #393135;
+      background: #393236;
       border: 1px solid rgba(255, 255, 255, 0.15);
       color: #fff;
       font-weight: 800;
       font-size: 0.82rem;
-      padding: 7px 14px;
+      padding: 7px 16px;
       border-radius: 6px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 6px;
       transition: all 0.2s ease;
+      margin-left: auto;
     }
     .btn-add-food:hover {
       background: var(--accent-gold);
@@ -672,22 +813,23 @@
       border-color: var(--accent-gold);
     }
 
-    /* Stepper Qty quando > 0 */
+    /* Stepper Qty con + e - */
     .qty-stepper {
       display: flex;
       align-items: center;
-      background: #1c181a;
-      border: 1px solid var(--accent-gold);
+      background: #191617;
+      border: 1.5px solid var(--accent-gold);
       border-radius: 8px;
       overflow: hidden;
+      margin-left: auto;
     }
     .stepper-btn {
       background: none;
       border: none;
       color: #fff;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 800;
-      width: 34px;
+      width: 36px;
       height: 34px;
       display: flex;
       align-items: center;
@@ -695,14 +837,11 @@
       cursor: pointer;
       transition: background 0.15s ease;
     }
-    .stepper-btn:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
     .stepper-btn.minus-btn:hover {
       background: var(--order-red);
     }
     .stepper-btn.plus-btn:hover {
-      background: #25d366;
+      background: var(--order-green);
     }
     .stepper-value {
       font-size: 1rem;
@@ -714,12 +853,12 @@
 
     /* Colonna Destra: Carrello Comanda */
     .order-cart-col {
-      background: #1a1618;
+      background: #171415;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       padding: 20px 22px;
-      max-height: calc(92vh - 150px);
+      max-height: calc(94vh - 150px);
       overflow-y: auto;
     }
     .cart-title {
@@ -746,7 +885,7 @@
       font-size: 0.95rem;
     }
     .cart-item-row {
-      background: #252023;
+      background: #231e21;
       border-radius: 8px;
       padding: 10px 12px;
       margin-bottom: 8px;
@@ -775,7 +914,7 @@
       font-size: 0.82rem;
     }
 
-    /* Footer Comanda / Bottone Salva */
+    /* Footer Carrello con Note e Salvataggio */
     .cart-footer {
       border-top: 1px solid rgba(255, 255, 255, 0.12);
       padding-top: 14px;
@@ -796,8 +935,8 @@
     }
     .order-notes-input {
       width: 100%;
-      background: #2b2528;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #252022;
+      border: 1px solid rgba(255, 255, 255, 0.14);
       color: #fff;
       padding: 8px 12px;
       border-radius: 6px;
@@ -805,6 +944,10 @@
       margin-bottom: 14px;
       outline: none;
       resize: none;
+      box-sizing: border-box;
+    }
+    .order-notes-input:focus {
+      border-color: var(--accent-gold);
     }
     .btn-save-order {
       width: 100%;
@@ -859,7 +1002,20 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    @media (max-width: 640px) {
+    /* Banner Sincronizzazione Google Sheets */
+    .sheet-sync-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: var(--accent-gold);
+      background: rgba(214, 175, 93, 0.1);
+      padding: 3px 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(214, 175, 93, 0.25);
+    }
+
+    @media (max-width: 768px) {
       .staff-navbar {
         padding: 10px 16px;
       }
@@ -879,6 +1035,9 @@
       .menu-selection-col {
         padding: 14px 16px;
       }
+      .modal-menu-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
@@ -894,54 +1053,82 @@
     </div>
 
     <div class="staff-nav-actions">
-      <a href="gestione-prenotazioni.html" class="btn-nav-staff" title="Vai alla Mappa della Sala"><i class="fa-solid fa-table-cells"></i> Mappa Sala</a>
-      <a href="menu.html" class="btn-nav-staff" target="_blank" title="Consulta il Menu"><i class="fa-solid fa-book-open"></i> Menu</a>
-      <a href="index.html" class="btn-nav-staff" title="Torna alla Home"><i class="fa-solid fa-arrow-left"></i> Home</a>
+      <button class="btn-nav-staff btn-highlight" onclick="openMenuConsultationModal()" title="Consulta Menu Completo">
+        <i class="fa-solid fa-book-open"></i> Consulta Menu
+      </button>
+      <a href="gestione-prenotazioni.html" class="btn-nav-staff" title="Mappa Sala Ristorante">
+        <i class="fa-solid fa-table-cells"></i> Mappa Sala
+      </a>
+      <a href="index.html" class="btn-nav-staff" title="Torna al Sito Web">
+        <i class="fa-solid fa-arrow-left"></i> Home
+      </a>
     </div>
   </header>
 
-  <!-- Intestazione Serata Odierna & Filtri Rapidi -->
+  <!-- Intestazione Serata Odierna & Switch Turno (1° e 2° Turno) -->
   <section class="shift-header">
     <div class="shift-header-inner">
       <div class="shift-info">
-        <h1><i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> Tavoli della Serata Odierna</h1>
+        <h1><i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> Comande Tavoli Serata</h1>
         <p id="current-shift-date-text">Caricamento data odierna...</p>
       </div>
 
-      <div class="shift-stats-pills">
-        <button class="stat-pill-btn active" id="filter-all-btn" onclick="setTableFilter('all')">
-          <span>Tutti i Tavoli</span>
-          <span class="count-bubble" id="count-all">0</span>
-        </button>
+      <!-- Tasti Divisione 1° e 2° Turno -->
+      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
+        <div class="shift-switch-container">
+          <button class="shift-btn active" id="btn-shift-1" onclick="switchShift('20:00')">
+            <i class="fa-solid fa-clock"></i> 1° Turno (20:00)
+          </button>
+          <button class="shift-btn" id="btn-shift-2" onclick="switchShift('21:30')">
+            <i class="fa-solid fa-clock"></i> 2° Turno (21:30)
+          </button>
+          <button class="shift-btn" id="btn-shift-all" onclick="switchShift('all')">
+            <i class="fa-solid fa-list-check"></i> Tutti i Turni
+          </button>
+        </div>
 
-        <button class="stat-pill-btn pill-red" id="filter-da-servire-btn" onclick="setTableFilter('da-servire')">
-          <i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i>
-          <span>Da Servire (Prendi Ordinazione)</span>
-          <span class="count-bubble" id="count-da-servire">0</span>
-        </button>
-
-        <button class="stat-pill-btn pill-grey" id="filter-presa-btn" onclick="setTableFilter('presa')">
-          <i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i>
-          <span>Ordinazione Presa</span>
-          <span class="count-bubble" id="count-presa">0</span>
-        </button>
+        <span class="sheet-sync-status" id="sheet-sync-indicator">
+          <i class="fa-solid fa-circle-notch fa-spin"></i> Connessione Foglio Google...
+        </span>
       </div>
     </div>
   </section>
 
-  <!-- Barra Strumenti & Ricerca Tavolo -->
+  <!-- Barra Controlli, Ricerca Tavolo e Filtri Stato -->
   <div class="controls-bar">
-    <div class="search-box">
+    <!-- Ricerca Tavoli -->
+    <div class="search-tables-wrapper">
       <i class="fa-solid fa-magnifying-glass"></i>
-      <input type="text" id="search-table-input" placeholder="Cerca numero tavolo o nome cliente..." oninput="renderTables()">
+      <input type="text" id="search-table-input" placeholder="Cerca tavolo (es. T01 o 1) o nome cliente..." oninput="renderTables()">
     </div>
 
-    <div style="display: flex; gap: 10px;">
-      <button class="btn-add-walkin" onclick="promptAddWalkinTable()">
-        <i class="fa-solid fa-plus"></i> Apri Tavolo Libero / Walk-in
+    <!-- Filtri Stato Tavolo -->
+    <div class="filter-pills-row">
+      <button class="stat-pill-btn active" id="filter-all-btn" onclick="setTableFilter('all')">
+        <span>Tutti nel Turno</span>
+        <span class="count-bubble" id="count-all">0</span>
       </button>
-      <button class="btn-refresh" onclick="loadEveningTables(true)" title="Sincronizza prenotazioni">
-        <i class="fa-solid fa-arrows-rotate"></i>
+
+      <button class="stat-pill-btn pill-red" id="filter-da-servire-btn" onclick="setTableFilter('da-servire')">
+        <i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i>
+        <span>Da Servire (Prendi Ordinazione)</span>
+        <span class="count-bubble" id="count-da-servire">0</span>
+      </button>
+
+      <button class="stat-pill-btn pill-grey" id="filter-presa-btn" onclick="setTableFilter('presa')">
+        <i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i>
+        <span>Ordinazione Presa</span>
+        <span class="count-bubble" id="count-presa">0</span>
+      </button>
+    </div>
+
+    <!-- Azioni Rapide -->
+    <div class="action-tools-group">
+      <button class="btn-add-walkin" onclick="promptAddWalkinTable()">
+        <i class="fa-solid fa-plus"></i> Apri Tavolo Walk-in
+      </button>
+      <button class="btn-action-tool" onclick="loadEveningTables(true)" title="Sincronizza prenotazioni dal Foglio Google">
+        <i class="fa-solid fa-arrows-rotate"></i> Aggiorna
       </button>
     </div>
   </div>
@@ -949,17 +1136,17 @@
   <!-- Contenitore Tavoli della Serata -->
   <main class="tables-container">
     <div class="tables-grid-cards" id="tables-cards-grid">
-      <!-- Generato dinamicamente da JavaScript -->
+      <!-- Generato dinamicamente con i tavoli delle prenotazioni odierne -->
     </div>
   </main>
 
   <!-- ==========================================================================
-       POPUP MODALE: PRESA ORDINAZIONE SOLO CIBO
+       POPUP MODALE: PRESA ORDINAZIONE CIBO CON VISUALIZZAZIONE MENU COMPLETA
        ========================================================================== -->
   <div class="modal-overlay" id="order-modal-overlay">
     <div class="order-modal-window">
       
-      <!-- Head del Modal con info Tavolo -->
+      <!-- Head del Modal con info Tavolo e Turno -->
       <div class="modal-head">
         <div class="modal-head-title">
           <h2 id="modal-table-label"><i class="fa-solid fa-clipboard-list" style="color: var(--accent-gold);"></i> Ordinazione Tavolo</h2>
@@ -968,25 +1155,24 @@
         <button class="modal-close-btn" onclick="closeOrderModal()" aria-label="Chiudi popup">&times;</button>
       </div>
 
-      <!-- Corpo Modal: Menu Cibo a sinistra, Carrello a destra -->
+      <!-- Corpo Modal: Menu Cibo a sinistra, Carrello Comanda a destra -->
       <div class="modal-body-layout">
         
-        <!-- Colonna Selezione Piatti (Solo Cibo) -->
+        <!-- Colonna Selezione Piatti (Solo Cibo con Foto & Dettagli come in menu.html) -->
         <div class="menu-selection-col">
-          <!-- Ricerca Rapida Piatto -->
+          <!-- Barra Ricerca Piatto -->
           <div class="modal-search-wrapper">
-            <div class="search-box" style="max-width: 100%;">
-              <i class="fa-solid fa-magnifying-glass"></i>
-              <input type="text" id="search-food-input" placeholder="Cerca pizza, carne, antipasto o ingrediente..." oninput="filterFoodList()">
-            </div>
+            <i class="fa-solid fa-magnifying-glass search-icon"></i>
+            <input type="text" id="search-food-input" placeholder="Cerca pizza, carne, antipasto, ingrediente o tag..." oninput="filterFoodList()">
+            <i class="fa-solid fa-xmark clear-icon" id="clear-search-btn" onclick="clearFoodSearch()"></i>
           </div>
 
           <!-- Filtri Categorie Cibo (Pills Orizzontali) -->
           <div class="food-categories-pills" id="food-categories-pills">
-            <!-- Generato dinamicamente con le sole categorie CIBO -->
+            <!-- Categorie generate dinamicamente -->
           </div>
 
-          <!-- Elenco Piatti Raggruppati -->
+          <!-- Elenco Piatti con Foto e Stile identico a menu.html -->
           <div id="food-items-container">
             <!-- Piatti renderizzati da JavaScript -->
           </div>
@@ -1004,15 +1190,15 @@
             <div class="cart-items-list" id="cart-items-list">
               <div class="cart-empty-msg">
                 <i class="fa-solid fa-utensils" style="font-size: 2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
-                Nessun piatto ancora aggiunto.<br>Seleziona i piatti dal menu a sinistra.
+                Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI</strong> o usa <strong>+</strong> e <strong>-</strong> sui piatti a sinistra.
               </div>
             </div>
           </div>
 
-          <!-- Footer Carrello con Note e Salvataggio -->
+          <!-- Footer Carrello con Note per Cucina e Salvataggio -->
           <div class="cart-footer">
-            <label for="order-notes" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">Note Cucina (opzionale):</label>
-            <textarea id="order-notes" class="order-notes-input" rows="2" placeholder="Es. Senza cipolla sul panino, cottura carne al sangue, pizze servite insieme..."></textarea>
+            <label for="order-notes" style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 5px; font-weight: 700;">Note Cucina (opzionale):</label>
+            <textarea id="order-notes" class="order-notes-input" rows="2" placeholder="Es. Cottura bistecca media, senza cipolla sul panino, servire prima antipasti..."></textarea>
 
             <div class="cart-total-row">
               <span>Totale Cibo:</span>
@@ -1036,25 +1222,28 @@
     <span id="toast-text">Ordinazione salvata con successo!</span>
   </div>
 
-  <!-- File di Configurazione Menu -->
+  <!-- Configurazione Menu Reale -->
   <script src="js/config.js"></script>
 
   <script>
     /**
-     * GESTIONE COMANDE TAVOLI DELLA SERATA (PERSONALE SALA)
-     * - Mostra solo i tavoli della serata odierna
-     * - Rosso: Da servire / ordinazione da prendere
-     * - Grigio: Ordinazione già presa
-     * - Popup menu cibo completo con categorie e pulsanti + e -
-     * - Salvataggio locale e predisposizione per sincronizzazione remota
+     * OL3 RISTORANTE PIZZERIA - SISTEMA COMANDE PERSONALE SALA
+     * - Collegamento in tempo reale al Foglio Google delle Prenotazioni (GVIZ + Apps Script)
+     * - Filtro stretto sui tavoli della SERATA ODIERNA
+     * - Switch 1° Turno (20:00) e 2° Turno (21:30)
+     * - Rosso: Tavoli da servire (presa comanda)
+     * - Grigio: Tavoli con ordinazione già presa
+     * - Visualizzazione menu identica a menu.html (foto, descrizione, badge, prezzi)
+     * - Ricerca istantanea su tavoli e su piatti del menu
+     * - Pulsante Aggiungi e Stepper + e -
      */
 
     const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
     const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
     const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec';
 
-    // Data odierna formato YYYY-MM-DD
-    function getTodayIso() {
+    // Riconoscimento data odierna formato YYYY-MM-DD
+    function getLocalTodayIso() {
       const d = new Date();
       const y = d.getFullYear();
       const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -1062,65 +1251,107 @@
       return `${y}-${m}-${day}`;
     }
 
-    const TODAY_ISO = getTodayIso();
-    const STORAGE_ORDERS_KEY = `ol3_comande_${TODAY_ISO}`;
+    const TODAY_ISO = getLocalTodayIso();
+    const STORAGE_KEY_PREFIX = `ol3_comande_${TODAY_ISO}`;
 
-    // Stato dell'applicazione
-    let eveningTables = [];
-    let savedOrders = {}; // key: tableKey (es. "T04"), value: order object
-    let currentActiveTable = null; // tavolo attualmente aperto nel popup
-    let currentOrderItems = {}; // key: dishName, value: { name, price, priceNum, qty, category }
+    // Parsing date flessibile (GVIZ Date, ISO, Italiano)
+    function toIso(d) {
+      if (!d) return '';
+      const s = String(d).trim();
+      const mGviz = s.match(/Date\s*\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+      if (mGviz) {
+        const y = mGviz[1];
+        const m = String(parseInt(mGviz[2], 10) + 1).padStart(2, '0');
+        const day = String(parseInt(mGviz[3], 10)).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+      }
+      const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (mIso) return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
+      const mIt = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+      if (mIt) return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
+      return s;
+    }
+
+    // Identificatori turni
+    function isTurno1(tStr) {
+      if (!tStr) return false;
+      const s = String(tStr).toLowerCase().trim();
+      if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return false;
+      return s.includes('1°') || s.includes('primo') || s.includes('20:00') || s.includes('1');
+    }
+
+    function isTurno2(tStr) {
+      if (!tStr) return false;
+      const s = String(tStr).toLowerCase().trim();
+      if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return true;
+      if (s.includes('21:30') && !s.includes('20:00')) return true;
+      return false;
+    }
+
+    // Stato applicazione
+    let allRawBookings = [];
+    let currentShift = '20:00'; // '20:00', '21:30', 'all'
     let currentFilter = 'all'; // 'all', 'da-servire', 'presa'
+    let shiftTables = [];
+    let savedOrders = {}; // registry comande per la serata odierna
+    let currentActiveTable = null;
+    let currentOrderItems = {};
     let selectedFoodCategory = 'all';
 
-    // Inizializzazione al caricamento
+    // Categorie di CIBO (escluse bevande)
+    const FOOD_CATEGORY_IDS = [
+      'pizze-classiche',
+      'pizze-ol3',
+      'carni',
+      'panini',
+      'primi',
+      'fritti-antipasti',
+      'contorni'
+    ];
+
     document.addEventListener('DOMContentLoaded', () => {
-      initDateDisplay();
-      loadSavedOrders();
-      loadEveningTables();
+      initDateHeader();
+      loadStoredOrders();
       initFoodCategories();
+      loadEveningTables();
     });
 
-    // 1. Data e orario serata
-    function initDateDisplay() {
+    // 1. Header Data Serata Odierna
+    function initDateHeader() {
       const el = document.getElementById('current-shift-date-text');
       const now = new Date();
       const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
       const dateStr = now.toLocaleDateString('it-IT', options);
       const capDate = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
       if (el) {
-        el.innerHTML = `<strong>${capDate}</strong> • Turno Serale 19:30 - 23:30`;
+        el.innerHTML = `<strong>${capDate}</strong> • Prenotazioni collegate dal Foglio Google`;
       }
     }
 
-    // 2. Caricamento ordini salvati per oggi dal LocalStorage
-    function loadSavedOrders() {
+    // 2. Lettura / Scrittura Comande in LocalStorage
+    function loadStoredOrders() {
       try {
-        const raw = localStorage.getItem(STORAGE_ORDERS_KEY);
-        if (raw) {
-          savedOrders = JSON.parse(raw);
-        } else {
-          savedOrders = {};
-        }
+        const raw = localStorage.getItem(STORAGE_KEY_PREFIX);
+        savedOrders = raw ? JSON.parse(raw) : {};
       } catch (e) {
-        console.warn('Errore lettura ordini da localStorage:', e);
         savedOrders = {};
       }
     }
 
-    function persistSavedOrders() {
+    function persistStoredOrders() {
       try {
-        localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(savedOrders));
-      } catch (e) {
-        console.error('Errore salvataggio comande su localStorage:', e);
-      }
+        localStorage.setItem(STORAGE_KEY_PREFIX, JSON.stringify(savedOrders));
+      } catch (e) {}
     }
 
-    // 3. Caricamento Tavoli della Serata Odierna
+    // 3. Connessione al Foglio Google (GVIZ + Apps Script)
     async function loadEveningTables(showToast = false) {
-      let bookings = [];
+      const syncEl = document.getElementById('sheet-sync-indicator');
+      if (syncEl) syncEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google...';
 
-      // Canale 1: GVIZ da Google Sheet
+      let loaded = [];
+
+      // Canale 1: GVIZ
       try {
         const res = await fetch(GVIZ_URL);
         const txt = await res.text();
@@ -1135,66 +1366,52 @@
               const id = String(val(0));
               if (!id || id.toLowerCase().includes('id')) return;
               
-              const rawDate = String(val(4) || '');
-              let isoDate = '';
-              if (rawDate.includes('/')) {
-                const parts = rawDate.split('/');
-                if (parts.length === 3) isoDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-              } else if (rawDate.includes('-')) {
-                isoDate = rawDate.split('T')[0];
-              }
+              const rawDate = val(4);
+              const dateIso = toIso(rawDate);
+              const status = String(val(8) || 'Confermata');
 
-              // FILTRO STRETTO: Solo prenotazioni della serata odierna!
-              if (isoDate === TODAY_ISO) {
-                const status = String(val(8) || 'Confermata');
-                if (!status.toLowerCase().includes('annull')) {
-                  bookings.push({
-                    id: id,
-                    name: String(val(2) || 'Cliente Serata'),
-                    phone: String(val(3) || ''),
-                    date: isoDate,
-                    time: String(val(5) || '20:30'),
-                    guests: parseInt(val(6), 10) || 2,
-                    tablesCount: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
-                    status: status,
-                    notes: String(val(9) || '')
-                  });
-                }
+              // Filtra solo prenotazioni attive per oggi
+              if (dateIso === TODAY_ISO && !status.toLowerCase().includes('annull')) {
+                loaded.push({
+                  id: id,
+                  created_at: String(val(1)),
+                  name: String(val(2) || 'Ospite'),
+                  phone: String(val(3)),
+                  date: dateIso,
+                  time: String(val(5) || '20:00'),
+                  guests: parseInt(val(6), 10) || 2,
+                  tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
+                  status: status,
+                  notes: String(val(9) || '')
+                });
               }
             });
           }
         }
       } catch (e) {
-        console.warn('GVIZ load failed, tentando Apps Script o cache:', e);
+        console.warn('GVIZ load fallback:', e);
       }
 
-      // Canale 2: Apps Script Web App (se GVIZ vuoto)
-      if (bookings.length === 0) {
+      // Canale 2: Apps Script Web App
+      if (loaded.length === 0) {
         try {
           const resp = await fetch(APPS_SCRIPT_URL);
           const res = await resp.json();
           if (res && res.status === 'success' && Array.isArray(res.data)) {
             res.data.forEach(b => {
               if (!b || !b.id) return;
-              let isoDate = '';
-              const rawDate = String(b.date || '');
-              if (rawDate.includes('/')) {
-                const parts = rawDate.split('/');
-                if (parts.length === 3) isoDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
-              } else if (rawDate.includes('-')) {
-                isoDate = rawDate.split('T')[0];
-              }
-
-              if (isoDate === TODAY_ISO && !String(b.status || '').toLowerCase().includes('annull')) {
-                bookings.push({
+              const dateIso = toIso(b.date);
+              const status = b.status || 'Confermata';
+              if (dateIso === TODAY_ISO && !status.toLowerCase().includes('annull')) {
+                loaded.push({
                   id: String(b.id),
-                  name: b.name || 'Cliente Serata',
+                  name: b.name || 'Ospite',
                   phone: b.phone || '',
-                  date: isoDate,
-                  time: String(b.time || '20:30'),
+                  date: dateIso,
+                  time: String(b.time || '20:00'),
                   guests: parseInt(b.guests, 10) || 2,
-                  tablesCount: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
-                  status: b.status || 'Confermata',
+                  tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
+                  status: status,
                   notes: b.notes || ''
                 });
               }
@@ -1205,90 +1422,100 @@
         }
       }
 
-      // Costruzione dell'elenco tavoli per la serata
-      let tableCounter = 1;
-      const tablesList = [];
+      allRawBookings = loaded;
 
-      // Se ci sono prenotazioni reali per oggi dal foglio:
-      if (bookings.length > 0) {
-        bookings.forEach(b => {
-          const needed = b.tablesCount || Math.ceil(b.guests / 2);
-          const startNum = tableCounter;
-          const endNum = Math.min(50, tableCounter + needed - 1);
-          tableCounter = endNum + 1;
-
-          const tableKey = (needed === 1) ? `T${String(startNum).padStart(2, '0')}` : `T${String(startNum).padStart(2, '0')}-T${String(endNum).padStart(2, '0')}`;
-          const tableLabel = (needed === 1) ? `Tavolo ${startNum}` : `Tavoli Uniti ${startNum}-${endNum}`;
-
-          tablesList.push({
-            tableKey: tableKey,
-            tableNum: startNum,
-            tableLabel: tableLabel,
-            customerName: b.name,
-            phone: b.phone,
-            time: b.time,
-            guests: b.guests,
-            tablesCount: needed,
-            isWalkin: false,
-            notes: b.notes
-          });
-        });
-      } else {
-        // Se per oggi non ci sono ancora prenotazioni online, precarichiamo i tavoli della sala
-        // o eventuali tavoli aperti localmente dal personale, così la pagina è subito utilizzabile!
-        const initialTables = [
-          { num: 1, name: "Famiglia De Santis", time: "20:30", guests: 4 },
-          { num: 2, name: "Tavolo Coppia (Prenotato)", time: "21:00", guests: 2 },
-          { num: 3, name: "Gruppo Amici", time: "21:30", guests: 6 },
-          { num: 4, name: "Tavolo Walk-in", time: "20:00", guests: 2 },
-          { num: 5, name: "Tavolo Sala Centrale", time: "20:45", guests: 4 },
-          { num: 6, name: "Tavolo Veranda", time: "21:15", guests: 3 }
-        ];
-
-        initialTables.forEach(t => {
-          const needed = Math.ceil(t.guests / 2);
-          const tableKey = `T${String(t.num).padStart(2, '0')}`;
-          tablesList.push({
-            tableKey: tableKey,
-            tableNum: t.num,
-            tableLabel: `Tavolo ${t.num}`,
-            customerName: t.name,
-            phone: "",
-            time: t.time,
-            guests: t.guests,
-            tablesCount: needed,
-            isWalkin: false,
-            notes: ""
-          });
-        });
+      if (syncEl) {
+        syncEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Connesso al Foglio (${allRawBookings.length} prenotazioni per oggi)`;
       }
 
-      // Aggiungiamo eventuali tavoli aggiuntivi aperti come Walk-in dal personale salvati in localStorage
-      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}`;
+      // Se non ci sono prenotazioni reali oggi, carica tavoli campione per simulazione e test immediato
+      if (allRawBookings.length === 0) {
+        allRawBookings = [
+          { id: 'sim1', name: 'Famiglia De Santis', phone: '3520389996', date: TODAY_ISO, time: '20:00 (1° Turno)', guests: 4, tables: 2, status: 'Confermata', notes: 'Tavolo veranda' },
+          { id: 'sim2', name: 'Marco & Laura', phone: '', date: TODAY_ISO, time: '20:00 (1° Turno)', guests: 2, tables: 1, status: 'Confermata', notes: '' },
+          { id: 'sim3', name: 'Tavolata Amici', phone: '', date: TODAY_ISO, time: '20:00 (1° Turno)', guests: 6, tables: 3, status: 'Confermata', notes: 'Compleanno' },
+          { id: 'sim4', name: 'Giuseppe Rossi', phone: '', date: TODAY_ISO, time: '21:30 (2° Turno)', guests: 4, tables: 2, status: 'Confermata', notes: '' },
+          { id: 'sim5', name: 'Coppia Gourmet', phone: '', date: TODAY_ISO, time: '21:30 (2° Turno)', guests: 2, tables: 1, status: 'Confermata', notes: 'Anniversario' }
+        ];
+      }
+
+      // Applica turno corrente e renderizza
+      applyShiftFilter();
+
+      if (showToast) {
+        showToastNotification(`Sincronizzazione completata! ${allRawBookings.length} prenotazioni odierne`);
+      }
+    }
+
+    // 4. Gestione Switch 1° e 2° Turno
+    function switchShift(shift) {
+      currentShift = shift;
+      document.getElementById('btn-shift-1').classList.toggle('active', shift === '20:00');
+      document.getElementById('btn-shift-2').classList.toggle('active', shift === '21:30');
+      document.getElementById('btn-shift-all').classList.toggle('active', shift === 'all');
+      applyShiftFilter();
+    }
+
+    function applyShiftFilter() {
+      // Filtra prenotazioni in base al turno selezionato
+      const filteredBookings = allRawBookings.filter(b => {
+        if (currentShift === '20:00') return isTurno1(b.time);
+        if (currentShift === '21:30') return isTurno2(b.time);
+        return true; // 'all'
+      });
+
+      // Assegna la numerazione tavoli progressiva (esattamente come in gestione-prenotazioni.html)
+      let nextTable = 1;
+      const tables = [];
+
+      filteredBookings.forEach((b, index) => {
+        const needed = b.tables || Math.ceil(b.guests / 2);
+        const startNum = nextTable;
+        const endNum = Math.min(50, nextTable + needed - 1);
+        nextTable = endNum + 1;
+
+        const shiftTag = isTurno1(b.time) ? '1° Turno (20:00)' : (isTurno2(b.time) ? '2° Turno (21:30)' : 'Turno Serale');
+        const shiftId = isTurno1(b.time) ? 'T1' : 'T2';
+        const tableLabel = (needed === 1) ? `Tavolo ${startNum}` : `Tavoli Uniti ${startNum}-${endNum}`;
+        const tableKey = `${shiftId}_T${String(startNum).padStart(2, '0')}`;
+
+        tables.push({
+          bookingId: b.id,
+          tableKey: tableKey,
+          tableNum: startNum,
+          tableLabel: tableLabel,
+          customerName: b.name,
+          phone: b.phone,
+          time: b.time,
+          shiftTag: shiftTag,
+          shiftId: shiftId,
+          guests: b.guests,
+          tablesCount: needed,
+          notes: b.notes,
+          isWalkin: false
+        });
+      });
+
+      // Aggiungi eventuali tavoli Walk-in aperti dal personale per questo turno
+      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}_${currentShift}`;
       try {
-        const extraRaw = localStorage.getItem(walkinKey);
-        if (extraRaw) {
-          const extraTables = JSON.parse(extraRaw);
-          extraTables.forEach(et => {
-            if (!tablesList.some(t => t.tableKey === et.tableKey)) {
-              tablesList.push(et);
+        const rawWalkins = localStorage.getItem(walkinKey);
+        if (rawWalkins) {
+          const walkins = JSON.parse(rawWalkins);
+          walkins.forEach(w => {
+            if (!tables.some(t => t.tableKey === w.tableKey)) {
+              tables.push(w);
             }
           });
         }
       } catch (e) {}
 
-      // Ordinamento per numero di tavolo
-      tablesList.sort((a, b) => a.tableNum - b.tableNum);
-
-      eveningTables = tablesList;
+      tables.sort((a, b) => a.tableNum - b.tableNum);
+      shiftTables = tables;
       renderTables();
-
-      if (showToast) {
-        showToastNotification(`Aggiornati ${eveningTables.length} tavoli per la serata`);
-      }
     }
 
-    // 4. Render dei Tavoli (Rosso = Da servire, Grigio = Presa)
+    // 5. Render dei Tavoli (Rosso = Da Servire, Grigio = Presa)
     function renderTables() {
       const grid = document.getElementById('tables-cards-grid');
       const searchVal = (document.getElementById('search-table-input')?.value || '').toLowerCase().trim();
@@ -1299,9 +1526,9 @@
       let countDaServire = 0;
       let countPresa = 0;
 
-      eveningTables.forEach(t => {
+      shiftTables.forEach(t => {
         const order = savedOrders[t.tableKey];
-        const isOrderTaken = (order && order.status === 'presa' && order.items && order.items.length > 0);
+        const isOrderTaken = (order && order.status === 'presa' && Array.isArray(order.items) && order.items.length > 0);
 
         if (isOrderTaken) {
           countPresa++;
@@ -1309,15 +1536,16 @@
           countDaServire++;
         }
 
-        // Filtro per stato tab
+        // Filtro stato
         if (currentFilter === 'da-servire' && isOrderTaken) return;
         if (currentFilter === 'presa' && !isOrderTaken) return;
 
-        // Filtro per testo ricerca
+        // Filtro ricerca
         if (searchVal) {
-          const matchNum = t.tableLabel.toLowerCase().includes(searchVal) || t.tableKey.toLowerCase().includes(searchVal);
+          const matchLabel = t.tableLabel.toLowerCase().includes(searchVal) || t.tableKey.toLowerCase().includes(searchVal);
           const matchName = t.customerName.toLowerCase().includes(searchVal);
-          if (!matchNum && !matchName) return;
+          const matchPhone = (t.phone || '').includes(searchVal);
+          if (!matchLabel && !matchName && !matchPhone) return;
         }
 
         // Creazione Card Tavolo
@@ -1325,7 +1553,6 @@
         card.className = `table-card ${isOrderTaken ? 'status-presa' : 'status-da-servire'}`;
         card.onclick = () => openOrderModal(t);
 
-        // Header della card
         let previewHtml = '';
         if (isOrderTaken) {
           const totalItems = order.items.reduce((sum, it) => sum + it.qty, 0);
@@ -1340,7 +1567,7 @@
           previewHtml = `
             <div class="order-preview-box">
               <div class="order-preview-header">
-                <span><i class="fa-solid fa-receipt"></i> ${totalItems} Portate inserite</span>
+                <span><i class="fa-solid fa-receipt"></i> ${totalItems} Portate Inserite</span>
                 <span>Tot: ${order.totalPrice}</span>
               </div>
               <ul>
@@ -1354,21 +1581,25 @@
         card.innerHTML = `
           <div>
             <div class="table-card-top">
-              <span class="table-num-title">${t.tableLabel}</span>
+              <div>
+                <span class="table-num-title">${t.tableLabel}</span>
+                <div><span class="table-shift-tag">${t.shiftTag}</span></div>
+              </div>
               <span class="status-pill">
                 ${isOrderTaken ? '<i class="fa-solid fa-circle-check"></i> ORDINAZIONE PRESA' : '<i class="fa-solid fa-bell"></i> DA SERVIRE'}
               </span>
             </div>
 
             <div class="table-customer-name">
-              <i class="fa-solid fa-user-tag" style="color: var(--accent-gold); font-size: 0.9rem;"></i>
+              <i class="fa-solid fa-user-tag" style="color: var(--accent-gold); font-size: 0.95rem;"></i>
               <span>${t.customerName}</span>
             </div>
 
             <div class="table-meta-details">
-              <span><i class="fa-solid fa-clock"></i> ${t.time || '19:30'}</span>
-              <span><i class="fa-solid fa-users"></i> ${t.guests} Coperti</span>
+              <span><i class="fa-solid fa-clock"></i> ${t.time}</span>
+              <span><i class="fa-solid fa-users"></i> ${t.guests} Persone</span>
               ${t.tablesCount > 1 ? `<span><i class="fa-solid fa-border-all"></i> ${t.tablesCount} Tavoli</span>` : ''}
+              ${t.notes ? `<span><i class="fa-solid fa-circle-info"></i> ${t.notes}</span>` : ''}
             </div>
 
             ${previewHtml}
@@ -1384,22 +1615,24 @@
         grid.appendChild(card);
       });
 
-      // Aggiorna contatori statistiche
-      document.getElementById('count-all').textContent = eveningTables.length;
+      // Aggiornamento contatori
+      document.getElementById('count-all').textContent = shiftTables.length;
       document.getElementById('count-da-servire').textContent = countDaServire;
       document.getElementById('count-presa').textContent = countPresa;
 
       if (grid.children.length === 0) {
         grid.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted);">
-            <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; margin-bottom: 12px; display: block;"></i>
-            Nessun tavolo corrisponde ai criteri di ricerca o al filtro selezionato.
+          <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted); background: #1e1a1c; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+            <i class="fa-solid fa-calendar-xmark" style="font-size: 2.8rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
+            Nessun tavolo trovato per questo turno o con i filtri impostati.<br>
+            <button class="btn-add-walkin" style="margin-top: 14px;" onclick="promptAddWalkinTable()">
+              <i class="fa-solid fa-plus"></i> Apri Tavolo Libero
+            </button>
           </div>
         `;
       }
     }
 
-    // 5. Filtri Tab
     function setTableFilter(filter) {
       currentFilter = filter;
       document.querySelectorAll('.stat-pill-btn').forEach(btn => btn.classList.remove('active'));
@@ -1409,25 +1642,26 @@
       renderTables();
     }
 
-    // 6. Apertura Rapida Tavolo Walk-in (clienti che entrano senza prenotazione)
+    // Apertura Tavolo Walk-in manuale
     function promptAddWalkinTable() {
-      const numStr = prompt("Inserisci il numero del tavolo libero da aprire per la serata (es. 7):");
+      const numStr = prompt("Inserisci il numero del tavolo libero (es. 8):");
       if (!numStr) return;
       const num = parseInt(numStr.replace(/\D/g, ''), 10);
       if (!num || num < 1 || num > 50) {
-        alert("Inserisci un numero di tavolo valido compreso tra 1 e 50.");
+        alert("Inserisci un numero compreso tra 1 e 50.");
         return;
       }
 
-      const tableKey = `T${String(num).padStart(2, '0')}`;
-      if (eveningTables.some(t => t.tableKey === tableKey)) {
-        alert(`Il Tavolo ${num} è già presente nella lista della serata! Cliccaci sopra per prendere l'ordinazione.`);
+      const shiftId = (currentShift === '21:30') ? 'T2' : 'T1';
+      const tableKey = `${shiftId}_T${String(num).padStart(2, '0')}`;
+      if (shiftTables.some(t => t.tableKey === tableKey)) {
+        alert(`Il Tavolo ${num} è già presente nel turno selezionato! Toccalo per prendere la comanda.`);
         return;
       }
 
       const guestsStr = prompt(`Quante persone si accomodano al Tavolo ${num}?`, "2");
       const guests = parseInt(guestsStr, 10) || 2;
-      const nameStr = prompt(`Nome o riferimento per il Tavolo ${num} (opzionale):`, `Walk-in T${num}`) || `Walk-in T${num}`;
+      const nameStr = prompt(`Nome o riferimento cliente:`, `Walk-in T${num}`) || `Walk-in T${num}`;
 
       const newTable = {
         tableKey: tableKey,
@@ -1435,43 +1669,33 @@
         tableLabel: `Tavolo ${num}`,
         customerName: nameStr,
         phone: "",
-        time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+        time: (currentShift === '21:30') ? '21:30 (2° Turno)' : '20:00 (1° Turno)',
+        shiftTag: (currentShift === '21:30') ? '2° Turno' : '1° Turno',
+        shiftId: shiftId,
         guests: guests,
         tablesCount: Math.ceil(guests / 2),
         isWalkin: true,
-        notes: "Aperto direttamente in sala"
+        notes: "Aperto in sala"
       };
 
-      eveningTables.push(newTable);
-      eveningTables.sort((a, b) => a.tableNum - b.tableNum);
+      shiftTables.push(newTable);
+      shiftTables.sort((a, b) => a.tableNum - b.tableNum);
 
-      // Salva in localStorage walk-in
-      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}`;
+      // Salva in localStorage
+      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}_${currentShift}`;
       try {
-        const extra = eveningTables.filter(t => t.isWalkin);
+        const extra = shiftTables.filter(t => t.isWalkin);
         localStorage.setItem(walkinKey, JSON.stringify(extra));
       } catch (e) {}
 
       renderTables();
-      showToastNotification(`Tavolo ${num} aperto per la serata!`);
-      // Apri subito il popup di presa comanda
+      showToastNotification(`Tavolo ${num} aggiunto!`);
       openOrderModal(newTable);
     }
 
     // ==========================================================================
-    // LOGICA POPUP PRESA ORDINAZIONI (SOLO CIBO)
+    // POPUP MODALE: PRESA ORDINAZIONE CIBO CON MENU UGUALE A MENU.HTML
     // ==========================================================================
-
-    // Categorie di CIBO (escluse bevande e cocktail)
-    const FOOD_CATEGORY_IDS = [
-      'pizze-classiche',
-      'pizze-ol3',
-      'carni',
-      'panini',
-      'primi',
-      'fritti-antipasti',
-      'contorni'
-    ];
 
     function initFoodCategories() {
       const container = document.getElementById('food-categories-pills');
@@ -1479,14 +1703,12 @@
 
       container.innerHTML = '';
 
-      // Tasto "Tutto il Cibo"
       const allPill = document.createElement('button');
       allPill.className = 'food-cat-pill active';
       allPill.textContent = 'Tutto il Cibo';
       allPill.onclick = () => selectCategory('all', allPill);
       container.appendChild(allPill);
 
-      // Categorie reali dal config.js
       window.SITE_CONFIG.menu.categories.forEach(cat => {
         if (!FOOD_CATEGORY_IDS.includes(cat.id)) return; // SOLO CIBO
 
@@ -1502,24 +1724,23 @@
       selectedFoodCategory = catId;
       document.querySelectorAll('.food-cat-pill').forEach(p => p.classList.remove('active'));
       if (btnEl) btnEl.classList.add('active');
-      filterFoodList();
+      renderFoodList();
     }
 
-    // Apertura Modal con numero tavolo automatico
+    // Apertura Modal
     function openOrderModal(tableObj) {
       currentActiveTable = tableObj;
       currentOrderItems = {};
 
-      // Imposta intestazione tavolo
       document.getElementById('modal-table-label').innerHTML = `
         <i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> 
         ${tableObj.tableLabel} • Ordinazione Cibo
       `;
       document.getElementById('modal-table-subtitle').textContent = `
-        Cliente: ${tableObj.customerName} (${tableObj.guests} persone) • Serata di Oggi
+        Cliente: ${tableObj.customerName} (${tableObj.guests} persone) • ${tableObj.shiftTag}
       `;
 
-      // Se il tavolo ha già un'ordinazione salvata, ricaricala per permettere modifiche o aggiunte!
+      // Ricarica ordinazione salvata se già presente
       const existing = savedOrders[tableObj.tableKey];
       if (existing && Array.isArray(existing.items)) {
         existing.items.forEach(it => {
@@ -1536,18 +1757,16 @@
         document.getElementById('order-notes').value = '';
       }
 
-      // Reset ricerca e categoria
-      document.getElementById('search-food-input').value = '';
+      // Reset ricerca e categorie
+      clearFoodSearch(false);
       selectedFoodCategory = 'all';
       document.querySelectorAll('.food-cat-pill').forEach((p, idx) => {
-        if (idx === 0) p.classList.add('active');
-        else p.classList.remove('active');
+        p.classList.toggle('active', idx === 0);
       });
 
       renderFoodList();
       updateCartDisplay();
 
-      // Mostra overlay
       document.getElementById('order-modal-overlay').classList.add('active');
       document.body.style.overflow = 'hidden';
     }
@@ -1559,53 +1778,54 @@
       currentOrderItems = {};
     }
 
-    // Render della lista dei piatti di CIBO con categorie
+    // Render dei piatti (identico alla grafica di menu.html)
     function renderFoodList() {
       const container = document.getElementById('food-items-container');
       const searchVal = (document.getElementById('search-food-input')?.value || '').toLowerCase().trim();
+      const clearBtn = document.getElementById('clear-search-btn');
       if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+
+      if (clearBtn) clearBtn.style.display = searchVal ? 'block' : 'none';
 
       container.innerHTML = '';
 
       const categories = window.SITE_CONFIG.menu.categories.filter(c => FOOD_CATEGORY_IDS.includes(c.id));
 
       categories.forEach(cat => {
-        // Filtro categoria selezionata
         if (selectedFoodCategory !== 'all' && cat.id !== selectedFoodCategory) return;
 
-        // Filtro piatti per ricerca
         let items = cat.items || [];
         if (searchVal) {
           items = items.filter(it => 
             it.name.toLowerCase().includes(searchVal) || 
-            (it.description && it.description.toLowerCase().includes(searchVal))
+            (it.description && it.description.toLowerCase().includes(searchVal)) ||
+            (Array.isArray(it.tags) && it.tags.some(t => t.toLowerCase().includes(searchVal)))
           );
         }
 
         if (items.length === 0) return;
 
-        const secDiv = document.createElement('div');
-        secDiv.className = 'food-category-section';
+        const groupDiv = document.createElement('div');
+        groupDiv.className = 'menu-category-group';
 
-        secDiv.innerHTML = `
-          <div class="food-category-heading">
+        groupDiv.innerHTML = `
+          <div class="category-title">
             <span>${cat.name}</span>
-            <span style="font-size: 0.8rem; font-family: var(--font-sans); color: var(--text-muted);">${items.length} portate</span>
+            <span style="font-size: 0.8rem; font-family: var(--font-sans); color: var(--text-muted); font-weight: 600;">${items.length} portate</span>
           </div>
-          <div class="food-items-grid"></div>
+          <div class="category-subtitle">${cat.subtitle || ''}</div>
+          <div class="modal-menu-grid"></div>
         `;
 
-        const gridDiv = secDiv.querySelector('.food-items-grid');
+        const gridDiv = groupDiv.querySelector('.modal-menu-grid');
 
         items.forEach(dish => {
           const currentQty = (currentOrderItems[dish.name] && currentOrderItems[dish.name].qty) ? currentOrderItems[dish.name].qty : 0;
           const priceNum = parseFloat(dish.price.replace('€', '').replace(',', '.').trim()) || 0;
 
-          const itemCard = document.createElement('div');
-          itemCard.className = `food-item-card ${currentQty > 0 ? 'has-qty' : ''}`;
-          itemCard.id = `food-card-${dish.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '')}`;
+          const card = document.createElement('div');
+          card.className = `menu-card-item ${currentQty > 0 ? 'has-qty' : ''}`;
 
-          // Controlli azione: o pulsante Aggiungi, o stepper con + e -
           let actionHtml = '';
           if (currentQty === 0) {
             actionHtml = `
@@ -1616,37 +1836,56 @@
           } else {
             actionHtml = `
               <div class="qty-stepper">
-                <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', -1)" title="Rimuovi uno">−</button>
+                <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', -1)" title="Diminuisci">−</button>
                 <span class="stepper-value">${currentQty}</span>
-                <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)" title="Aggiungi un altro">+</button>
+                <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)" title="Aggiungi">+</button>
               </div>
             `;
           }
 
-          itemCard.innerHTML = `
-            <div>
-              <div class="food-item-header">
-                <span class="food-item-title">${dish.name}</span>
-                <span class="food-item-price">${dish.price}</span>
+          const tagsHtml = (Array.isArray(dish.tags) && dish.tags.length > 0)
+            ? `<div class="menu-tags-list">${dish.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>`
+            : '';
+
+          const thumbHtml = dish.image 
+            ? `<div class="menu-card-thumb-col"><img src="${dish.image}" alt="${dish.name}" loading="lazy"></div>` 
+            : '';
+
+          card.innerHTML = `
+            <div class="menu-card-main-content">
+              <div class="menu-card-info-col">
+                <div class="menu-item-header">
+                  <h4 class="menu-item-name">${dish.name}</h4>
+                  <span class="menu-item-price">${dish.price}</span>
+                </div>
+                <p class="menu-item-desc">${dish.description || ''}</p>
+                ${tagsHtml}
               </div>
-              <p class="food-item-desc">${dish.description || ''}</p>
+              ${thumbHtml}
             </div>
-            <div class="food-action-row">
+
+            <div class="card-footer-action">
+              <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">
+                ${currentQty > 0 ? `Selezionati: <strong style="color: var(--accent-gold);">${currentQty}</strong>` : ''}
+              </span>
               ${actionHtml}
             </div>
           `;
 
-          gridDiv.appendChild(itemCard);
+          gridDiv.appendChild(card);
         });
 
-        container.appendChild(secDiv);
+        container.appendChild(groupDiv);
       });
 
       if (container.children.length === 0) {
         container.innerHTML = `
-          <div style="text-align: center; padding: 40px 10px; color: var(--text-muted);">
-            <i class="fa-solid fa-magnifying-glass" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
-            Nessun piatto trovato per "<strong>${searchVal}</strong>".
+          <div style="text-align: center; padding: 45px 12px; color: var(--text-muted); background: #252022; border-radius: 12px;">
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 2.2rem; margin-bottom: 10px; display: block; color: var(--accent-gold);"></i>
+            Nessun piatto o pizza corrisponde alla ricerca "<strong>${searchVal}</strong>".
+            <div style="margin-top: 12px;">
+              <button class="food-cat-pill" onclick="clearFoodSearch()">Azzera ricerca</button>
+            </div>
           </div>
         `;
       }
@@ -1656,7 +1895,15 @@
       renderFoodList();
     }
 
-    // Modifica quantità con tasto aggiungi e tasti + e -
+    function clearFoodSearch(reRender = true) {
+      const input = document.getElementById('search-food-input');
+      if (input) input.value = '';
+      const clearBtn = document.getElementById('clear-search-btn');
+      if (clearBtn) clearBtn.style.display = 'none';
+      if (reRender) renderFoodList();
+    }
+
+    // Modifica quantità cibo
     function changeFoodQty(dishName, priceStr, priceNum, category, delta) {
       if (!currentOrderItems[dishName]) {
         currentOrderItems[dishName] = {
@@ -1721,13 +1968,13 @@
       }
     }
 
-    // 7. Salvataggio dell'ordinazione presa (Passaggio Tavolo da ROSSO a GRIGIO)
+    // 7. Salvataggio Ordinazione: Il tavolo passa da ROSSO a GRIGIO!
     function saveCurrentOrder() {
       if (!currentActiveTable) return;
 
       const items = Object.values(currentOrderItems);
       if (items.length === 0) {
-        alert("Aggiungi almeno un piatto prima di salvare la comanda!");
+        alert("Aggiungi almeno una portata prima di salvare la comanda!");
         return;
       }
 
@@ -1735,11 +1982,14 @@
       const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
       const notesVal = document.getElementById('order-notes')?.value.trim() || '';
 
-      const orderData = {
+      const orderRecord = {
+        bookingId: currentActiveTable.bookingId || '',
         tableKey: currentActiveTable.tableKey,
         tableNum: currentActiveTable.tableNum,
         tableLabel: currentActiveTable.tableLabel,
         customerName: currentActiveTable.customerName,
+        shiftTag: currentActiveTable.shiftTag,
+        shiftId: currentActiveTable.shiftId,
         guests: currentActiveTable.guests,
         timeTaken: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
         date: TODAY_ISO,
@@ -1751,21 +2001,29 @@
         status: 'presa' // Segna come presa (diventa GRIGIO)
       };
 
-      // Salva nel dizionario locale
-      savedOrders[currentActiveTable.tableKey] = orderData;
-      persistSavedOrders();
+      savedOrders[currentActiveTable.tableKey] = orderRecord;
+      persistStoredOrders();
 
-      // Feedback visivo
       showToastNotification(`Comanda salvata per ${currentActiveTable.tableLabel} (${totalQty} portate)`);
-
-      // Chiudi il popup
       closeOrderModal();
-
-      // Ridisegna i tavoli: il tavolo passa immediatamente da ROSSO a GRIGIO!
       renderTables();
     }
 
-    // Toast notifica
+    // 8. Consultazione Menu Completo per Personale (Senza tavolo selezionato)
+    function openMenuConsultationModal() {
+      const dummyTable = {
+        tableKey: 'CONSULTAZIONE',
+        tableNum: 0,
+        tableLabel: 'Consulta Menu Ristorante',
+        customerName: 'Visualizzazione Personale',
+        shiftTag: 'Menu Ufficiale OL3',
+        shiftId: '',
+        guests: 0
+      };
+      openOrderModal(dummyTable);
+    }
+
+    // Helper Toast
     function showToastNotification(text) {
       const toast = document.getElementById('toast-msg');
       const txtEl = document.getElementById('toast-text');
@@ -1775,10 +2033,9 @@
       toast.classList.add('show');
       setTimeout(() => {
         toast.classList.remove('show');
-      }, 3200);
+      }, 3400);
     }
 
-    // Helper per escape virgolette e caratteri speciali
     function escapeHtml(str) {
       if (!str) return '';
       return String(str).replace(/'/g, "\'");
