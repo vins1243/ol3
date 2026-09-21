@@ -1423,8 +1423,9 @@
           }
 
           const payCol = String(b.paymentStatus || '').trim().toLowerCase();
-          let isPaid = payCol.includes('saldat') || payCol.includes('pagat') || (b.orderStatus && b.orderStatus.toLowerCase().includes('pagat'));
-          let isTaken = hasItems || (b.orderStatus && (b.orderStatus.toLowerCase().includes('prenotat') || b.orderStatus.toLowerCase().includes('ordinat') || b.orderStatus.toLowerCase().includes('pres')));
+          const orderCol = String(b.orderStatus || '').trim().toLowerCase();
+          let isPaid = payCol.includes('saldat') || payCol.includes('pagat') || orderCol.includes('saldat') || orderCol.includes('pagat');
+          let isTaken = hasItems || orderCol.includes('prenotat') || orderCol.includes('ordinat') || orderCol.includes('pres') || isPaid;
           let paymentStatus = isPaid ? 'Saldato' : (isTaken && hasItems ? 'Da Saldare' : '');
 
           tables.push({
@@ -1799,26 +1800,30 @@
         if (!table) return;
 
         const newPayStatus = markPaid ? 'Saldato' : 'Da Saldare';
+        const newOrderStatus = markPaid ? 'Saldato' : 'Prenotato';
+
         table.isPaid = markPaid;
         table.paymentStatus = newPayStatus;
+        table.orderStatus = newOrderStatus;
 
         showToast(markPaid ? `Conto saldato per ${table.tableLabel}!` : `Conto riaperto come Da Saldare per ${table.tableLabel}`);
         renderCassaCards(); // Aggiornamento visivo immediato a schermo
 
-        // Invia aggiornamento direttamente alla nuova Colonna M (Stato Pagamento) del Foglio 2
+        // Invia aggiornamento multi-canale (scrive sia su Colonna K 'Saldato' sia su Colonna M 'Saldato')
         await sendUpdateToAppsScript({
-          action: 'update_payment_status',
+          action: 'update_order',
           id: table.id,
           table: table.tableLabel,
+          name: table.customerName,
           date: currentDate,
+          status: newOrderStatus,
           payment_status: newPayStatus,
-          status: 'Prenotato',
           details: table.orderDetails
         });
 
         setTimeout(() => {
           syncFromGoogleSheet(false);
-        }, 1500);
+        }, 1200);
       }
 
       async function markActiveTablePaid() {
@@ -1839,14 +1844,19 @@
 
       // Connessione affidabile ad Apps Script
       async function sendUpdateToAppsScript(params) {
-        const endpoint = (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.googleSheetEndpoint)
-          ? window.SITE_CONFIG.googleSheetEndpoint
-          : APPS_SCRIPT_URL;
+        const endpoints = [
+          (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.googleSheetEndpoint) ? window.SITE_CONFIG.googleSheetEndpoint : '',
+          'https://script.google.com/macros/s/AKfycbywuk8Mgl7oeB8vrXjmsftYINLiRTpuRNToJYdur0TDXJTXAvJXA_9GfmGeuQuwT80h/exec',
+          'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec'
+        ].filter(Boolean);
+
+        const uniqueEndpoints = [...new Set(endpoints)];
 
         const qParams = new URLSearchParams({
           action: params.action || 'update_order',
           id: params.id || '',
           table: params.table || '',
+          name: params.name || '',
           date: params.date || currentDate,
           status: (params.status !== undefined) ? params.status : 'Prenotato',
           payment_status: params.payment_status || '',
@@ -1854,23 +1864,25 @@
           _ts: Date.now()
         }).toString();
 
-        try {
-          fetch(endpoint, {
-            method: 'POST',
-            mode: 'no-cors',
-            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-            body: JSON.stringify(params)
-          }).catch(() => {});
-        } catch(e) {}
+        uniqueEndpoints.forEach(ep => {
+          try {
+            fetch(ep, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify(params)
+            }).catch(() => {});
+          } catch(e) {}
 
-        try {
-          fetch(`${endpoint}?${qParams}`, { mode: 'no-cors' }).catch(() => {});
-        } catch(e) {}
+          try {
+            fetch(`${ep}?${qParams}`, { mode: 'no-cors' }).catch(() => {});
+          } catch(e) {}
 
-        try {
-          const beacon = new Image();
-          beacon.src = `${endpoint}?${qParams}`;
-        } catch(e) {}
+          try {
+            const beacon = new Image();
+            beacon.src = `${ep}?${qParams}`;
+          } catch(e) {}
+        });
       }
 
       // Esposizione funzioni per click HTML
