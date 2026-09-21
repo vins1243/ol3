@@ -338,6 +338,7 @@ function updateOrderStatus(params) {
           comandeSheet.getRange(i + 1, 13).setValue('Da Saldare');
         }
       }
+      SpreadsheetApp.flush();
       updated = true;
       break;
     }
@@ -516,29 +517,13 @@ function doPost(e) {
     const ss = getSpreadsheet();
     const bookSheet = getBookingsSheet(ss);
 
-    // 2. Aggiornamento stato prenotazione o cancellazione (sincronizza sia Foglio 1 sia Foglio 2)
+    // 2. Aggiornamento stato prenotazione (SOLO Foglio 1: Confermata / Annullata / Rifiutata)
     if (payload.action === "update_status") {
       const data = bookSheet.getDataRange().getValues();
       for (let i = 1; i < data.length; i++) {
         if (String(data[i][0]) === String(payload.id)) {
           bookSheet.getRange(i + 1, 9).setValue(payload.status);
-
-          // Allinea istantaneamente anche Foglio 2 (Comande) su Colonna K e Colonna M
-          try {
-            const comandeSheet = ensureComandeSheet(ss);
-            const cData = comandeSheet.getDataRange().getValues();
-            for (let j = 1; j < cData.length; j++) {
-              if (String(cData[j][0]) === String(payload.id)) {
-                if (payload.status === "Saldato") {
-                  comandeSheet.getRange(j + 1, 11).setValue("Saldato");
-                  comandeSheet.getRange(j + 1, 13).setValue("Saldato");
-                } else {
-                  comandeSheet.getRange(j + 1, 13).setValue("Da Saldare");
-                }
-              }
-            }
-          } catch(errSync) {}
-
+          SpreadsheetApp.flush();
           return ContentService.createTextOutput(JSON.stringify({ status: "success", updated: true })).setMimeType(ContentService.MimeType.JSON);
         }
       }

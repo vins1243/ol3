@@ -1350,9 +1350,6 @@
                 }
 
                 const statusSheet = String(val(8) || '').trim();
-                if (statusSheet.toLowerCase().includes('saldat')) {
-                  paymentStatus = 'Saldato';
-                }
 
                 loaded.push({
                   id: id,
@@ -1431,13 +1428,12 @@
 
           const payCol = String(b.paymentStatus || '').trim().toLowerCase();
           const orderCol = String(b.orderStatus || '').trim().toLowerCase();
-          const statusCol = String(b.status || '').trim().toLowerCase();
           
+          // Il saldo vive ESCLUSIVAMENTE nel Foglio 2 (Comande). Foglio 1 non viene mai consultato per i pagamenti.
           let isPaid = (localPaymentOverrides[b.id] === 'Saldato') ||
                        (localPaymentOverrides[b.id] !== 'Da Saldare' && (
                          payCol.includes('saldat') || payCol.includes('pagat') ||
-                         orderCol.includes('saldat') || orderCol.includes('pagat') ||
-                         statusCol.includes('saldat') || statusCol.includes('pagat')
+                         orderCol.includes('saldat') || orderCol.includes('pagat')
                        ));
 
           let isTaken = hasItems || orderCol.includes('prenotat') || orderCol.includes('ordinat') || orderCol.includes('pres') || isPaid;
@@ -1825,7 +1821,7 @@
         showToast(markPaid ? `Conto saldato per ${table.tableLabel}!` : `Conto riaperto per ${table.tableLabel}`);
         renderCassaCards(); // Aggiornamento visivo immediato a schermo
 
-        // 1. Aggiorna Foglio 2 Comande (Col K e Col M)
+        // Aggiorna ESCLUSIVAMENTE Foglio 2 Comande (Col K e Col M). FOGLIO 1 NON VIENE TOCCATO!
         await sendUpdateToAppsScript({
           action: 'update_order',
           id: table.id,
@@ -1835,13 +1831,6 @@
           status: newOrderStatus,
           payment_status: newPayStatus,
           details: table.orderDetails
-        });
-
-        // 2. Aggiorna anche Foglio 1 (Col I Stato) per massima ridondanza
-        await sendUpdateToAppsScript({
-          action: 'update_status',
-          id: table.id,
-          status: newOrderStatus
         });
 
         // Attesa di 3 secondi per consentire a Google Sheets di salvare prima del refresh
