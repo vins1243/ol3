@@ -2219,9 +2219,23 @@
                 const d = toIso(val(2));
                 const nm = String(val(6) || '').trim().toLowerCase();
 
-                comandeMap[id] = { status: st, details: det, table: tbl };
+                // Protezione anti-sovrascrittura: se abbiamo già dati validi, una riga vuota non li sovrascrive
+                if (!comandeMap[id] || det || st) {
+                  comandeMap[id] = {
+                    status: st || (comandeMap[id] ? comandeMap[id].status : ''),
+                    details: det || (comandeMap[id] ? comandeMap[id].details : ''),
+                    table: tbl || (comandeMap[id] ? comandeMap[id].table : '')
+                  };
+                }
                 if (d && nm) {
-                  comandeMap[`${d}_${nm}`] = { status: st, details: det, table: tbl };
+                  const k = `${d}_${nm}`;
+                  if (!comandeMap[k] || det || st) {
+                    comandeMap[k] = {
+                      status: st || (comandeMap[k] ? comandeMap[k].status : ''),
+                      details: det || (comandeMap[k] ? comandeMap[k].details : ''),
+                      table: tbl || (comandeMap[k] ? comandeMap[k].table : '')
+                    };
+                  }
                 }
               });
             }
@@ -2344,7 +2358,8 @@
         savedOrders = {};
         allBookings.forEach(b => {
           const st = String(b.orderStatus || '').toLowerCase();
-          if (st.includes('prenotat') || st.includes('ordinat') || st.includes('pres')) {
+          const det = String(b.orderDetails || '').trim();
+          if (det || st.includes('prenotat') || st.includes('ordinat') || st.includes('pres')) {
             const parsed = parseOrderDetails(b.orderDetails);
             savedOrders[b.id] = {
               status: 'presa',
@@ -2428,7 +2443,7 @@
         // Calcola i contatori complessivi per i filtri
         activeShiftTables.forEach(t => {
           const order = savedOrders[t.bookingId];
-          const isOrderTaken = (order && order.status === 'presa') ||
+          const isOrderTaken = (order && order.status === 'presa') || (t.orderDetails && t.orderDetails.trim().length > 0) ||
                                (t.orderStatus && (t.orderStatus.toLowerCase().includes('prenotat') || t.orderStatus.toLowerCase().includes('ordinat') || t.orderStatus.toLowerCase().includes('pres')));
           if (isOrderTaken) {
             countPresa++;
@@ -2440,7 +2455,7 @@
         // Filtra i tavoli in base al filtro selezionato e alla ricerca
         const filteredTables = activeShiftTables.filter(t => {
           const order = savedOrders[t.bookingId];
-          const isOrderTaken = (order && order.status === 'presa') ||
+          const isOrderTaken = (order && order.status === 'presa') || (t.orderDetails && t.orderDetails.trim().length > 0) ||
                                (t.orderStatus && (t.orderStatus.toLowerCase().includes('prenotat') || t.orderStatus.toLowerCase().includes('ordinat') || t.orderStatus.toLowerCase().includes('pres')));
 
           if (currentFilter === 'da-servire' && isOrderTaken) return false;
@@ -2478,7 +2493,7 @@
 
         filteredTables.forEach(t => {
           const order = savedOrders[t.bookingId];
-          const isOrderTaken = (order && order.status === 'presa') ||
+          const isOrderTaken = (order && order.status === 'presa') || (t.orderDetails && t.orderDetails.trim().length > 0) ||
                                (t.orderStatus && (t.orderStatus.toLowerCase().includes('prenotat') || t.orderStatus.toLowerCase().includes('ordinat') || t.orderStatus.toLowerCase().includes('pres')));
 
           // Se siamo nella vista 'Tutti', inserisci i divisori visivi di sezione

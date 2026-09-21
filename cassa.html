@@ -1279,9 +1279,24 @@
                 const d = toIso(val(2));
                 const nm = String(val(6) || '').trim().toLowerCase();
 
-                comandeMap[id] = { status: st, details: det, table: tbl, paymentStatus: paySt };
+                if (!comandeMap[id] || det || st || paySt) {
+                  comandeMap[id] = {
+                    status: st || (comandeMap[id] ? comandeMap[id].status : ''),
+                    details: det || (comandeMap[id] ? comandeMap[id].details : ''),
+                    table: tbl || (comandeMap[id] ? comandeMap[id].table : ''),
+                    paymentStatus: paySt || (comandeMap[id] ? comandeMap[id].paymentStatus : '')
+                  };
+                }
                 if (d && nm) {
-                  comandeMap[`${d}_${nm}`] = { status: st, details: det, table: tbl, paymentStatus: paySt };
+                  const k = `${d}_${nm}`;
+                  if (!comandeMap[k] || det || st || paySt) {
+                    comandeMap[k] = {
+                      status: st || (comandeMap[k] ? comandeMap[k].status : ''),
+                      details: det || (comandeMap[k] ? comandeMap[k].details : ''),
+                      table: tbl || (comandeMap[k] ? comandeMap[k].table : ''),
+                      paymentStatus: paySt || (comandeMap[k] ? comandeMap[k].paymentStatus : '')
+                    };
+                  }
                 }
               });
             }

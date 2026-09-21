@@ -268,8 +268,10 @@ function updateOrderStatus(params) {
   const targetId = String(params.id || '').trim();
   const targetStatus = (params.status !== undefined) ? String(params.status).trim() : 'Prenotato';
   const targetDetails = String(params.details || '').trim();
+  const targetPaymentStatus = String(params.payment_status || params.paymentStatus || '').trim();
   const targetDate = normalizeDate(params.date);
   const targetTable = String(params.table || '').trim();
+  const targetName = String(params.name || '').trim().toLowerCase();
 
   const data = comandeSheet.getDataRange().getValues();
   let updated = false;
@@ -278,35 +280,36 @@ function updateOrderStatus(params) {
     const rowId = String(data[i][0]).trim();
     const rowDate = normalizeDate(data[i][2]);
     const rowTable = String(data[i][5]).trim();
+    const rowName = String(data[i][6] || '').trim().toLowerCase();
 
     const matchId = targetId && (rowId === targetId);
+    const matchName = targetDate && targetName && (rowDate === targetDate && rowName === targetName);
     const matchTable = targetDate && targetTable && (rowDate === targetDate && (rowTable.includes(targetTable) || targetTable.includes(rowTable)));
 
-    if (matchId || matchTable) {
-      // Col K: Stato Ordinazione (indice 11 in Apps Script 1-based)
+    if (matchId || matchName || matchTable) {
       if (params.status !== undefined) {
         comandeSheet.getRange(i + 1, 11).setValue(targetStatus);
       }
-      // Col L: Dettaglio Piatti Comanda (indice 12)
       if (targetDetails) {
         comandeSheet.getRange(i + 1, 12).setValue(targetDetails);
       }
-      // Col M: Stato Pagamento (indice 13) - 'Da Saldare' / 'Saldato'
-      const targetPayStatus = String(params.payment_status || params.paymentStatus || '').trim();
-      if (targetPayStatus) {
-        comandeSheet.getRange(i + 1, 13).setValue(targetPayStatus);
+      if (targetPaymentStatus) {
+        comandeSheet.getRange(i + 1, 13).setValue(targetPaymentStatus);
       } else if (targetStatus === 'Pagato' || targetStatus === 'Saldato') {
         comandeSheet.getRange(i + 1, 13).setValue('Saldato');
-      } else if (targetStatus === 'Prenotato' && !comandeSheet.getRange(i + 1, 13).getValue()) {
-        comandeSheet.getRange(i + 1, 13).setValue('Da Saldare');
+      } else if (targetStatus === 'Prenotato') {
+        const curM = String(comandeSheet.getRange(i + 1, 13).getValue() || '').trim();
+        if (!curM) {
+          comandeSheet.getRange(i + 1, 13).setValue('Da Saldare');
+        }
       }
       updated = true;
       break;
     }
   }
 
-  // Fallback: se la riga non esiste ancora in Comande, la inserisce per non perdere l'ordinazione
-  if (!updated && (targetId || (targetDate && targetTable))) {
+  // Inserimento solo se riga veramente non esistente
+  if (!updated && (targetId || (targetDate && (targetTable || targetName)))) {
     comandeSheet.appendRow([
       targetId || ('OL3_' + Date.now()),
       new Date().toLocaleString('it-IT'),
@@ -318,9 +321,9 @@ function updateOrderStatus(params) {
       params.phone || '',
       params.guests || '',
       '', // Note
-      targetStatus, // Col K: Stato Ordinazione
-      targetDetails, // Col L: Dettaglio Piatti Comanda
-      (String(params.payment_status || params.paymentStatus || '').trim()) || (targetStatus === 'Prenotato' ? 'Da Saldare' : '') // Col M: Stato Pagamento
+      targetStatus,
+      targetDetails,
+      targetPaymentStatus || (targetStatus === 'Prenotato' ? 'Da Saldare' : '')
     ]);
     updated = true;
   }
@@ -328,7 +331,8 @@ function updateOrderStatus(params) {
   return {
     status: updated ? "success" : "not_found",
     updated: updated,
-    order_status: targetStatus
+    order_status: targetStatus,
+    payment_status: targetPaymentStatus
   };
 }
 
