@@ -10,8 +10,8 @@
   <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=6">
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Comande & Ordinazioni Serata • Personale Sala | OL3 Ristorante Pizzeria</title>
-  <meta name="description" content="Interfaccia riservata al personale di sala per la gestione delle comande collegate in tempo reale al Foglio Google delle prenotazioni per 1° e 2° turno.">
+  <title>Comande & Ordinazioni Sala | OL3 Ristorante Pizzeria</title>
+  <meta name="description" content="Gestione comande personale di sala sincronizzata direttamente con il Foglio Google delle prenotazioni.">
 
   <!-- Font Google -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,7 +45,7 @@
       margin: 0;
     }
 
-    /* Barra Superiore Personale */
+    /* Navbar Personale */
     .staff-navbar {
       background: rgba(22, 19, 20, 0.98);
       border-bottom: 1px solid rgba(214, 175, 93, 0.3);
@@ -115,11 +115,11 @@
       color: #141213;
     }
 
-    /* Subheader Serata Odierna & Turni */
+    /* Subheader Data & Selettore Turno identico a gestione-prenotazioni */
     .shift-header {
       background: #1e1a1c;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 18px 28px;
+      padding: 16px 28px;
     }
     .shift-header-inner {
       max-width: 1400px;
@@ -141,54 +141,103 @@
     }
     .shift-info p {
       color: var(--text-muted);
-      font-size: 0.92rem;
+      font-size: 0.90rem;
       margin: 0;
     }
 
-    /* Tasti Switch Turno (1° e 2° Turno) */
-    .shift-switch-container {
+    /* Barra Filtri Data & Turni */
+    .controls-panel {
+      background: #252022;
+      border: 1.5px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 14px 22px;
+      max-width: 1400px;
+      margin: 18px auto 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Navigatore Data */
+    .date-control-group {
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+    .nav-date-btn {
+      background: #191617;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ffffff;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: all 0.2s ease;
+    }
+    .nav-date-btn:hover {
+      background: var(--accent-red);
+      color: #fff;
+      border-color: var(--accent-red);
+    }
+    .date-input-styled {
       background: #141213;
+      color: #ffffff;
+      border: 1.5px solid rgba(214, 175, 93, 0.35);
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color-scheme: dark;
+      outline: none;
+    }
+
+    /* Switch Turni (1° e 2° Turno) */
+    .shift-toggle-group {
+      display: flex;
+      gap: 6px;
+      background: #191617;
       padding: 4px;
-      border-radius: 10px;
+      border-radius: 8px;
       border: 1px solid rgba(214, 175, 93, 0.25);
     }
     .shift-btn {
       padding: 8px 18px;
-      border-radius: 7px;
+      border-radius: 6px;
       border: none;
       font-weight: 800;
       font-size: 0.88rem;
       cursor: pointer;
-      color: #bbb;
+      color: #b8b1a9;
       background: transparent;
       transition: all 0.2s ease;
       display: inline-flex;
       align-items: center;
-      gap: 7px;
+      gap: 6px;
     }
     .shift-btn.active {
-      background: linear-gradient(135deg, var(--accent-red), #b32a1e);
+      background: var(--accent-red);
       color: #fff;
-      box-shadow: 0 2px 10px rgba(209, 56, 43, 0.45);
+      box-shadow: 0 2px 10px rgba(209, 56, 43, 0.4);
     }
     .shift-btn:hover:not(.active) {
       color: #fff;
       background: rgba(255, 255, 255, 0.08);
     }
 
-    /* Barra Controlli, Ricerca e Filtri Stato */
-    .controls-bar {
+    /* Barra Secondaria: Ricerca e Filtri Stato */
+    .subcontrols-bar {
       max-width: 1400px;
-      margin: 20px auto 12px;
-      padding: 0 28px;
+      margin: 10px auto 14px;
+      padding: 0 4px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 14px;
+      gap: 12px;
     }
     .search-tables-wrapper {
       position: relative;
@@ -198,14 +247,14 @@
     }
     .search-tables-wrapper input {
       width: 100%;
-      background: #242022;
+      background: #252022;
       border: 1px solid rgba(255, 255, 255, 0.14);
       color: #fff;
-      padding: 11px 16px 11px 40px;
+      padding: 10px 14px 10px 38px;
       border-radius: 8px;
-      font-size: 0.92rem;
+      font-size: 0.90rem;
       outline: none;
-      transition: border-color 0.2s ease;
+      box-sizing: border-box;
     }
     .search-tables-wrapper input:focus {
       border-color: var(--accent-gold);
@@ -264,15 +313,11 @@
       font-size: 0.8rem;
     }
 
-    .action-tools-group {
-      display: flex;
-      gap: 10px;
-    }
-    .btn-action-tool {
+    .btn-refresh-sync {
       background: #252123;
-      border: 1px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      padding: 10px 14px;
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      padding: 9px 15px;
       border-radius: 8px;
       cursor: pointer;
       font-size: 0.88rem;
@@ -282,27 +327,9 @@
       gap: 6px;
       transition: all 0.2s ease;
     }
-    .btn-action-tool:hover {
-      border-color: var(--accent-gold);
-      color: var(--accent-gold);
-    }
-    .btn-add-walkin {
-      background: linear-gradient(135deg, #d6af5d, #b88d3d);
-      color: #1a1718;
-      font-weight: 800;
-      border: none;
-      padding: 10px 16px;
-      border-radius: 8px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.88rem;
-      transition: all 0.2s ease;
-    }
-    .btn-add-walkin:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(214, 175, 93, 0.35);
+    .btn-refresh-sync:hover {
+      background: var(--accent-gold);
+      color: #171415;
     }
 
     /* Griglia Tavoli Serata */
@@ -403,9 +430,9 @@
       margin: 0;
     }
     .table-shift-tag {
-      font-size: 0.74rem;
+      font-size: 0.75rem;
       font-weight: 800;
-      padding: 2px 7px;
+      padding: 2px 8px;
       border-radius: 4px;
       background: rgba(255, 255, 255, 0.1);
       color: var(--accent-gold);
@@ -413,7 +440,7 @@
       margin-top: 3px;
     }
     .table-customer-name {
-      font-size: 1.15rem;
+      font-size: 1.18rem;
       font-weight: 800;
       color: #ffffff;
       margin: 6px 0 6px;
@@ -500,7 +527,7 @@
     }
 
     /* ==========================================================================
-       POPUP MODALE: PRESA ORDINAZIONI CON VISUALIZZAZIONE MENU COMPLETA
+       POPUP MODALE: PRESA ORDINAZIONE CIBO CON VISUALIZZAZIONE MENU IDENTICA A MENU.HTML
        ========================================================================== */
     .modal-overlay {
       position: fixed;
@@ -525,7 +552,7 @@
       border: 2px solid var(--accent-gold);
       border-radius: 16px;
       width: 100%;
-      max-width: 1220px;
+      max-width: 1240px;
       max-height: 94vh;
       display: flex;
       flex-direction: column;
@@ -538,7 +565,6 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* Header del Modal */
     .modal-head {
       background: #171415;
       padding: 16px 24px;
@@ -580,7 +606,7 @@
       background: var(--order-red);
     }
 
-    /* Layout a 2 Colonne: Menu identico a menu.html a sinistra, Comanda a destra */
+    /* Layout a 2 Colonne */
     .modal-body-layout {
       display: grid;
       grid-template-columns: 1fr 390px;
@@ -594,7 +620,7 @@
       }
     }
 
-    /* Colonna Sinistra: Menu (Strutturato esattamente come menu.html) */
+    /* Colonna Menu (come in menu.html) */
     .menu-selection-col {
       display: flex;
       flex-direction: column;
@@ -604,7 +630,6 @@
       max-height: calc(94vh - 150px);
     }
 
-    /* Barra di Ricerca Piatto */
     .modal-search-wrapper {
       position: relative;
       margin-bottom: 14px;
@@ -619,6 +644,7 @@
       font-size: 0.95rem;
       outline: none;
       transition: border-color 0.2s ease;
+      box-sizing: border-box;
     }
     .modal-search-wrapper input:focus {
       border-color: var(--accent-gold);
@@ -640,7 +666,7 @@
       display: none;
     }
 
-    /* Barra Categorie Cibo (Pills identiche ai bottoni del menu) */
+    /* Filtri Categorie */
     .food-categories-pills {
       display: flex;
       gap: 8px;
@@ -668,7 +694,7 @@
       border-color: var(--accent-gold);
     }
 
-    /* Sezioni Categoria */
+    /* Sezione Gruppo Categoria */
     .menu-category-group {
       margin-bottom: 28px;
     }
@@ -690,14 +716,13 @@
       font-style: italic;
     }
 
-    /* Griglia Piatti (identica a .menu-items-grid del sito) */
     .modal-menu-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
       gap: 14px;
     }
 
-    /* Card Piatto (Modellata su .menu-card del sito reale) */
+    /* Card Piatto identica a menu.html */
     .menu-card-item {
       display: flex;
       flex-direction: column;
@@ -727,8 +752,8 @@
       flex: 1;
     }
     .menu-card-thumb-col {
-      width: 72px;
-      height: 72px;
+      width: 76px;
+      height: 76px;
       border-radius: 8px;
       overflow: hidden;
       flex-shrink: 0;
@@ -914,7 +939,7 @@
       font-size: 0.82rem;
     }
 
-    /* Footer Carrello con Note e Salvataggio */
+    /* Footer Carrello */
     .cart-footer {
       border-top: 1px solid rgba(255, 255, 255, 0.12);
       padding-top: 14px;
@@ -1002,15 +1027,14 @@
       transform: translateX(-50%) translateY(0);
     }
 
-    /* Banner Sincronizzazione Google Sheets */
     .sheet-sync-status {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.8rem;
+      font-size: 0.82rem;
       color: var(--accent-gold);
       background: rgba(214, 175, 93, 0.1);
-      padding: 3px 10px;
+      padding: 4px 12px;
       border-radius: 14px;
       border: 1px solid rgba(214, 175, 93, 0.25);
     }
@@ -1022,11 +1046,15 @@
       .shift-header {
         padding: 14px 16px;
       }
-      .controls-bar {
-        padding: 0 16px;
+      .controls-panel {
+        padding: 12px 14px;
+        margin: 12px 14px 10px;
+      }
+      .subcontrols-bar {
+        padding: 0 14px;
       }
       .tables-container {
-        padding: 0 16px;
+        padding: 0 14px;
       }
       .order-modal-window {
         max-height: 98vh;
@@ -1065,70 +1093,72 @@
     </div>
   </header>
 
-  <!-- Intestazione Serata Odierna & Switch Turno (1° e 2° Turno) -->
+  <!-- Intestazione Data & Info Sincronizzazione -->
   <section class="shift-header">
     <div class="shift-header-inner">
       <div class="shift-info">
-        <h1><i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> Comande Tavoli Serata</h1>
-        <p id="current-shift-date-text">Caricamento data odierna...</p>
+        <h1><i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> Comande & Ordinazioni Sala</h1>
+        <p id="current-shift-date-text">Caricamento data...</p>
       </div>
 
-      <!-- Tasti Divisione 1° e 2° Turno -->
-      <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-        <div class="shift-switch-container">
-          <button class="shift-btn active" id="btn-shift-1" onclick="switchShift('20:00')">
-            <i class="fa-solid fa-clock"></i> 1° Turno (20:00)
-          </button>
-          <button class="shift-btn" id="btn-shift-2" onclick="switchShift('21:30')">
-            <i class="fa-solid fa-clock"></i> 2° Turno (21:30)
-          </button>
-          <button class="shift-btn" id="btn-shift-all" onclick="switchShift('all')">
-            <i class="fa-solid fa-list-check"></i> Tutti i Turni
-          </button>
-        </div>
-
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
         <span class="sheet-sync-status" id="sheet-sync-indicator">
           <i class="fa-solid fa-circle-notch fa-spin"></i> Connessione Foglio Google...
         </span>
+        <button class="btn-refresh-sync" id="btn-sync-now" onclick="syncFromGoogleSheet(true)">
+          <i class="fa-solid fa-arrows-rotate"></i> Aggiorna dal Foglio
+        </button>
       </div>
     </div>
   </section>
 
-  <!-- Barra Controlli, Ricerca Tavolo e Filtri Stato -->
-  <div class="controls-bar">
-    <!-- Ricerca Tavoli -->
+  <!-- Pannello Selettore Data e Turno (Identico a gestione-prenotazioni.html) -->
+  <div class="controls-panel">
+    <!-- Selettore Data con frecce e tasto Oggi -->
+    <div class="date-control-group">
+      <button class="nav-date-btn" id="btn-prev-day" title="Giorno Precedente"><i class="fa-solid fa-chevron-left"></i></button>
+      <input type="date" id="admin-target-date" class="date-input-styled">
+      <button class="nav-date-btn" id="btn-next-day" title="Giorno Successivo"><i class="fa-solid fa-chevron-right"></i></button>
+      <button class="nav-date-btn" id="btn-today">Oggi</button>
+    </div>
+
+    <!-- Divisione 1° Turno (20:00) e 2° Turno (21:30) -->
+    <div class="shift-toggle-group">
+      <button class="shift-btn active" id="btn-turno-1">
+        <i class="fa-solid fa-clock"></i> 1° Turno (20:00 - 21:30)
+      </button>
+      <button class="shift-btn" id="btn-turno-2">
+        <i class="fa-solid fa-clock"></i> 2° Turno (dalle 21:30)
+      </button>
+      <button class="shift-btn" id="btn-turno-all">
+        <i class="fa-solid fa-list-check"></i> Tutti i Turni
+      </button>
+    </div>
+  </div>
+
+  <!-- Sottobarra: Ricerca e Filtri Stato (Tutti / Rosso Da Servire / Grigio Ordinazione Presa) -->
+  <div class="subcontrols-bar">
     <div class="search-tables-wrapper">
       <i class="fa-solid fa-magnifying-glass"></i>
       <input type="text" id="search-table-input" placeholder="Cerca tavolo (es. T01 o 1) o nome cliente..." oninput="renderTables()">
     </div>
 
-    <!-- Filtri Stato Tavolo -->
     <div class="filter-pills-row">
       <button class="stat-pill-btn active" id="filter-all-btn" onclick="setTableFilter('all')">
-        <span>Tutti nel Turno</span>
+        <span>Tutti i Tavoli</span>
         <span class="count-bubble" id="count-all">0</span>
       </button>
 
       <button class="stat-pill-btn pill-red" id="filter-da-servire-btn" onclick="setTableFilter('da-servire')">
         <i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i>
-        <span>Da Servire (Prendi Ordinazione)</span>
+        <span>Da Servire (Rosso)</span>
         <span class="count-bubble" id="count-da-servire">0</span>
       </button>
 
       <button class="stat-pill-btn pill-grey" id="filter-presa-btn" onclick="setTableFilter('presa')">
         <i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i>
-        <span>Ordinazione Presa</span>
+        <span>Ordinazione Presa (Grigio)</span>
         <span class="count-bubble" id="count-presa">0</span>
-      </button>
-    </div>
-
-    <!-- Azioni Rapide -->
-    <div class="action-tools-group">
-      <button class="btn-add-walkin" onclick="promptAddWalkinTable()">
-        <i class="fa-solid fa-plus"></i> Apri Tavolo Walk-in
-      </button>
-      <button class="btn-action-tool" onclick="loadEveningTables(true)" title="Sincronizza prenotazioni dal Foglio Google">
-        <i class="fa-solid fa-arrows-rotate"></i> Aggiorna
       </button>
     </div>
   </div>
@@ -1136,12 +1166,12 @@
   <!-- Contenitore Tavoli della Serata -->
   <main class="tables-container">
     <div class="tables-grid-cards" id="tables-cards-grid">
-      <!-- Generato dinamicamente con i tavoli delle prenotazioni odierne -->
+      <!-- Generato dinamicamente con i soli tavoli reali del Foglio Google -->
     </div>
   </main>
 
   <!-- ==========================================================================
-       POPUP MODALE: PRESA ORDINAZIONE CIBO CON VISUALIZZAZIONE MENU COMPLETA
+       POPUP MODALE: PRESA ORDINAZIONI CON VISUALIZZAZIONE MENU IDENTICA A MENU.HTML
        ========================================================================== -->
   <div class="modal-overlay" id="order-modal-overlay">
     <div class="order-modal-window">
@@ -1228,818 +1258,827 @@
   <script>
     /**
      * OL3 RISTORANTE PIZZERIA - SISTEMA COMANDE PERSONALE SALA
-     * - Collegamento in tempo reale al Foglio Google delle Prenotazioni (GVIZ + Apps Script)
-     * - Filtro stretto sui tavoli della SERATA ODIERNA
-     * - Switch 1° Turno (20:00) e 2° Turno (21:30)
-     * - Rosso: Tavoli da servire (presa comanda)
-     * - Grigio: Tavoli con ordinazione già presa
-     * - Visualizzazione menu identica a menu.html (foto, descrizione, badge, prezzi)
-     * - Ricerca istantanea su tavoli e su piatti del menu
-     * - Pulsante Aggiungi e Stepper + e -
+     * - Collegato DIRETTAMENTE al Foglio Google (stessa sorgente e logica di gestione-prenotazioni.html)
+     * - Nessun dato fittizio / simulato
+     * - Gestione 1° Turno (20:00) e 2° Turno (21:30)
+     * - Rosso = Da Servire (ordinazione da prendere)
+     * - Grigio = Ordinazione Presa
+     * - Menu visivo identico a menu.html (foto, descrizione, badge, prezzi)
+     * - Ricerca istantanea su tavoli e piatti
      */
 
-    const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
-    const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
-    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec';
+    (function() {
+      const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
+      const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec';
 
-    // Riconoscimento data odierna formato YYYY-MM-DD
-    function getLocalTodayIso() {
-      const d = new Date();
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      return `${y}-${m}-${day}`;
-    }
-
-    const TODAY_ISO = getLocalTodayIso();
-    const STORAGE_KEY_PREFIX = `ol3_comande_${TODAY_ISO}`;
-
-    // Parsing date flessibile (GVIZ Date, ISO, Italiano)
-    function toIso(d) {
-      if (!d) return '';
-      const s = String(d).trim();
-      const mGviz = s.match(/Date\s*\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
-      if (mGviz) {
-        const y = mGviz[1];
-        const m = String(parseInt(mGviz[2], 10) + 1).padStart(2, '0');
-        const day = String(parseInt(mGviz[3], 10)).padStart(2, '0');
-        return `${y}-${m}-${day}`;
-      }
-      const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-      if (mIso) return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
-      const mIt = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-      if (mIt) return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
-      return s;
-    }
-
-    // Identificatori turni
-    function isTurno1(tStr) {
-      if (!tStr) return false;
-      const s = String(tStr).toLowerCase().trim();
-      if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return false;
-      return s.includes('1°') || s.includes('primo') || s.includes('20:00') || s.includes('1');
-    }
-
-    function isTurno2(tStr) {
-      if (!tStr) return false;
-      const s = String(tStr).toLowerCase().trim();
-      if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return true;
-      if (s.includes('21:30') && !s.includes('20:00')) return true;
-      return false;
-    }
-
-    // Stato applicazione
-    let allRawBookings = [];
-    let currentShift = '20:00'; // '20:00', '21:30', 'all'
-    let currentFilter = 'all'; // 'all', 'da-servire', 'presa'
-    let shiftTables = [];
-    let savedOrders = {}; // registry comande per la serata odierna
-    let currentActiveTable = null;
-    let currentOrderItems = {};
-    let selectedFoodCategory = 'all';
-
-    // Categorie di CIBO (escluse bevande)
-    const FOOD_CATEGORY_IDS = [
-      'pizze-classiche',
-      'pizze-ol3',
-      'carni',
-      'panini',
-      'primi',
-      'fritti-antipasti',
-      'contorni'
-    ];
-
-    document.addEventListener('DOMContentLoaded', () => {
-      initDateHeader();
-      loadStoredOrders();
-      initFoodCategories();
-      loadEveningTables();
-    });
-
-    // 1. Header Data Serata Odierna
-    function initDateHeader() {
-      const el = document.getElementById('current-shift-date-text');
-      const now = new Date();
-      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-      const dateStr = now.toLocaleDateString('it-IT', options);
-      const capDate = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
-      if (el) {
-        el.innerHTML = `<strong>${capDate}</strong> • Prenotazioni collegate dal Foglio Google`;
-      }
-    }
-
-    // 2. Lettura / Scrittura Comande in LocalStorage
-    function loadStoredOrders() {
+      // Azzeramento totale di eventuali vecchie memorie locali fittizie o walk-in simulate
       try {
-        const raw = localStorage.getItem(STORAGE_KEY_PREFIX);
-        savedOrders = raw ? JSON.parse(raw) : {};
-      } catch (e) {
-        savedOrders = {};
+        Object.keys(localStorage).forEach(k => {
+          if (k.startsWith('ol3_walkin_tables_')) {
+            localStorage.removeItem(k);
+          }
+        });
+      } catch(e) {}
+
+      function getLocalTodayIso() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
       }
-    }
 
-    function persistStoredOrders() {
-      try {
-        localStorage.setItem(STORAGE_KEY_PREFIX, JSON.stringify(savedOrders));
-      } catch (e) {}
-    }
+      let allBookings = [];
+      let currentDate = getLocalTodayIso();
+      let currentShift = '20:00'; // '20:00' = 1° Turno, '21:30' = 2° Turno, 'all' = Tutti
+      let currentFilter = 'all';  // 'all', 'da-servire', 'presa'
+      let activeShiftTables = [];
+      let savedOrders = {}; // key: tableKey, value: order object
+      let currentActiveTable = null;
+      let currentOrderItems = {};
+      let selectedFoodCategory = 'all';
 
-    // 3. Connessione al Foglio Google (GVIZ + Apps Script)
-    async function loadEveningTables(showToast = false) {
+      // Categorie di solo CIBO
+      const FOOD_CATEGORY_IDS = [
+        'pizze-classiche',
+        'pizze-ol3',
+        'carni',
+        'panini',
+        'primi',
+        'fritti-antipasti',
+        'contorni'
+      ];
+
+      // Parser date universale (identico a gestione-prenotazioni.html)
+      function toIso(d) {
+        if (!d) return '';
+        const s = String(d).trim();
+
+        // Formato GVIZ Date(yyyy, m, d, ...) con m a base 0
+        const mGviz = s.match(/Date\s*\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+        if (mGviz) {
+          const y = mGviz[1];
+          const m = String(parseInt(mGviz[2], 10) + 1).padStart(2, '0');
+          const day = String(parseInt(mGviz[3], 10)).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        }
+
+        // Formato ISO YYYY-MM-DD
+        const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (mIso) return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
+
+        // Formato Italiano DD/MM/YYYY
+        const mIt = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+        if (mIt) return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
+
+        return s;
+      }
+
+      function formatItalianDate(d) {
+        const iso = toIso(d);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+          const p = iso.split('-');
+          return `${p[2]}/${p[1]}/${p[0]}`;
+        }
+        return d;
+      }
+
+      function isTurno1(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
+        if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return false;
+        return s.includes('1°') || s.includes('primo') || s.includes('20:00') || s.includes('1');
+      }
+
+      function isTurno2(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
+        if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return true;
+        if (s.includes('21:30') && !s.includes('20:00')) return true;
+        return false;
+      }
+
+      // Elementi DOM Controlli
+      const dateInput = document.getElementById('admin-target-date');
+      const btnPrev = document.getElementById('btn-prev-day');
+      const btnNext = document.getElementById('btn-next-day');
+      const btnToday = document.getElementById('btn-today');
+      const btnTurno1 = document.getElementById('btn-turno-1');
+      const btnTurno2 = document.getElementById('btn-turno-2');
+      const btnTurnoAll = document.getElementById('btn-turno-all');
       const syncEl = document.getElementById('sheet-sync-indicator');
-      if (syncEl) syncEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google...';
 
-      let loaded = [];
+      // Inizializzazione Data
+      if (dateInput) {
+        dateInput.value = currentDate;
+        dateInput.addEventListener('change', () => {
+          currentDate = dateInput.value;
+          updateDateDisplay();
+          renderTables();
+        });
+      }
 
-      // Canale 1: GVIZ
-      try {
-        const res = await fetch(GVIZ_URL);
-        const txt = await res.text();
-        const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
-        if (match) {
-          const json = JSON.parse(match[1]);
-          if (json && json.table && Array.isArray(json.table.rows)) {
-            json.table.rows.forEach(r => {
-              if (!r || !r.c) return;
-              const c = r.c;
-              const val = idx => (c[idx] && (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx] && c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : ''));
-              const id = String(val(0));
-              if (!id || id.toLowerCase().includes('id')) return;
-              
-              const rawDate = val(4);
-              const dateIso = toIso(rawDate);
-              const status = String(val(8) || 'Confermata');
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          const dt = new Date(currentDate);
+          dt.setDate(dt.getDate() - 1);
+          currentDate = dt.toISOString().split('T')[0];
+          if (dateInput) dateInput.value = currentDate;
+          updateDateDisplay();
+          renderTables();
+        });
+      }
 
-              // Filtra solo prenotazioni attive per oggi
-              if (dateIso === TODAY_ISO && !status.toLowerCase().includes('annull')) {
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          const dt = new Date(currentDate);
+          dt.setDate(dt.getDate() + 1);
+          currentDate = dt.toISOString().split('T')[0];
+          if (dateInput) dateInput.value = currentDate;
+          updateDateDisplay();
+          renderTables();
+        });
+      }
+
+      if (btnToday) {
+        btnToday.addEventListener('click', () => {
+          currentDate = getLocalTodayIso();
+          if (dateInput) dateInput.value = currentDate;
+          updateDateDisplay();
+          renderTables();
+        });
+      }
+
+      if (btnTurno1) {
+        btnTurno1.addEventListener('click', () => {
+          currentShift = '20:00';
+          btnTurno1.classList.add('active');
+          btnTurno2.classList.remove('active');
+          btnTurnoAll.classList.remove('active');
+          renderTables();
+        });
+      }
+
+      if (btnTurno2) {
+        btnTurno2.addEventListener('click', () => {
+          currentShift = '21:30';
+          btnTurno2.classList.add('active');
+          btnTurno1.classList.remove('active');
+          btnTurnoAll.classList.remove('active');
+          renderTables();
+        });
+      }
+
+      if (btnTurnoAll) {
+        btnTurnoAll.addEventListener('click', () => {
+          currentShift = 'all';
+          btnTurnoAll.classList.add('active');
+          btnTurno1.classList.remove('active');
+          btnTurno2.classList.remove('active');
+          renderTables();
+        });
+      }
+
+      function updateDateDisplay() {
+        const textEl = document.getElementById('current-shift-date-text');
+        if (!textEl) return;
+        const [y, m, d] = currentDate.split('-');
+        const dt = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+        const opt = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+        const dStr = dt.toLocaleDateString('it-IT', opt);
+        const cap = dStr.charAt(0).toUpperCase() + dStr.slice(1);
+        textEl.innerHTML = `<strong>${cap}</strong> • Tavoli prenotati dal Foglio Google`;
+      }
+
+      // Memoria Comande Prese
+      function loadSavedOrders() {
+        try {
+          const raw = localStorage.getItem(`ol3_comande_${currentDate}`);
+          savedOrders = raw ? JSON.parse(raw) : {};
+        } catch(e) {
+          savedOrders = {};
+        }
+      }
+
+      function persistSavedOrders() {
+        try {
+          localStorage.setItem(`ol3_comande_${currentDate}`, JSON.stringify(savedOrders));
+        } catch(e) {}
+      }
+
+      // Lettura REALE dal Foglio Google (Identica a gestione-prenotazioni.html)
+      async function syncFromGoogleSheet(showToast = false) {
+        if (syncEl) syncEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google...';
+        let loaded = [];
+
+        // Canale 1: GVIZ (lettura diretta del foglio)
+        try {
+          const res = await fetch(GVIZ_URL);
+          const txt = await res.text();
+          const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+          if (match) {
+            const json = JSON.parse(match[1]);
+            if (json && json.table && Array.isArray(json.table.rows)) {
+              json.table.rows.forEach(r => {
+                if (!r || !r.c) return;
+                const c = r.c;
+                const val = idx => {
+                  if (!c[idx]) return '';
+                  return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
+                };
+                const id = String(val(0));
+                if (!id || id.toLowerCase().includes('id')) return;
+                const rawDate = val(4);
                 loaded.push({
                   id: id,
                   created_at: String(val(1)),
-                  name: String(val(2) || 'Ospite'),
+                  name: String(val(2)),
                   phone: String(val(3)),
-                  date: dateIso,
-                  time: String(val(5) || '20:00'),
+                  date: toIso(rawDate),
+                  time: String(val(5)),
                   guests: parseInt(val(6), 10) || 2,
                   tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
-                  status: status,
+                  status: String(val(8) || 'Confermata'),
                   notes: String(val(9) || '')
                 });
-              }
-            });
+              });
+            }
           }
+        } catch(e) {
+          console.warn('GVIZ load fallback:', e);
         }
-      } catch (e) {
-        console.warn('GVIZ load fallback:', e);
-      }
 
-      // Canale 2: Apps Script Web App
-      if (loaded.length === 0) {
-        try {
-          const resp = await fetch(APPS_SCRIPT_URL);
-          const res = await resp.json();
-          if (res && res.status === 'success' && Array.isArray(res.data)) {
-            res.data.forEach(b => {
-              if (!b || !b.id) return;
-              const dateIso = toIso(b.date);
-              const status = b.status || 'Confermata';
-              if (dateIso === TODAY_ISO && !status.toLowerCase().includes('annull')) {
+        // Canale 2: Apps Script Web App
+        if (loaded.length === 0) {
+          try {
+            const resp = await fetch(APPS_SCRIPT_URL);
+            const res = await resp.json();
+            if (res && res.status === 'success' && Array.isArray(res.data)) {
+              res.data.forEach(b => {
+                if (!b || !b.id) return;
                 loaded.push({
                   id: String(b.id),
-                  name: b.name || 'Ospite',
+                  created_at: b.created_at || '',
+                  name: b.name || 'Cliente',
                   phone: b.phone || '',
-                  date: dateIso,
-                  time: String(b.time || '20:00'),
+                  date: toIso(b.date),
+                  time: String(b.time || ''),
                   guests: parseInt(b.guests, 10) || 2,
                   tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
-                  status: status,
+                  status: b.status || 'Confermata',
                   notes: b.notes || ''
                 });
-              }
-            });
-          }
-        } catch (err) {
-          console.warn('Apps Script load fallback:', err);
-        }
-      }
-
-      allRawBookings = loaded;
-
-      if (syncEl) {
-        syncEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Connesso al Foglio (${allRawBookings.length} prenotazioni per oggi)`;
-      }
-
-      // Se non ci sono prenotazioni reali oggi, carica tavoli campione per simulazione e test immediato
-      if (allRawBookings.length === 0) {
-        allRawBookings = [
-          { id: 'sim1', name: 'Famiglia De Santis', phone: '3520389996', date: TODAY_ISO, time: '20:00 (1° Turno)', guests: 4, tables: 2, status: 'Confermata', notes: 'Tavolo veranda' },
-          { id: 'sim2', name: 'Marco & Laura', phone: '', date: TODAY_ISO, time: '20:00 (1° Turno)', guests: 2, tables: 1, status: 'Confermata', notes: '' },
-          { id: 'sim3', name: 'Tavolata Amici', phone: '', date: TODAY_ISO, time: '20:00 (1° Turno)', guests: 6, tables: 3, status: 'Confermata', notes: 'Compleanno' },
-          { id: 'sim4', name: 'Giuseppe Rossi', phone: '', date: TODAY_ISO, time: '21:30 (2° Turno)', guests: 4, tables: 2, status: 'Confermata', notes: '' },
-          { id: 'sim5', name: 'Coppia Gourmet', phone: '', date: TODAY_ISO, time: '21:30 (2° Turno)', guests: 2, tables: 1, status: 'Confermata', notes: 'Anniversario' }
-        ];
-      }
-
-      // Applica turno corrente e renderizza
-      applyShiftFilter();
-
-      if (showToast) {
-        showToastNotification(`Sincronizzazione completata! ${allRawBookings.length} prenotazioni odierne`);
-      }
-    }
-
-    // 4. Gestione Switch 1° e 2° Turno
-    function switchShift(shift) {
-      currentShift = shift;
-      document.getElementById('btn-shift-1').classList.toggle('active', shift === '20:00');
-      document.getElementById('btn-shift-2').classList.toggle('active', shift === '21:30');
-      document.getElementById('btn-shift-all').classList.toggle('active', shift === 'all');
-      applyShiftFilter();
-    }
-
-    function applyShiftFilter() {
-      // Filtra prenotazioni in base al turno selezionato
-      const filteredBookings = allRawBookings.filter(b => {
-        if (currentShift === '20:00') return isTurno1(b.time);
-        if (currentShift === '21:30') return isTurno2(b.time);
-        return true; // 'all'
-      });
-
-      // Assegna la numerazione tavoli progressiva (esattamente come in gestione-prenotazioni.html)
-      let nextTable = 1;
-      const tables = [];
-
-      filteredBookings.forEach((b, index) => {
-        const needed = b.tables || Math.ceil(b.guests / 2);
-        const startNum = nextTable;
-        const endNum = Math.min(50, nextTable + needed - 1);
-        nextTable = endNum + 1;
-
-        const shiftTag = isTurno1(b.time) ? '1° Turno (20:00)' : (isTurno2(b.time) ? '2° Turno (21:30)' : 'Turno Serale');
-        const shiftId = isTurno1(b.time) ? 'T1' : 'T2';
-        const tableLabel = (needed === 1) ? `Tavolo ${startNum}` : `Tavoli Uniti ${startNum}-${endNum}`;
-        const tableKey = `${shiftId}_T${String(startNum).padStart(2, '0')}`;
-
-        tables.push({
-          bookingId: b.id,
-          tableKey: tableKey,
-          tableNum: startNum,
-          tableLabel: tableLabel,
-          customerName: b.name,
-          phone: b.phone,
-          time: b.time,
-          shiftTag: shiftTag,
-          shiftId: shiftId,
-          guests: b.guests,
-          tablesCount: needed,
-          notes: b.notes,
-          isWalkin: false
-        });
-      });
-
-      // Aggiungi eventuali tavoli Walk-in aperti dal personale per questo turno
-      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}_${currentShift}`;
-      try {
-        const rawWalkins = localStorage.getItem(walkinKey);
-        if (rawWalkins) {
-          const walkins = JSON.parse(rawWalkins);
-          walkins.forEach(w => {
-            if (!tables.some(t => t.tableKey === w.tableKey)) {
-              tables.push(w);
+              });
             }
-          });
-        }
-      } catch (e) {}
-
-      tables.sort((a, b) => a.tableNum - b.tableNum);
-      shiftTables = tables;
-      renderTables();
-    }
-
-    // 5. Render dei Tavoli (Rosso = Da Servire, Grigio = Presa)
-    function renderTables() {
-      const grid = document.getElementById('tables-cards-grid');
-      const searchVal = (document.getElementById('search-table-input')?.value || '').toLowerCase().trim();
-      if (!grid) return;
-
-      grid.innerHTML = '';
-
-      let countDaServire = 0;
-      let countPresa = 0;
-
-      shiftTables.forEach(t => {
-        const order = savedOrders[t.tableKey];
-        const isOrderTaken = (order && order.status === 'presa' && Array.isArray(order.items) && order.items.length > 0);
-
-        if (isOrderTaken) {
-          countPresa++;
-        } else {
-          countDaServire++;
+          } catch(err) {
+            console.warn('Lettura Apps Script:', err);
+          }
         }
 
-        // Filtro stato
-        if (currentFilter === 'da-servire' && isOrderTaken) return;
-        if (currentFilter === 'presa' && !isOrderTaken) return;
+        allBookings = loaded;
 
-        // Filtro ricerca
-        if (searchVal) {
-          const matchLabel = t.tableLabel.toLowerCase().includes(searchVal) || t.tableKey.toLowerCase().includes(searchVal);
-          const matchName = t.customerName.toLowerCase().includes(searchVal);
-          const matchPhone = (t.phone || '').includes(searchVal);
-          if (!matchLabel && !matchName && !matchPhone) return;
+        if (syncEl) {
+          syncEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Sincronizzato con il Foglio (${allBookings.length} prenotazioni registrate)`;
         }
 
-        // Creazione Card Tavolo
-        const card = document.createElement('div');
-        card.className = `table-card ${isOrderTaken ? 'status-presa' : 'status-da-servire'}`;
-        card.onclick = () => openOrderModal(t);
+        renderTables();
 
-        let previewHtml = '';
-        if (isOrderTaken) {
-          const totalItems = order.items.reduce((sum, it) => sum + it.qty, 0);
-          const itemsListHtml = order.items.slice(0, 4).map(it => `
-            <li>
-              <span><strong>${it.qty}x</strong> ${it.name}</span>
-              <span>${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €</span>
-            </li>
-          `).join('');
-          const moreCount = order.items.length > 4 ? `<li style="font-style: italic; color: var(--accent-gold);">+ altre ${order.items.length - 4} portate...</li>` : '';
-
-          previewHtml = `
-            <div class="order-preview-box">
-              <div class="order-preview-header">
-                <span><i class="fa-solid fa-receipt"></i> ${totalItems} Portate Inserite</span>
-                <span>Tot: ${order.totalPrice}</span>
-              </div>
-              <ul>
-                ${itemsListHtml}
-                ${moreCount}
-              </ul>
-            </div>
-          `;
+        if (showToast) {
+          showToastNotification(`Aggiornato dal Foglio: ${allBookings.length} prenotazioni`);
         }
-
-        card.innerHTML = `
-          <div>
-            <div class="table-card-top">
-              <div>
-                <span class="table-num-title">${t.tableLabel}</span>
-                <div><span class="table-shift-tag">${t.shiftTag}</span></div>
-              </div>
-              <span class="status-pill">
-                ${isOrderTaken ? '<i class="fa-solid fa-circle-check"></i> ORDINAZIONE PRESA' : '<i class="fa-solid fa-bell"></i> DA SERVIRE'}
-              </span>
-            </div>
-
-            <div class="table-customer-name">
-              <i class="fa-solid fa-user-tag" style="color: var(--accent-gold); font-size: 0.95rem;"></i>
-              <span>${t.customerName}</span>
-            </div>
-
-            <div class="table-meta-details">
-              <span><i class="fa-solid fa-clock"></i> ${t.time}</span>
-              <span><i class="fa-solid fa-users"></i> ${t.guests} Persone</span>
-              ${t.tablesCount > 1 ? `<span><i class="fa-solid fa-border-all"></i> ${t.tablesCount} Tavoli</span>` : ''}
-              ${t.notes ? `<span><i class="fa-solid fa-circle-info"></i> ${t.notes}</span>` : ''}
-            </div>
-
-            ${previewHtml}
-          </div>
-
-          <div style="margin-top: 10px;">
-            <button class="card-action-btn" onclick="event.stopPropagation(); openOrderModal(${JSON.stringify(t).replace(/"/g, '&quot;')})">
-              ${isOrderTaken ? '<i class="fa-solid fa-pen-to-square"></i> Vedi / Modifica Comanda' : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
-            </button>
-          </div>
-        `;
-
-        grid.appendChild(card);
-      });
-
-      // Aggiornamento contatori
-      document.getElementById('count-all').textContent = shiftTables.length;
-      document.getElementById('count-da-servire').textContent = countDaServire;
-      document.getElementById('count-presa').textContent = countPresa;
-
-      if (grid.children.length === 0) {
-        grid.innerHTML = `
-          <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted); background: #1e1a1c; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
-            <i class="fa-solid fa-calendar-xmark" style="font-size: 2.8rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
-            Nessun tavolo trovato per questo turno o con i filtri impostati.<br>
-            <button class="btn-add-walkin" style="margin-top: 14px;" onclick="promptAddWalkinTable()">
-              <i class="fa-solid fa-plus"></i> Apri Tavolo Libero
-            </button>
-          </div>
-        `;
-      }
-    }
-
-    function setTableFilter(filter) {
-      currentFilter = filter;
-      document.querySelectorAll('.stat-pill-btn').forEach(btn => btn.classList.remove('active'));
-      if (filter === 'all') document.getElementById('filter-all-btn').classList.add('active');
-      if (filter === 'da-servire') document.getElementById('filter-da-servire-btn').classList.add('active');
-      if (filter === 'presa') document.getElementById('filter-presa-btn').classList.add('active');
-      renderTables();
-    }
-
-    // Apertura Tavolo Walk-in manuale
-    function promptAddWalkinTable() {
-      const numStr = prompt("Inserisci il numero del tavolo libero (es. 8):");
-      if (!numStr) return;
-      const num = parseInt(numStr.replace(/\D/g, ''), 10);
-      if (!num || num < 1 || num > 50) {
-        alert("Inserisci un numero compreso tra 1 e 50.");
-        return;
       }
 
-      const shiftId = (currentShift === '21:30') ? 'T2' : 'T1';
-      const tableKey = `${shiftId}_T${String(num).padStart(2, '0')}`;
-      if (shiftTables.some(t => t.tableKey === tableKey)) {
-        alert(`Il Tavolo ${num} è già presente nel turno selezionato! Toccalo per prendere la comanda.`);
-        return;
-      }
+      // Render dei Tavoli Esclusivamente dal Foglio Google
+      function renderTables() {
+        loadSavedOrders();
+        const grid = document.getElementById('tables-cards-grid');
+        const searchVal = (document.getElementById('search-table-input')?.value || '').toLowerCase().trim();
+        if (!grid) return;
 
-      const guestsStr = prompt(`Quante persone si accomodano al Tavolo ${num}?`, "2");
-      const guests = parseInt(guestsStr, 10) || 2;
-      const nameStr = prompt(`Nome o riferimento cliente:`, `Walk-in T${num}`) || `Walk-in T${num}`;
+        grid.innerHTML = '';
 
-      const newTable = {
-        tableKey: tableKey,
-        tableNum: num,
-        tableLabel: `Tavolo ${num}`,
-        customerName: nameStr,
-        phone: "",
-        time: (currentShift === '21:30') ? '21:30 (2° Turno)' : '20:00 (1° Turno)',
-        shiftTag: (currentShift === '21:30') ? '2° Turno' : '1° Turno',
-        shiftId: shiftId,
-        guests: guests,
-        tablesCount: Math.ceil(guests / 2),
-        isWalkin: true,
-        notes: "Aperto in sala"
-      };
-
-      shiftTables.push(newTable);
-      shiftTables.sort((a, b) => a.tableNum - b.tableNum);
-
-      // Salva in localStorage
-      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}_${currentShift}`;
-      try {
-        const extra = shiftTables.filter(t => t.isWalkin);
-        localStorage.setItem(walkinKey, JSON.stringify(extra));
-      } catch (e) {}
-
-      renderTables();
-      showToastNotification(`Tavolo ${num} aggiunto!`);
-      openOrderModal(newTable);
-    }
-
-    // ==========================================================================
-    // POPUP MODALE: PRESA ORDINAZIONE CIBO CON MENU UGUALE A MENU.HTML
-    // ==========================================================================
-
-    function initFoodCategories() {
-      const container = document.getElementById('food-categories-pills');
-      if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
-
-      container.innerHTML = '';
-
-      const allPill = document.createElement('button');
-      allPill.className = 'food-cat-pill active';
-      allPill.textContent = 'Tutto il Cibo';
-      allPill.onclick = () => selectCategory('all', allPill);
-      container.appendChild(allPill);
-
-      window.SITE_CONFIG.menu.categories.forEach(cat => {
-        if (!FOOD_CATEGORY_IDS.includes(cat.id)) return; // SOLO CIBO
-
-        const pill = document.createElement('button');
-        pill.className = 'food-cat-pill';
-        pill.textContent = cat.name;
-        pill.onclick = () => selectCategory(cat.id, pill);
-        container.appendChild(pill);
-      });
-    }
-
-    function selectCategory(catId, btnEl) {
-      selectedFoodCategory = catId;
-      document.querySelectorAll('.food-cat-pill').forEach(p => p.classList.remove('active'));
-      if (btnEl) btnEl.classList.add('active');
-      renderFoodList();
-    }
-
-    // Apertura Modal
-    function openOrderModal(tableObj) {
-      currentActiveTable = tableObj;
-      currentOrderItems = {};
-
-      document.getElementById('modal-table-label').innerHTML = `
-        <i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> 
-        ${tableObj.tableLabel} • Ordinazione Cibo
-      `;
-      document.getElementById('modal-table-subtitle').textContent = `
-        Cliente: ${tableObj.customerName} (${tableObj.guests} persone) • ${tableObj.shiftTag}
-      `;
-
-      // Ricarica ordinazione salvata se già presente
-      const existing = savedOrders[tableObj.tableKey];
-      if (existing && Array.isArray(existing.items)) {
-        existing.items.forEach(it => {
-          currentOrderItems[it.name] = {
-            name: it.name,
-            price: it.price,
-            priceNum: it.priceNum,
-            qty: it.qty,
-            category: it.category || ''
-          };
+        // Filtra esattamente come in gestione-prenotazioni.html: data, stato non annullato, turno
+        const activeForShift = allBookings.filter(b => {
+          const sameDate = (toIso(b.date) === currentDate);
+          const statusOk = !String(b.status || '').toLowerCase().includes('annull');
+          const sameShift = (currentShift === 'all') ? true : ((currentShift === '20:00') ? isTurno1(b.time) : isTurno2(b.time));
+          return sameDate && statusOk && sameShift;
         });
-        document.getElementById('order-notes').value = existing.notes || '';
-      } else {
-        document.getElementById('order-notes').value = '';
-      }
 
-      // Reset ricerca e categorie
-      clearFoodSearch(false);
-      selectedFoodCategory = 'all';
-      document.querySelectorAll('.food-cat-pill').forEach((p, idx) => {
-        p.classList.toggle('active', idx === 0);
-      });
+        // Assegnazione dei tavoli progressiva da 1 a 50 (come nella Mappa Sala!)
+        let nextTable = 1;
+        const tables = [];
 
-      renderFoodList();
-      updateCartDisplay();
+        activeForShift.forEach(b => {
+          const needed = b.tables || Math.ceil(b.guests / 2);
+          const startNum = nextTable;
+          const endNum = Math.min(50, nextTable + needed - 1);
+          const assignedNums = [];
+          for (let n = startNum; n <= endNum; n++) assignedNums.push(n);
+          nextTable = endNum + 1;
 
-      document.getElementById('order-modal-overlay').classList.add('active');
-      document.body.style.overflow = 'hidden';
-    }
+          const tableLabel = (needed === 1) 
+            ? `T${String(startNum).padStart(2, '0')}` 
+            : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
 
-    function closeOrderModal() {
-      document.getElementById('order-modal-overlay').classList.remove('active');
-      document.body.style.overflow = '';
-      currentActiveTable = null;
-      currentOrderItems = {};
-    }
+          const shiftName = isTurno1(b.time) ? '1° Turno (20:00)' : (isTurno2(b.time) ? '2° Turno (21:30)' : b.time);
+          const shiftId = isTurno1(b.time) ? 'T1' : 'T2';
+          const tableKey = `${shiftId}_T${String(startNum).padStart(2, '0')}`;
 
-    // Render dei piatti (identico alla grafica di menu.html)
-    function renderFoodList() {
-      const container = document.getElementById('food-items-container');
-      const searchVal = (document.getElementById('search-food-input')?.value || '').toLowerCase().trim();
-      const clearBtn = document.getElementById('clear-search-btn');
-      if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+          tables.push({
+            bookingId: b.id,
+            tableKey: tableKey,
+            tableNum: startNum,
+            tableLabel: tableLabel,
+            customerName: b.name,
+            phone: b.phone,
+            time: b.time,
+            shiftTag: shiftName,
+            shiftId: shiftId,
+            guests: b.guests,
+            tablesCount: needed,
+            notes: b.notes
+          });
+        });
 
-      if (clearBtn) clearBtn.style.display = searchVal ? 'block' : 'none';
+        activeShiftTables = tables;
 
-      container.innerHTML = '';
+        let countDaServire = 0;
+        let countPresa = 0;
 
-      const categories = window.SITE_CONFIG.menu.categories.filter(c => FOOD_CATEGORY_IDS.includes(c.id));
+        activeShiftTables.forEach(t => {
+          const order = savedOrders[t.tableKey];
+          const isOrderTaken = (order && order.status === 'presa' && Array.isArray(order.items) && order.items.length > 0);
 
-      categories.forEach(cat => {
-        if (selectedFoodCategory !== 'all' && cat.id !== selectedFoodCategory) return;
+          if (isOrderTaken) {
+            countPresa++;
+          } else {
+            countDaServire++;
+          }
 
-        let items = cat.items || [];
-        if (searchVal) {
-          items = items.filter(it => 
-            it.name.toLowerCase().includes(searchVal) || 
-            (it.description && it.description.toLowerCase().includes(searchVal)) ||
-            (Array.isArray(it.tags) && it.tags.some(t => t.toLowerCase().includes(searchVal)))
-          );
-        }
+          // Filtri stato pill
+          if (currentFilter === 'da-servire' && isOrderTaken) return;
+          if (currentFilter === 'presa' && !isOrderTaken) return;
 
-        if (items.length === 0) return;
-
-        const groupDiv = document.createElement('div');
-        groupDiv.className = 'menu-category-group';
-
-        groupDiv.innerHTML = `
-          <div class="category-title">
-            <span>${cat.name}</span>
-            <span style="font-size: 0.8rem; font-family: var(--font-sans); color: var(--text-muted); font-weight: 600;">${items.length} portate</span>
-          </div>
-          <div class="category-subtitle">${cat.subtitle || ''}</div>
-          <div class="modal-menu-grid"></div>
-        `;
-
-        const gridDiv = groupDiv.querySelector('.modal-menu-grid');
-
-        items.forEach(dish => {
-          const currentQty = (currentOrderItems[dish.name] && currentOrderItems[dish.name].qty) ? currentOrderItems[dish.name].qty : 0;
-          const priceNum = parseFloat(dish.price.replace('€', '').replace(',', '.').trim()) || 0;
+          // Filtro ricerca testo
+          if (searchVal) {
+            const matchLabel = t.tableLabel.toLowerCase().includes(searchVal) || t.tableKey.toLowerCase().includes(searchVal);
+            const matchName = t.customerName.toLowerCase().includes(searchVal);
+            const matchPhone = (t.phone || '').includes(searchVal);
+            if (!matchLabel && !matchName && !matchPhone) return;
+          }
 
           const card = document.createElement('div');
-          card.className = `menu-card-item ${currentQty > 0 ? 'has-qty' : ''}`;
+          card.className = `table-card ${isOrderTaken ? 'status-presa' : 'status-da-servire'}`;
+          card.onclick = () => openOrderModal(t);
 
-          let actionHtml = '';
-          if (currentQty === 0) {
-            actionHtml = `
-              <button class="btn-add-food" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)">
-                <i class="fa-solid fa-plus"></i> AGGIUNGI
-              </button>
-            `;
-          } else {
-            actionHtml = `
-              <div class="qty-stepper">
-                <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', -1)" title="Diminuisci">−</button>
-                <span class="stepper-value">${currentQty}</span>
-                <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)" title="Aggiungi">+</button>
+          let previewHtml = '';
+          if (isOrderTaken) {
+            const totalItems = order.items.reduce((sum, it) => sum + it.qty, 0);
+            const itemsListHtml = order.items.slice(0, 4).map(it => `
+              <li>
+                <span><strong>${it.qty}x</strong> ${it.name}</span>
+                <span>${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €</span>
+              </li>
+            `).join('');
+            const moreCount = order.items.length > 4 ? `<li style="font-style: italic; color: var(--accent-gold);">+ altre ${order.items.length - 4} portate...</li>` : '';
+
+            previewHtml = `
+              <div class="order-preview-box">
+                <div class="order-preview-header">
+                  <span><i class="fa-solid fa-receipt"></i> ${totalItems} Portate Inserite</span>
+                  <span>Tot: ${order.totalPrice}</span>
+                </div>
+                <ul>
+                  ${itemsListHtml}
+                  ${moreCount}
+                </ul>
               </div>
             `;
           }
 
-          const tagsHtml = (Array.isArray(dish.tags) && dish.tags.length > 0)
-            ? `<div class="menu-tags-list">${dish.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>`
-            : '';
-
-          const thumbHtml = dish.image 
-            ? `<div class="menu-card-thumb-col"><img src="${dish.image}" alt="${dish.name}" loading="lazy"></div>` 
-            : '';
-
           card.innerHTML = `
-            <div class="menu-card-main-content">
-              <div class="menu-card-info-col">
-                <div class="menu-item-header">
-                  <h4 class="menu-item-name">${dish.name}</h4>
-                  <span class="menu-item-price">${dish.price}</span>
+            <div>
+              <div class="table-card-top">
+                <div>
+                  <span class="table-num-title">${t.tableLabel}</span>
+                  <div><span class="table-shift-tag">${t.shiftTag}</span></div>
                 </div>
-                <p class="menu-item-desc">${dish.description || ''}</p>
-                ${tagsHtml}
+                <span class="status-pill">
+                  ${isOrderTaken ? '<i class="fa-solid fa-circle-check"></i> ORDINAZIONE PRESA' : '<i class="fa-solid fa-bell"></i> DA SERVIRE'}
+                </span>
               </div>
-              ${thumbHtml}
+
+              <div class="table-customer-name">
+                <i class="fa-solid fa-user-tag" style="color: var(--accent-gold); font-size: 0.95rem;"></i>
+                <span>${t.customerName}</span>
+              </div>
+
+              <div class="table-meta-details">
+                <span><i class="fa-solid fa-clock"></i> ${t.time}</span>
+                <span><i class="fa-solid fa-users"></i> ${t.guests} Persone</span>
+                ${t.tablesCount > 1 ? `<span><i class="fa-solid fa-border-all"></i> ${t.tablesCount} Tavoli</span>` : ''}
+                ${t.notes ? `<span><i class="fa-solid fa-circle-info"></i> ${t.notes}</span>` : ''}
+              </div>
+
+              ${previewHtml}
             </div>
 
-            <div class="card-footer-action">
-              <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">
-                ${currentQty > 0 ? `Selezionati: <strong style="color: var(--accent-gold);">${currentQty}</strong>` : ''}
-              </span>
-              ${actionHtml}
+            <div style="margin-top: 10px;">
+              <button class="card-action-btn" onclick="event.stopPropagation(); openOrderModal(${JSON.stringify(t).replace(/"/g, '&quot;')})">
+                ${isOrderTaken ? '<i class="fa-solid fa-pen-to-square"></i> Vedi / Modifica Comanda' : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
+              </button>
             </div>
           `;
 
-          gridDiv.appendChild(card);
+          grid.appendChild(card);
         });
 
-        container.appendChild(groupDiv);
-      });
+        // Aggiornamento contatori
+        document.getElementById('count-all').textContent = activeShiftTables.length;
+        document.getElementById('count-da-servire').textContent = countDaServire;
+        document.getElementById('count-presa').textContent = countPresa;
 
-      if (container.children.length === 0) {
-        container.innerHTML = `
-          <div style="text-align: center; padding: 45px 12px; color: var(--text-muted); background: #252022; border-radius: 12px;">
-            <i class="fa-solid fa-magnifying-glass" style="font-size: 2.2rem; margin-bottom: 10px; display: block; color: var(--accent-gold);"></i>
-            Nessun piatto o pizza corrisponde alla ricerca "<strong>${searchVal}</strong>".
-            <div style="margin-top: 12px;">
-              <button class="food-cat-pill" onclick="clearFoodSearch()">Azzera ricerca</button>
+        if (grid.children.length === 0) {
+          const shiftLabel = (currentShift === '20:00') ? '1° Turno (20:00)' : ((currentShift === '21:30') ? '2° Turno (21:30)' : 'tutta la serata');
+          grid.innerHTML = `
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted); background: #1e1a1c; border-radius: 12px; border: 1.5px dashed rgba(255,255,255,0.12);">
+              <i class="fa-solid fa-calendar-xmark" style="font-size: 2.8rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
+              <h3 style="color: #fff; margin: 0 0 6px; font-family: var(--font-serif);">Nessun tavolo nel Foglio per ${formatItalianDate(currentDate)} (${shiftLabel})</h3>
+              <p style="margin: 0; font-size: 0.9rem;">I tavoli appariranno qui automaticamente quando verranno inserite prenotazioni nel Foglio Google.</p>
+              <button class="btn-refresh-sync" style="margin-top: 16px;" onclick="syncFromGoogleSheet(true)">
+                <i class="fa-solid fa-arrows-rotate"></i> Ricarica dal Foglio
+              </button>
             </div>
-          </div>
+          `;
+        }
+      }
+
+      function setTableFilter(filter) {
+        currentFilter = filter;
+        document.querySelectorAll('.stat-pill-btn').forEach(btn => btn.classList.remove('active'));
+        if (filter === 'all') document.getElementById('filter-all-btn').classList.add('active');
+        if (filter === 'da-servire') document.getElementById('filter-da-servire-btn').classList.add('active');
+        if (filter === 'presa') document.getElementById('filter-presa-btn').classList.add('active');
+        renderTables();
+      }
+
+      // ==========================================================================
+      // POPUP MODALE: PRESA ORDINAZIONE CIBO (Grafica identica a menu.html)
+      // ==========================================================================
+
+      function initFoodCategories() {
+        const container = document.getElementById('food-categories-pills');
+        if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+
+        container.innerHTML = '';
+
+        const allPill = document.createElement('button');
+        allPill.className = 'food-cat-pill active';
+        allPill.textContent = 'Tutto il Cibo';
+        allPill.onclick = () => selectCategory('all', allPill);
+        container.appendChild(allPill);
+
+        window.SITE_CONFIG.menu.categories.forEach(cat => {
+          if (!FOOD_CATEGORY_IDS.includes(cat.id)) return; // SOLO CIBO
+
+          const pill = document.createElement('button');
+          pill.className = 'food-cat-pill';
+          pill.textContent = cat.name;
+          pill.onclick = () => selectCategory(cat.id, pill);
+          container.appendChild(pill);
+        });
+      }
+
+      function selectCategory(catId, btnEl) {
+        selectedFoodCategory = catId;
+        document.querySelectorAll('.food-cat-pill').forEach(p => p.classList.remove('active'));
+        if (btnEl) btnEl.classList.add('active');
+        renderFoodList();
+      }
+
+      function openOrderModal(tableObj) {
+        currentActiveTable = tableObj;
+        currentOrderItems = {};
+
+        document.getElementById('modal-table-label').innerHTML = `
+          <i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> 
+          ${tableObj.tableLabel} • Ordinazione Cibo
         `;
-      }
-    }
-
-    function filterFoodList() {
-      renderFoodList();
-    }
-
-    function clearFoodSearch(reRender = true) {
-      const input = document.getElementById('search-food-input');
-      if (input) input.value = '';
-      const clearBtn = document.getElementById('clear-search-btn');
-      if (clearBtn) clearBtn.style.display = 'none';
-      if (reRender) renderFoodList();
-    }
-
-    // Modifica quantità cibo
-    function changeFoodQty(dishName, priceStr, priceNum, category, delta) {
-      if (!currentOrderItems[dishName]) {
-        currentOrderItems[dishName] = {
-          name: dishName,
-          price: priceStr,
-          priceNum: priceNum,
-          qty: 0,
-          category: category
-        };
-      }
-
-      currentOrderItems[dishName].qty += delta;
-
-      if (currentOrderItems[dishName].qty <= 0) {
-        delete currentOrderItems[dishName];
-      }
-
-      renderFoodList();
-      updateCartDisplay();
-    }
-
-    // Aggiornamento Carrello Comanda
-    function updateCartDisplay() {
-      const listDiv = document.getElementById('cart-items-list');
-      const countEl = document.getElementById('cart-item-count');
-      const totalEl = document.getElementById('cart-total-price');
-      const saveBtn = document.getElementById('btn-save-order');
-
-      const items = Object.values(currentOrderItems);
-      const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
-      const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
-
-      countEl.textContent = `${totalQty} ${totalQty === 1 ? 'portata' : 'portate'}`;
-      totalEl.textContent = `${totalPriceNum.toFixed(2).replace('.', ',')} €`;
-
-      if (totalQty === 0) {
-        listDiv.innerHTML = `
-          <div class="cart-empty-msg">
-            <i class="fa-solid fa-utensils" style="font-size: 2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
-            Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI</strong> o usa i tasti <strong>+</strong> e <strong>-</strong> sui piatti a sinistra.
-          </div>
+        document.getElementById('modal-table-subtitle').textContent = `
+          Cliente: ${tableObj.customerName} (${tableObj.guests} persone) • ${tableObj.shiftTag}
         `;
-        saveBtn.disabled = true;
-      } else {
-        saveBtn.disabled = false;
-        listDiv.innerHTML = items.map(it => `
-          <div class="cart-item-row">
-            <div class="cart-item-top">
-              <span class="cart-item-name">${it.name}</span>
-              <span class="cart-item-price">${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €</span>
+
+        const existing = savedOrders[tableObj.tableKey];
+        if (existing && Array.isArray(existing.items)) {
+          existing.items.forEach(it => {
+            currentOrderItems[it.name] = {
+              name: it.name,
+              price: it.price,
+              priceNum: it.priceNum,
+              qty: it.qty,
+              category: it.category || ''
+            };
+          });
+          document.getElementById('order-notes').value = existing.notes || '';
+        } else {
+          document.getElementById('order-notes').value = '';
+        }
+
+        clearFoodSearch(false);
+        selectedFoodCategory = 'all';
+        document.querySelectorAll('.food-cat-pill').forEach((p, idx) => {
+          p.classList.toggle('active', idx === 0);
+        });
+
+        renderFoodList();
+        updateCartDisplay();
+
+        document.getElementById('order-modal-overlay').classList.add('active');
+        document.body.style.overflow = 'hidden';
+      }
+
+      function closeOrderModal() {
+        document.getElementById('order-modal-overlay').classList.remove('active');
+        document.body.style.overflow = '';
+        currentActiveTable = null;
+        currentOrderItems = {};
+      }
+
+      function renderFoodList() {
+        const container = document.getElementById('food-items-container');
+        const searchVal = (document.getElementById('search-food-input')?.value || '').toLowerCase().trim();
+        const clearBtn = document.getElementById('clear-search-btn');
+        if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+
+        if (clearBtn) clearBtn.style.display = searchVal ? 'block' : 'none';
+
+        container.innerHTML = '';
+
+        const categories = window.SITE_CONFIG.menu.categories.filter(c => FOOD_CATEGORY_IDS.includes(c.id));
+
+        categories.forEach(cat => {
+          if (selectedFoodCategory !== 'all' && cat.id !== selectedFoodCategory) return;
+
+          let items = cat.items || [];
+          if (searchVal) {
+            items = items.filter(it => 
+              it.name.toLowerCase().includes(searchVal) || 
+              (it.description && it.description.toLowerCase().includes(searchVal)) ||
+              (Array.isArray(it.tags) && it.tags.some(t => t.toLowerCase().includes(searchVal)))
+            );
+          }
+
+          if (items.length === 0) return;
+
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'menu-category-group';
+
+          groupDiv.innerHTML = `
+            <div class="category-title">
+              <span>${cat.name}</span>
+              <span style="font-size: 0.8rem; font-family: var(--font-sans); color: var(--text-muted); font-weight: 600;">${items.length} portate</span>
             </div>
-            <div class="cart-item-controls">
-              <span style="color: var(--text-muted);">${it.price} cad.</span>
-              <div class="qty-stepper" style="transform: scale(0.9); transform-origin: right center;">
-                <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', -1)">−</button>
-                <span class="stepper-value">${it.qty}</span>
-                <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', 1)">+</button>
+            <div class="category-subtitle">${cat.subtitle || ''}</div>
+            <div class="modal-menu-grid"></div>
+          `;
+
+          const gridDiv = groupDiv.querySelector('.modal-menu-grid');
+
+          items.forEach(dish => {
+            const currentQty = (currentOrderItems[dish.name] && currentOrderItems[dish.name].qty) ? currentOrderItems[dish.name].qty : 0;
+            const priceNum = parseFloat(dish.price.replace('€', '').replace(',', '.').trim()) || 0;
+
+            const card = document.createElement('div');
+            card.className = `menu-card-item ${currentQty > 0 ? 'has-qty' : ''}`;
+
+            let actionHtml = '';
+            if (currentQty === 0) {
+              actionHtml = `
+                <button class="btn-add-food" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)">
+                  <i class="fa-solid fa-plus"></i> AGGIUNGI
+                </button>
+              `;
+            } else {
+              actionHtml = `
+                <div class="qty-stepper">
+                  <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', -1)" title="Diminuisci">−</button>
+                  <span class="stepper-value">${currentQty}</span>
+                  <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)" title="Aggiungi">+</button>
+                </div>
+              `;
+            }
+
+            const tagsHtml = (Array.isArray(dish.tags) && dish.tags.length > 0)
+              ? `<div class="menu-tags-list">${dish.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>`
+              : '';
+
+            const thumbHtml = dish.image 
+              ? `<div class="menu-card-thumb-col"><img src="${dish.image}" alt="${dish.name}" loading="lazy"></div>` 
+              : '';
+
+            card.innerHTML = `
+              <div class="menu-card-main-content">
+                <div class="menu-card-info-col">
+                  <div class="menu-item-header">
+                    <h4 class="menu-item-name">${dish.name}</h4>
+                    <span class="menu-item-price">${dish.price}</span>
+                  </div>
+                  <p class="menu-item-desc">${dish.description || ''}</p>
+                  ${tagsHtml}
+                </div>
+                ${thumbHtml}
+              </div>
+
+              <div class="card-footer-action">
+                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">
+                  ${currentQty > 0 ? `Selezionati: <strong style="color: var(--accent-gold);">${currentQty}</strong>` : ''}
+                </span>
+                ${actionHtml}
+              </div>
+            `;
+
+            gridDiv.appendChild(card);
+          });
+
+          container.appendChild(groupDiv);
+        });
+
+        if (container.children.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 45px 12px; color: var(--text-muted); background: #252022; border-radius: 12px;">
+              <i class="fa-solid fa-magnifying-glass" style="font-size: 2.2rem; margin-bottom: 10px; display: block; color: var(--accent-gold);"></i>
+              Nessun piatto o pizza corrisponde alla ricerca "<strong>${searchVal}</strong>".
+              <div style="margin-top: 12px;">
+                <button class="food-cat-pill" onclick="clearFoodSearch()">Azzera ricerca</button>
               </div>
             </div>
-          </div>
-        `).join('');
-      }
-    }
-
-    // 7. Salvataggio Ordinazione: Il tavolo passa da ROSSO a GRIGIO!
-    function saveCurrentOrder() {
-      if (!currentActiveTable) return;
-
-      const items = Object.values(currentOrderItems);
-      if (items.length === 0) {
-        alert("Aggiungi almeno una portata prima di salvare la comanda!");
-        return;
+          `;
+        }
       }
 
-      const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
-      const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
-      const notesVal = document.getElementById('order-notes')?.value.trim() || '';
+      function filterFoodList() {
+        renderFoodList();
+      }
 
-      const orderRecord = {
-        bookingId: currentActiveTable.bookingId || '',
-        tableKey: currentActiveTable.tableKey,
-        tableNum: currentActiveTable.tableNum,
-        tableLabel: currentActiveTable.tableLabel,
-        customerName: currentActiveTable.customerName,
-        shiftTag: currentActiveTable.shiftTag,
-        shiftId: currentActiveTable.shiftId,
-        guests: currentActiveTable.guests,
-        timeTaken: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
-        date: TODAY_ISO,
-        items: items,
-        totalItems: totalQty,
-        totalPrice: `${totalPriceNum.toFixed(2).replace('.', ',')} €`,
-        totalPriceNum: totalPriceNum,
-        notes: notesVal,
-        status: 'presa' // Segna come presa (diventa GRIGIO)
-      };
+      function clearFoodSearch(reRender = true) {
+        const input = document.getElementById('search-food-input');
+        if (input) input.value = '';
+        const clearBtn = document.getElementById('clear-search-btn');
+        if (clearBtn) clearBtn.style.display = 'none';
+        if (reRender) renderFoodList();
+      }
 
-      savedOrders[currentActiveTable.tableKey] = orderRecord;
-      persistStoredOrders();
+      function changeFoodQty(dishName, priceStr, priceNum, category, delta) {
+        if (!currentOrderItems[dishName]) {
+          currentOrderItems[dishName] = {
+            name: dishName,
+            price: priceStr,
+            priceNum: priceNum,
+            qty: 0,
+            category: category
+          };
+        }
 
-      showToastNotification(`Comanda salvata per ${currentActiveTable.tableLabel} (${totalQty} portate)`);
-      closeOrderModal();
-      renderTables();
-    }
+        currentOrderItems[dishName].qty += delta;
 
-    // 8. Consultazione Menu Completo per Personale (Senza tavolo selezionato)
-    function openMenuConsultationModal() {
-      const dummyTable = {
-        tableKey: 'CONSULTAZIONE',
-        tableNum: 0,
-        tableLabel: 'Consulta Menu Ristorante',
-        customerName: 'Visualizzazione Personale',
-        shiftTag: 'Menu Ufficiale OL3',
-        shiftId: '',
-        guests: 0
-      };
-      openOrderModal(dummyTable);
-    }
+        if (currentOrderItems[dishName].qty <= 0) {
+          delete currentOrderItems[dishName];
+        }
 
-    // Helper Toast
-    function showToastNotification(text) {
-      const toast = document.getElementById('toast-msg');
-      const txtEl = document.getElementById('toast-text');
-      if (!toast || !txtEl) return;
+        renderFoodList();
+        updateCartDisplay();
+      }
 
-      txtEl.textContent = text;
-      toast.classList.add('show');
-      setTimeout(() => {
-        toast.classList.remove('show');
-      }, 3400);
-    }
+      function updateCartDisplay() {
+        const listDiv = document.getElementById('cart-items-list');
+        const countEl = document.getElementById('cart-item-count');
+        const totalEl = document.getElementById('cart-total-price');
+        const saveBtn = document.getElementById('btn-save-order');
 
-    function escapeHtml(str) {
-      if (!str) return '';
-      return String(str).replace(/'/g, "\'");
-    }
+        const items = Object.values(currentOrderItems);
+        const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+        const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
+
+        countEl.textContent = `${totalQty} ${totalQty === 1 ? 'portata' : 'portate'}`;
+        totalEl.textContent = `${totalPriceNum.toFixed(2).replace('.', ',')} €`;
+
+        if (totalQty === 0) {
+          listDiv.innerHTML = `
+            <div class="cart-empty-msg">
+              <i class="fa-solid fa-utensils" style="font-size: 2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
+              Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI</strong> o usa i tasti <strong>+</strong> e <strong>-</strong> sui piatti a sinistra.
+            </div>
+          `;
+          saveBtn.disabled = true;
+        } else {
+          saveBtn.disabled = false;
+          listDiv.innerHTML = items.map(it => `
+            <div class="cart-item-row">
+              <div class="cart-item-top">
+                <span class="cart-item-name">${it.name}</span>
+                <span class="cart-item-price">${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €</span>
+              </div>
+              <div class="cart-item-controls">
+                <span style="color: var(--text-muted);">${it.price} cad.</span>
+                <div class="qty-stepper" style="transform: scale(0.9); transform-origin: right center;">
+                  <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', -1)">−</button>
+                  <span class="stepper-value">${it.qty}</span>
+                  <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', 1)">+</button>
+                </div>
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      function saveCurrentOrder() {
+        if (!currentActiveTable) return;
+
+        const items = Object.values(currentOrderItems);
+        if (items.length === 0) {
+          alert("Aggiungi almeno una portata prima di salvare la comanda!");
+          return;
+        }
+
+        const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+        const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
+        const notesVal = document.getElementById('order-notes')?.value.trim() || '';
+
+        const orderRecord = {
+          bookingId: currentActiveTable.bookingId || '',
+          tableKey: currentActiveTable.tableKey,
+          tableNum: currentActiveTable.tableNum,
+          tableLabel: currentActiveTable.tableLabel,
+          customerName: currentActiveTable.customerName,
+          shiftTag: currentActiveTable.shiftTag,
+          shiftId: currentActiveTable.shiftId,
+          guests: currentActiveTable.guests,
+          timeTaken: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+          date: currentDate,
+          items: items,
+          totalItems: totalQty,
+          totalPrice: `${totalPriceNum.toFixed(2).replace('.', ',')} €`,
+          totalPriceNum: totalPriceNum,
+          notes: notesVal,
+          status: 'presa' // Segna come presa (diventa GRIGIO)
+        };
+
+        savedOrders[currentActiveTable.tableKey] = orderRecord;
+        persistSavedOrders();
+
+        showToastNotification(`Comanda salvata per ${currentActiveTable.tableLabel} (${totalQty} portate)`);
+        closeOrderModal();
+        renderTables();
+      }
+
+      function openMenuConsultationModal() {
+        const dummyTable = {
+          tableKey: 'CONSULTAZIONE',
+          tableNum: 0,
+          tableLabel: 'Consulta Menu Completo',
+          customerName: 'Visualizzazione Personale',
+          shiftTag: 'Menu Ufficiale OL3',
+          shiftId: '',
+          guests: 0
+        };
+        openOrderModal(dummyTable);
+      }
+
+      function showToastNotification(text) {
+        const toast = document.getElementById('toast-msg');
+        const txtEl = document.getElementById('toast-text');
+        if (!toast || !txtEl) return;
+
+        txtEl.textContent = text;
+        toast.classList.add('show');
+        setTimeout(() => {
+          toast.classList.remove('show');
+        }, 3400);
+      }
+
+      function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/'/g, "\'");
+      }
+
+      // Esportazione funzioni su window per eventi HTML inline
+      window.openOrderModal = openOrderModal;
+      window.closeOrderModal = closeOrderModal;
+      window.changeFoodQty = changeFoodQty;
+      window.filterFoodList = filterFoodList;
+      window.clearFoodSearch = clearFoodSearch;
+      window.saveCurrentOrder = saveCurrentOrder;
+      window.setTableFilter = setTableFilter;
+      window.syncFromGoogleSheet = syncFromGoogleSheet;
+      window.openMenuConsultationModal = openMenuConsultationModal;
+
+      // Avvio al caricamento:
+      updateDateDisplay();
+      initFoodCategories();
+      syncFromGoogleSheet();
+    })();
   </script>
 </body>
 </html>
