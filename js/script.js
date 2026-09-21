@@ -6,6 +6,11 @@
 const STORAGE_KEY = 'ol3_prenotazioni_db';
 
 document.addEventListener('DOMContentLoaded', () => {
+  try {
+    localStorage.removeItem('ol3_prenotazioni_db');
+    localStorage.removeItem('ol3_prenotazioni_db');
+  } catch(e) {}
+  initCookieBanner();
   renderCommonData();
   renderHighlights();
   renderStory();
@@ -41,6 +46,15 @@ function formatWhatsAppNumber(phone) {
 function toIsoDate(d) {
   if (!d) return '';
   let s = String(d).trim();
+
+  const mGviz = s.match(/Date\((\d{4}),\s*(\d{1,2}),\s*(\d{1,2})\)/);
+  if (mGviz) {
+    const y = mGviz[1];
+    const m = String(parseInt(mGviz[2], 10) + 1).padStart(2, '0');
+    const day = String(mGviz[3]).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  }
+
   if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
   const m = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/);
   if (m) {
@@ -78,6 +92,21 @@ function formatFriendlyDate(isoDate) {
   const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
   const str = dt.toLocaleDateString('it-IT', options);
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+function isTurno1(tStr) {
+  if (!tStr) return false;
+  const s = String(tStr).toLowerCase().trim();
+  if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return false;
+  return s.includes('1°') || s.includes('primo') || s.includes('20:00') || s.includes('1');
+}
+
+function isTurno2(tStr) {
+  if (!tStr) return false;
+  const s = String(tStr).toLowerCase().trim();
+  if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return true;
+  if (s.includes('21:30') && !s.includes('20:00')) return true;
+  return false;
 }
 
 function cleanTime(t) {
@@ -124,16 +153,20 @@ function normalizeBooking(b) {
     time: cleanTime(b.time),
     guests: String(b.guests || ''),
     notes: String(b.notes || ''),
-    status: String(b.status || 'In attesa')
+    status: String(b.status || 'Confermata'),
+    tables: String(b.tables || calculateTables(b.guests))
   };
 }
 
 function renderCommonData() {
   document.querySelectorAll('[data-brand-name]').forEach(el => el.textContent = SITE_CONFIG.brand.name);
-  document.querySelectorAll('[data-contact-address]').forEach(el => el.textContent = SITE_CONFIG.contact.address + ', ' + SITE_CONFIG.contact.cap + ' ' + SITE_CONFIG.contact.city + ' (' + SITE_CONFIG.contact.province + ')');
-  document.querySelectorAll('[data-contact-phone]').forEach(el => {
-    el.textContent = SITE_CONFIG.contact.phoneDisplay;
-    el.setAttribute('href', 'tel:' + SITE_CONFIG.contact.phone);
+  document.querySelectorAll('[data-contact-address]').forEach(el => {
+    el.textContent = SITE_CONFIG.contact.address + ', ' + SITE_CONFIG.contact.cap + ' ' + SITE_CONFIG.contact.city + ' (' + SITE_CONFIG.contact.province + ')';
+    if (el.tagName === 'A') {
+      el.href = SITE_CONFIG.contact.mapsPlaceUrl || 'https://www.google.com/maps/place/Bull+Burger/@39.8053935,16.3968208,13z/data=!4m21!1m14!4m13!1m4!2m2!1d16.3879341!2d39.8195049!4e1!1m6!1m2!1s0x133f5fc4a03ec043:0x80ad513960d73089!2sBull+Burger,+Via+Nazionale,+S.da+Statale+106+Jonica,+87076+Villapiana+Lido+CS!2m2!1d16.4871083!2d39.8060219!3e0!3m5!1s0x133f5fc4a03ec043:0x80ad513960d73089!8m2!3d39.8060219!4d16.4871083!16s%2Fg%2F11gjj9by7s?entry=ttu';
+      el.target = '_blank';
+      el.rel = 'noopener';
+    }
   });
   document.querySelectorAll('[data-contact-hours]').forEach(el => el.textContent = SITE_CONFIG.contact.hours);
 
@@ -165,7 +198,10 @@ function renderHighlights() {
 function renderStory() {
   const titleEl = document.getElementById('story-title');
   const bodyEl = document.getElementById('story-paragraphs');
-  if (titleEl && SITE_CONFIG.story) titleEl.textContent = SITE_CONFIG.story.title;
+  if (titleEl && SITE_CONFIG.story) {
+    let t = SITE_CONFIG.story.title.replace(/&lt;br\s*\/?&gt;/gi, '<br>').replace(/<br\s*\/?>/gi, ' ');
+    titleEl.textContent = t;
+  }
   if (bodyEl && SITE_CONFIG.story) {
     bodyEl.innerHTML = SITE_CONFIG.story.paragraphs.map(p => `<p>${p}</p>`).join('');
   }
@@ -174,8 +210,12 @@ function renderStory() {
 function renderPhilosophy() {
   const titleEl = document.getElementById('philosophy-title');
   const textEl = document.getElementById('philosophy-text');
-  if (titleEl && SITE_CONFIG.philosophy) titleEl.textContent = SITE_CONFIG.philosophy.title;
-  if (textEl && SITE_CONFIG.philosophy) textEl.textContent = SITE_CONFIG.philosophy.text;
+  if (titleEl && SITE_CONFIG.philosophy) {
+    titleEl.innerHTML = 'LA PERFEZIONE RICHIEDE<br>TEMPO';
+  }
+  if (textEl && SITE_CONFIG.philosophy) {
+    textEl.textContent = SITE_CONFIG.philosophy.text;
+  }
 }
 
 function renderGallery() {
@@ -291,10 +331,176 @@ function initReservationForm() {
   if (!form) return;
 
   const dateInput = document.getElementById('res-date');
-  if (dateInput) {
-    const today = new Date().toISOString().split('T')[0];
-    dateInput.min = today;
+  const timeSelect = document.getElementById('res-time');
+  const guestsSelect = document.getElementById('res-guests');
+  const submitBtn = form.querySelector('button[type="submit"]');
+
+  function getLocalToday() {
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
+
+  const todayIso = getLocalToday();
+  if (dateInput) {
+    dateInput.min = todayIso;
+    if (!dateInput.value) {
+      dateInput.value = todayIso;
+    }
+  }
+
+  // Elemento avviso posti esauriti
+  let noticeEl = document.getElementById('shift-availability-notice');
+  if (!noticeEl && timeSelect && timeSelect.parentNode) {
+    noticeEl = document.createElement('div');
+    noticeEl.id = 'shift-availability-notice';
+    noticeEl.style.cssText = 'display: none; margin-top: 8px; padding: 10px 14px; background: rgba(214, 62, 48, 0.12); border: 1px solid var(--accent-red); border-radius: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-red);';
+    timeSelect.parentNode.appendChild(noticeEl);
+  }
+
+  let cachedBookings = null;
+  let isFetchingBookings = false;
+
+  // Lettura in tempo reale di tutte le prenotazioni dal Foglio Google
+  async function fetchLiveBookings() {
+    if (cachedBookings) return cachedBookings;
+    if (isFetchingBookings) return [];
+    isFetchingBookings = true;
+    try {
+      const sheetId = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
+      const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=select%20*`;
+      const resp = await fetch(gvizUrl);
+      const text = await resp.text();
+      const match = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+      if (match) {
+        const json = JSON.parse(match[1]);
+        if (json && json.table && Array.isArray(json.table.rows)) {
+          const list = [];
+          json.table.rows.forEach(r => {
+            if (!r || !r.c) return;
+            const c = r.c;
+            const val = idx => c[idx] ? ((c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : ((c[idx].v !== null && c[idx].v !== undefined) ? c[idx].v : '')) : '';
+            const bId = String(val(0));
+            if (!bId || bId.toLowerCase() === 'id' || bId.toLowerCase() === 'id prenotazione') return;
+            list.push({
+              id: bId,
+              date: toIsoDate(val(4)),
+              time: String(val(5)),
+              guests: parseInt(val(6), 10) || 2,
+              tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
+              status: String(val(8) || 'Confermata')
+            });
+          });
+          cachedBookings = list;
+          isFetchingBookings = false;
+          return list;
+        }
+      }
+    } catch(err) {
+      console.warn('Lettura disponibilità da foglio:', err);
+    }
+    isFetchingBookings = false;
+    return [];
+  }
+
+  // Verifica posti disponibili per turno e disabilitazione se esauriti
+  async function updateAvailability() {
+    if (!dateInput || !dateInput.value || !timeSelect) return;
+    const targetDate = toIsoDate(dateInput.value);
+    const guests = guestsSelect ? (parseInt(guestsSelect.value, 10) || 2) : 2;
+    const neededTables = Math.ceil(guests / 2);
+
+    const bookings = await fetchLiveBookings();
+    const activeOnDate = bookings.filter(b => {
+      return (toIsoDate(b.date) === targetDate) &&
+             !String(b.status || '').toLowerCase().includes('annull') &&
+             !String(b.status || '').toLowerCase().includes('rifiut');
+    });
+
+    let occTurno1 = 0;
+    let occTurno2 = 0;
+    activeOnDate.forEach(b => {
+      const t = b.tables || Math.ceil(b.guests / 2);
+      if (isTurno1(b.time)) occTurno1 += t;
+      else if (isTurno2(b.time)) occTurno2 += t;
+    });
+
+    const availTurno1 = Math.max(0, 50 - occTurno1);
+    const availTurno2 = Math.max(0, 50 - occTurno2);
+
+    const opt1 = timeSelect.querySelector('option[value="20:00"]') || document.getElementById('opt-shift-1');
+    const opt2 = timeSelect.querySelector('option[value="21:30"]') || document.getElementById('opt-shift-2');
+
+    const canBook1 = (availTurno1 >= neededTables);
+    const canBook2 = (availTurno2 >= neededTables);
+
+    if (opt1) {
+      if (!canBook1) {
+        opt1.disabled = true;
+        opt1.style.color = '#8e888b';
+        opt1.style.backgroundColor = '#ede4d1';
+        opt1.textContent = '1° Turno (20:00 - 21:30) (posti esauriti)';
+        if (timeSelect.value === '20:00') timeSelect.value = '';
+      } else {
+        opt1.disabled = false;
+        opt1.style.color = '';
+        opt1.style.backgroundColor = '';
+        opt1.textContent = '1° Turno (20:00 - 21:30)';
+      }
+    }
+
+    if (opt2) {
+      if (!canBook2) {
+        opt2.disabled = true;
+        opt2.style.color = '#8e888b';
+        opt2.style.backgroundColor = '#ede4d1';
+        opt2.textContent = '2° Turno (dalle 21:30 in poi) (posti esauriti)';
+        if (timeSelect.value === '21:30') timeSelect.value = '';
+      } else {
+        opt2.disabled = false;
+        opt2.style.color = '';
+        opt2.style.backgroundColor = '';
+        opt2.textContent = '2° Turno (dalle 21:30 in poi)';
+      }
+    }
+
+    if (!canBook1 && !canBook2) {
+      if (noticeEl) {
+        noticeEl.style.display = 'block';
+        noticeEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Tutti i posti per questa data sono esauriti (100 coperti max raggiunti). Ti invitiamo a selezionare un\'altra data.';
+      }
+      if (submitBtn) {
+        submitBtn.disabled = true;
+        submitBtn.style.opacity = '0.5';
+        submitBtn.style.cursor = 'not-allowed';
+      }
+    } else {
+      if (noticeEl) noticeEl.style.display = 'none';
+      if (submitBtn) {
+        submitBtn.disabled = false;
+        submitBtn.style.opacity = '1';
+        submitBtn.style.cursor = 'pointer';
+      }
+    }
+  }
+
+  if (dateInput) {
+    dateInput.addEventListener('change', () => {
+      cachedBookings = null;
+      updateAvailability();
+    });
+  }
+
+  if (guestsSelect) {
+    guestsSelect.addEventListener('change', () => {
+      updateAvailability();
+    });
+  }
+
+  // Controllo disponibilità all\'avvio
+  fetchLiveBookings().then(() => updateAvailability());
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -307,21 +513,30 @@ function initReservationForm() {
     const email = document.getElementById('res-email') ? document.getElementById('res-email').value.trim() : '';
     const notes = document.getElementById('res-notes') ? document.getElementById('res-notes').value.trim() : '';
 
+    const chosenOpt = timeSelect ? timeSelect.querySelector(`option[value="${time}"]`) : null;
+    if (chosenOpt && chosenOpt.disabled) {
+      alert('Ci dispiace, i posti per il turno selezionato sono esauriti. Seleziona un altro turno o una data diversa.');
+      return;
+    }
+
+    const tablesNeeded = Math.ceil(parseInt(guests, 10) / 2);
+    const bookingId = 'OL3_' + Date.now();
+
     const booking = {
-      id: 'book_' + Date.now(),
+      id: bookingId,
       created_at: new Date().toLocaleString('it-IT'),
       name: name,
       phone: phone,
       date: date,
       time: time,
       guests: guests,
+      tables: tablesNeeded,
       email: email,
       notes: notes,
-      status: 'In attesa'
+      status: 'Confermata'
     };
 
-    saveBookingLocally(booking);
-
+    // Sincronizzazione con Google Sheet via Google Apps Script (POST + GET Fallback)
     const endpoint = getGoogleSheetEndpoint();
     if (endpoint) {
       fetch(endpoint, {
@@ -329,344 +544,405 @@ function initReservationForm() {
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(booking)
-      }).catch(err => console.log('Sincronizzazione Sheet:', err));
+      }).catch(err => console.log('Sincronizzazione POST Sheet:', err));
+
+      const getParams = new URLSearchParams({
+        action: 'book',
+        id: booking.id,
+        name: booking.name,
+        phone: booking.phone,
+        date: booking.date,
+        time: booking.time,
+        guests: booking.guests,
+        tables: String(booking.tables),
+        notes: booking.notes
+      });
+      fetch(endpoint + '?' + getParams.toString(), { mode: 'no-cors' })
+        .catch(err => console.log('Sincronizzazione GET Sheet:', err));
     }
 
-    const formData = new FormData(form);
-    fetch('/', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-      body: new URLSearchParams(formData).toString()
-    }).catch(() => {});
+    cachedBookings = null;
 
+    // Mostra schermata di conferma immediata
     if (successCard) {
-      document.getElementById('confirmed-date-time').textContent = `${formatItalianDate(date)} ore ${time}`;
-      document.getElementById('confirmed-guests').textContent = guests;
-      document.getElementById('confirmed-phone').textContent = phone;
+      const displayTurno = time.includes("20:00") ? "1° Turno (20:00 - 21:30)" : "2° Turno (dalle 21:30 in poi)";
+      if (document.getElementById('confirmed-date-time')) {
+        document.getElementById('confirmed-date-time').textContent = `${formatItalianDate(date)} • ${displayTurno}`;
+      }
+      if (document.getElementById('confirmed-guests')) {
+        document.getElementById('confirmed-guests').textContent = `${guests} Persone`;
+      }
+      if (document.getElementById('confirmed-code')) {
+        document.getElementById('confirmed-code').textContent = bookingId;
+      }
+      if (document.getElementById('confirmed-name')) {
+        document.getElementById('confirmed-name').textContent = name;
+      }
+      if (document.getElementById('confirmed-guests-detail')) {
+        document.getElementById('confirmed-guests-detail').textContent = `${guests} Persone`;
+      }
+
       form.style.display = 'none';
       successCard.style.display = 'block';
-      successCard.scrollIntoView({ behavior: 'smooth' });
+      successCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
   });
 }
 
-function saveBookingLocally(booking) {
-  let list = [];
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) list = JSON.parse(raw);
-  } catch (e) {}
+function initAdminDashboard() {
+  const gridContainer = document.getElementById('tables-grid-container');
+  if (!gridContainer) return; // Non siamo nella pagina di gestione
 
-  list.unshift(booking);
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-  } catch (e) {}
-}
+  let currentDate = new Date().toISOString().split('T')[0];
+  let currentShift = '20:00'; // 20:00 = 1° Turno, 21:30 = 2° Turno
+  let activeBookings = [];
+  let currentSelectedBooking = null;
 
-function getStoredBookings() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw);
-      if (Array.isArray(parsed)) {
-        return parsed.map(normalizeBooking).filter(Boolean);
-      }
-    }
-  } catch (e) {}
-  return [];
-}
+  const dateInput = document.getElementById('admin-target-date');
+  const btnPrev = document.getElementById('btn-prev-day');
+  const btnNext = document.getElementById('btn-next-day');
+  const btnToday = document.getElementById('btn-today');
+  const btnTurno1 = document.getElementById('btn-turno-1');
+  const btnTurno2 = document.getElementById('btn-turno-2');
+  const btnRefresh = document.getElementById('refresh-data-btn');
 
-// Inizializza Dashboard Amministratore (Zero refresh continui, scambiatore data in alto, messaggi WhatsApp con grassetti)
-async function initAdminDashboard() {
-  const confirmedContainer = document.getElementById('confirmed-bookings-list');
-  const pendingContainer = document.getElementById('pending-bookings-list');
-  if (!confirmedContainer || !pendingContainer) return;
+  const modal = document.getElementById('table-modal');
+  const modalClose = document.getElementById('modal-close');
+  const modalDelete = document.getElementById('modal-delete-btn');
 
-  const confirmedBadge = document.getElementById('confirmed-count-badge');
-  const pendingBadge = document.getElementById('pending-count-badge');
-  const datePicker = document.getElementById('admin-date-picker');
-  const dateLabel = document.getElementById('date-display-friendly');
-  const prevBtn = document.getElementById('date-prev-btn');
-  const nextBtn = document.getElementById('date-next-btn');
-  const todayBtn = document.getElementById('date-today-btn');
-  const allBtn = document.getElementById('date-all-btn');
-  const refreshBtn = document.getElementById('admin-refresh-btn');
-
-  const todayIso = new Date().toISOString().split('T')[0];
-  let selectedDate = todayIso;
-  let showAllDates = false;
-
-  if (datePicker) {
-    datePicker.value = todayIso;
-  }
-
-  // Carica i dati locali immediatamente senza far sparire nulla
-  const initialLocal = getStoredBookings();
-  if (initialLocal.length > 0) {
-    renderBoard(initialLocal);
-  }
-
-  // Sincronizzazione pulita senza cancellare le schede dallo schermo
-  async function fetchFromSheet() {
-    if (refreshBtn) {
-      refreshBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate fa-spin"></i> Sincronizzazione...';
-    }
-
-    const endpoint = getGoogleSheetEndpoint();
-    let bookings = [];
-
-    try {
-      const res = await fetch(endpoint);
-      const json = await res.json();
-      if (json && json.status === 'success' && Array.isArray(json.data) && json.data.length > 0) {
-        bookings = json.data.map(normalizeBooking).filter(Boolean);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(bookings));
-        renderBoard(bookings);
-      }
-    } catch (e) {
-      console.warn('Lettura Google Sheets completata, dati pronti:', e);
-    }
-
-    if (refreshBtn) {
-      refreshBtn.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Aggiorna Dati dal Foglio';
-    }
-  }
-
-  function renderBoard(bookings) {
-    // 1. COLONNA DESTRA: Nuove richieste in arrivo (ordinate per arrivo, ultime in cima)
-    const pending = bookings.filter(b => b.status === 'In attesa');
-    if (pendingBadge) pendingBadge.textContent = `${pending.length} in attesa`;
-
-    if (pending.length === 0) {
-      pendingContainer.innerHTML = `
-        <div style="text-align: center; padding: 40px 16px; color: var(--text-muted);">
-          <i class="fa-regular fa-bell-slash" style="font-size: 2.2rem; color: #555; margin-bottom: 12px; display:block;"></i>
-          <p style="font-size: 0.92rem;">Nessuna nuova richiesta in arrivo.</p>
-        </div>
-      `;
-    } else {
-      pendingContainer.innerHTML = pending.map(b => {
-        const waNum = formatWhatsAppNumber(b.phone);
-        const displayDate = formatItalianDate(b.date);
-
-        // Messaggio di conferma ufficiale con i grassetti corretti
-        const confirmText = `Gentile *${b.name}* ☺️,\nti confermiamo con piacere la prenotazione del tavolo per *${b.guests}* da *OL3 Ristorante Pizzeria* per il giorno *${displayDate}* alle ore *${b.time}*. Vi aspettiamo in Piazza Enrico Berlinguer a Villapiana Lido! Per variazioni contattaci al *352 038 9996*. A presto, Lo Staff OL3 ☺️.`;
-        const confirmUrl = `https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(confirmText)}`;
-
-        // Messaggio di rifiuto ufficiale con grassetti
-        const rejectText = `Gentile *${b.name}* 🥺,\nci dispiace informarti che per il giorno *${displayDate}* alle ore *${b.time}* il nostro locale *OL3 Ristorante Pizzeria* è al completo e non abbiamo tavoli disponibili. Ci scusiamo per il disagio e speriamo di poterti accogliere molto presto! Un cordiale saluto, Lo Staff OL3 🥺.`;
-        const rejectUrl = `https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(rejectText)}`;
-
-        return `
-          <div class="table-card table-card-pending" id="card-${b.id}">
-            <div class="table-card-header">
-              <span class="table-card-name">${b.name}</span>
-              <span class="table-time-tag">${displayDate} • ${b.time}</span>
-            </div>
-
-            <div class="table-card-info">
-              <span><i class="fa-solid fa-users" style="color: var(--accent-gold);"></i> <strong>${b.guests}</strong></span>
-              <span><i class="fa-solid fa-phone" style="color: var(--accent-gold);"></i> <a href="tel:${b.phone}" style="color: #fff; text-decoration: underline;">${b.phone}</a></span>
-              <span style="font-size: 0.78rem; color: #999; margin-left: auto;">Richiesta: ${b.created_at || 'Recente'}</span>
-            </div>
-
-            ${b.notes ? `<div style="font-size: 0.85rem; color: #d5cfc7; background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 4px; margin-bottom: 12px;"><strong>Note:</strong> ${b.notes}</div>` : ''}
-
-            <div style="display: flex; gap: 10px; flex-direction: column; margin-top: 14px;">
-              <a href="${confirmUrl}" target="_blank" rel="noopener" class="btn-whatsapp-confirm" onclick="confirmBooking('${b.id}')">
-                <i class="fa-brands fa-whatsapp"></i> CONFERMA VIA WHATSAPP
-              </a>
-              <a href="${rejectUrl}" target="_blank" rel="noopener" class="btn-whatsapp-reject" onclick="rejectBooking('${b.id}')">
-                <i class="fa-solid fa-xmark"></i> RIFIUTA VIA WHATSAPP
-              </a>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // 2. COLONNA SINISTRA: Tavoli confermati divisi per giorno
-    const allConfirmed = bookings.filter(b => b.status === 'Confermato');
-    
-    let displayedConfirmed = allConfirmed;
-    if (!showAllDates && selectedDate) {
-      displayedConfirmed = allConfirmed.filter(b => toIsoDate(b.date) === selectedDate);
-    }
-
-    if (dateLabel) {
-      if (showAllDates) {
-        dateLabel.textContent = `Visualizzazione: Tutte le date (${allConfirmed.length} tavoli totali)`;
-      } else {
-        const isToday = selectedDate === todayIso;
-        const friendly = formatFriendlyDate(selectedDate);
-        dateLabel.textContent = `${isToday ? 'Oggi, ' : ''}${friendly} (${displayedConfirmed.length} ${displayedConfirmed.length === 1 ? 'tavolo' : 'tavoli'})`;
-      }
-    }
-
-    if (confirmedBadge) {
-      confirmedBadge.textContent = `${displayedConfirmed.length} tavoli`;
-    }
-
-    if (displayedConfirmed.length === 0) {
-      confirmedContainer.innerHTML = `
-        <div style="text-align: center; padding: 40px 16px; color: var(--text-muted);">
-          <i class="fa-regular fa-calendar-xmark" style="font-size: 2.2rem; color: #555; margin-bottom: 12px; display:block;"></i>
-          <p style="font-size: 0.92rem;">Nessun tavolo confermato per ${showAllDates ? 'alcuna data' : 'il giorno selezionato'}.</p>
-          ${!showAllDates ? `<button onclick="document.getElementById('date-all-btn').click()" style="margin-top: 10px; background: none; border: none; color: var(--accent-gold); text-decoration: underline; cursor: pointer; font-size: 0.85rem;">Vedi tutte le date</button>` : ''}
-        </div>
-      `;
-    } else {
-      // Se si visualizzano tutti i giorni, raggruppali visivamente per data
-      if (showAllDates) {
-        // Raggruppa per data
-        const groups = {};
-        displayedConfirmed.forEach(b => {
-          const iso = toIsoDate(b.date);
-          if (!groups[iso]) groups[iso] = [];
-          groups[iso].push(b);
-        });
-
-        const sortedDates = Object.keys(groups).sort();
-        confirmedContainer.innerHTML = sortedDates.map(dIso => {
-          const items = groups[dIso];
-          const friendly = formatFriendlyDate(dIso);
-          return `
-            <div class="day-group-header">
-              <i class="fa-regular fa-calendar"></i> ${friendly} (${items.length} ${items.length === 1 ? 'tavolo' : 'tavoli'})
-            </div>
-            ${items.map(renderConfirmedCard).join('')}
-          `;
-        }).join('');
-      } else {
-        confirmedContainer.innerHTML = displayedConfirmed.map(renderConfirmedCard).join('');
-      }
-    }
-  }
-
-  function renderConfirmedCard(b) {
-    const waNum = formatWhatsAppNumber(b.phone);
-    const waChatUrl = `https://api.whatsapp.com/send?phone=${waNum}`;
-    const displayDate = formatItalianDate(b.date);
-
-    return `
-      <div class="table-card table-card-confirmed" id="card-${b.id}">
-        <div class="table-card-header">
-          <span class="table-card-name">${b.name}</span>
-          <span class="table-time-tag">${displayDate} • ${b.time}</span>
-        </div>
-
-        <div class="table-card-info">
-          <span><i class="fa-solid fa-users" style="color: var(--accent-gold);"></i> <strong>${b.guests}</strong></span>
-          <span><i class="fa-solid fa-phone" style="color: var(--accent-gold);"></i> <a href="tel:${b.phone}" style="color: #fff; text-decoration: underline;">${b.phone}</a></span>
-        </div>
-
-        ${b.notes ? `<div style="font-size: 0.85rem; color: #d5cfc7; background: rgba(0,0,0,0.25); padding: 8px 12px; border-radius: 4px; margin-bottom: 12px;"><strong>Note:</strong> ${b.notes}</div>` : ''}
-
-        <div style="display: flex; gap: 10px; justify-content: space-between; align-items: center; margin-top: 10px; flex-wrap: wrap;">
-          <a href="${waChatUrl}" target="_blank" rel="noopener" class="btn-whatsapp-chat">
-            <i class="fa-brands fa-whatsapp"></i> Scrivi su WhatsApp
-          </a>
-          <button class="btn-remove-booking" onclick="cancelBooking('${b.id}', '${b.name}', '${b.phone}', '${displayDate}', '${b.time}')">
-            <i class="fa-solid fa-trash-can"></i> Rimuovi / Annulla
-          </button>
-        </div>
-      </div>
-    `;
-  }
-
-  // Navigatore data avanti e indietro
-  function changeDateByDays(offset) {
-    showAllDates = false;
-    const current = new Date(selectedDate);
-    current.setDate(current.getDate() + offset);
-    selectedDate = current.toISOString().split('T')[0];
-    if (datePicker) datePicker.value = selectedDate;
-    renderBoard(getStoredBookings());
-  }
-
-  if (prevBtn) {
-    prevBtn.addEventListener('click', () => changeDateByDays(-1));
-  }
-  if (nextBtn) {
-    nextBtn.addEventListener('click', () => changeDateByDays(1));
-  }
-  if (todayBtn) {
-    todayBtn.addEventListener('click', () => {
-      showAllDates = false;
-      selectedDate = todayIso;
-      if (datePicker) datePicker.value = todayIso;
-      renderBoard(getStoredBookings());
+  if (dateInput) {
+    dateInput.value = currentDate;
+    dateInput.addEventListener('change', () => {
+      currentDate = dateInput.value;
+      renderHall();
     });
   }
-  if (allBtn) {
-    allBtn.addEventListener('click', () => {
-      showAllDates = true;
-      renderBoard(getStoredBookings());
+
+  if (btnPrev) {
+    btnPrev.addEventListener('click', () => {
+      const dt = new Date(currentDate);
+      dt.setDate(dt.getDate() - 1);
+      currentDate = dt.toISOString().split('T')[0];
+      if (dateInput) dateInput.value = currentDate;
+      renderHall();
     });
   }
-  if (datePicker) {
-    datePicker.addEventListener('change', (e) => {
-      if (e.target.value) {
-        showAllDates = false;
-        selectedDate = e.target.value;
-        renderBoard(getStoredBookings());
+
+  if (btnNext) {
+    btnNext.addEventListener('click', () => {
+      const dt = new Date(currentDate);
+      dt.setDate(dt.getDate() + 1);
+      currentDate = dt.toISOString().split('T')[0];
+      if (dateInput) dateInput.value = currentDate;
+      renderHall();
+    });
+  }
+
+  if (btnToday) {
+    btnToday.addEventListener('click', () => {
+      currentDate = new Date().toISOString().split('T')[0];
+      if (dateInput) dateInput.value = currentDate;
+      renderHall();
+    });
+  }
+
+  if (btnTurno1 && btnTurno2) {
+    btnTurno1.addEventListener('click', () => {
+      currentShift = '20:00';
+      btnTurno1.classList.add('active');
+      btnTurno2.classList.remove('active');
+      renderHall();
+    });
+    btnTurno2.addEventListener('click', () => {
+      currentShift = '21:30';
+      btnTurno2.classList.add('active');
+      btnTurno1.classList.remove('active');
+      renderHall();
+    });
+  }
+
+  if (btnRefresh) {
+    btnRefresh.addEventListener('click', () => {
+      btnRefresh.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aggiornamento...';
+      fetchFromSheet().then(() => {
+        btnRefresh.innerHTML = '<i class="fa-solid fa-arrows-rotate"></i> Aggiorna Dati dal Foglio';
+        renderHall();
+      });
+    });
+  }
+
+  // Chiusura modale
+  if (modalClose) {
+    modalClose.addEventListener('click', () => modal.classList.remove('active'));
+  }
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) modal.classList.remove('active');
+    });
+  }
+
+  // Cancellazione prenotazione
+  if (modalDelete) {
+    modalDelete.addEventListener('click', () => {
+      if (!currentSelectedBooking) return;
+      if (confirm(`Confermi di voler cancellare la prenotazione di ${currentSelectedBooking.name}? I tavoli verranno liberati.`)) {
+        // Rimuovi localmente
+        const local = getLocalBookings().filter(b => b.id !== currentSelectedBooking.id);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(local));
+
+        // Rimuovi su Google Apps Script
+        const endpoint = getGoogleSheetEndpoint();
+        if (endpoint) {
+          fetch(endpoint, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify({ action: 'delete_booking', id: currentSelectedBooking.id })
+          }).catch(() => {});
+        }
+
+        modal.classList.remove('active');
+        fetchFromSheet().then(() => renderHall());
       }
     });
   }
 
-  window.confirmBooking = function(id) {
-    updateBookingInState(id, 'Confermato');
-  };
+      async function fetchFromSheet() {
+    let sheetData = [];
 
-  window.rejectBooking = function(id) {
-    updateBookingInState(id, 'Rifiutato');
-  };
-
-  window.cancelBooking = function(id, name, phone, displayDate, time) {
-    const confirmCancel = confirm(`Sei sicuro di voler annullare la prenotazione di ${name} per il giorno ${displayDate} alle ore ${time}?`);
-    if (!confirmCancel) return;
-
-    const waNum = formatWhatsAppNumber(phone);
-    const cancelMsg = `Gentile *${name}*,\nti comunichiamo che la tua prenotazione per il giorno *${displayDate}* alle ore *${time}* da *OL3 Ristorante Pizzeria* è stata *annullata*. Per qualsiasi chiarimento o per verificare altre date puoi contattarci al *352 038 9996*. Un cordiale saluto, Lo Staff OL3.`;
-    const cancelWaUrl = `https://api.whatsapp.com/send?phone=${waNum}&text=${encodeURIComponent(cancelMsg)}`;
-
-    updateBookingInState(id, 'Annullato');
-
-    const notifyWa = confirm("Vuoi inviare l'avviso di annullamento al cliente su WhatsApp?");
-    if (notifyWa) {
-      window.open(cancelWaUrl, '_blank');
-    }
-  };
-
-  function updateBookingInState(id, newStatus) {
-    const list = getStoredBookings();
-    const item = list.find(b => String(b.id) === String(id));
-    if (item) {
-      item.status = newStatus;
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
-      renderBoard(list);
-    }
-
+    // 1. Prova prima l'endpoint Apps Script
     const endpoint = getGoogleSheetEndpoint();
     if (endpoint) {
-      fetch(endpoint, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({ action: 'update_status', id: id, status: newStatus })
-      }).catch(() => {});
+      try {
+        const resp = await fetch(endpoint);
+        const res = await resp.json();
+        if (res && res.status === 'success' && Array.isArray(res.data)) {
+          sheetData = res.data.map(normalizeBooking);
+        }
+      } catch(err) {
+        console.log('Lettura Apps Script:', err);
+      }
+    }
+
+    // 2. Prova Google Visualization API come fallback
+    if (sheetData.length === 0) {
+      const sheetId = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
+      const gvizUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:json&tq=select%20*`;
+      try {
+        const gvizResp = await fetch(gvizUrl);
+        const text = await gvizResp.text();
+        const match = text.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+        if (match) {
+          const json = JSON.parse(match[1]);
+          if (json && json.table && Array.isArray(json.table.rows)) {
+            json.table.rows.forEach(r => {
+              if (!r || !r.c) return;
+              const c = r.c;
+              const val = (idx) => (c[idx] && c[idx].v !== null && c[idx].v !== undefined) ? c[idx].v : '';
+              const bId = String(val(0));
+              if (!bId || bId.toLowerCase() === 'id' || bId.toLowerCase() === 'id prenotazione') return;
+              sheetData.push({
+                id: bId,
+                created_at: String(val(1)),
+                name: String(val(2)),
+                phone: String(val(3)),
+                date: toIsoDate(val(4)),
+                time: String(val(5)),
+                guests: String(val(6)),
+                tables: String(val(7) || Math.ceil(parseInt(val(6), 10) / 2)),
+                status: String(val(8) || 'Confermata'),
+                notes: String(val(9) || '')
+              });
+            });
+          }
+        }
+      } catch(err) {
+        console.log('Lettura GVIZ:', err);
+      }
+    }
+
+    if (sheetData.length > 0) {
+      activeBookings = sheetData.map(normalizeBooking);
+    } else {
+      activeBookings = [];
     }
   }
 
-  // Carica all'avvio dal foglio una sola volta
-  fetchFromSheet();
+  function renderHall() {
+    gridContainer.innerHTML = '';
 
-  // Pulsante manuale Aggiorna
-  if (refreshBtn) {
-    refreshBtn.addEventListener('click', fetchFromSheet);
+    // Unisci prenotazioni dal foglio con quelle salvate localmente
+    const local = [];
+    const sheetBookings = (activeBookings && Array.isArray(activeBookings)) ? activeBookings : [];
+    const allBookingsMap = new Map();
+    sheetBookings.forEach(b => { if (b && b.id) allBookingsMap.set(b.id, b); });
+    local.forEach(b => { if (b && b.id && !allBookingsMap.has(b.id)) allBookingsMap.set(b.id, b); });
+    const bookings = Array.from(allBookingsMap.values());
+
+    // 1. Filtra per data e turno
+    const filtered = bookings.filter(b => {
+      const sameDate = (toIsoDate(b.date) === currentDate);
+      const statusOk = b.status && !b.status.toLowerCase().includes('annull');
+      const turnoStr = String(b.time || '').toLowerCase();
+      const sameShift = (currentShift === '20:00') ? isTurno1(b.time) : isTurno2(b.time);
+      return sameDate && statusOk && sameShift;
+    });
+
+    // 2. Notifica intelligente se ci sono prenotazioni in altre date
+    const otherDateBookings = bookings.filter(b => toIsoDate(b.date) !== currentDate && b.status && !b.status.toLowerCase().includes('annull'));
+    let hintContainer = document.getElementById('other-dates-hint');
+    if (!hintContainer) {
+      hintContainer = document.createElement('div');
+      hintContainer.id = 'other-dates-hint';
+      hintContainer.style.cssText = 'background: #faf2e1; border: 1.5px dashed var(--accent-red); border-radius: 8px; padding: 12px 18px; margin-bottom: 20px; font-size: 0.92rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; color: var(--text-dark);';
+      const controlsBar = document.querySelector('.controls-bar');
+      if (controlsBar && controlsBar.parentNode) controlsBar.parentNode.insertBefore(hintContainer, controlsBar.nextSibling);
+    }
+
+    if (otherDateBookings.length > 0 && filtered.length === 0) {
+      const datesList = [...new Set(otherDateBookings.map(b => toIsoDate(b.date)))];
+      hintContainer.style.display = 'flex';
+      hintContainer.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+          <span><i class="fa-solid fa-calendar-check" style="color: var(--accent-red);"></i> <strong>Prenotazioni trovate per altre date:</strong></span>
+          ${datesList.map(d => `<button class="nav-date-btn" style="padding: 4px 12px; font-size: 0.85rem; background: var(--accent-red); color: #fff; border: none;" onclick="document.getElementById('admin-target-date').value='${d}'; document.getElementById('admin-target-date').dispatchEvent(new Event('change'));"><i class="fa-solid fa-arrow-right"></i> Vai al ${formatItalianDate(d)}</button>`).join('')}
+        </div>
+      `;
+    } else {
+      if (hintContainer) hintContainer.style.display = 'none';
+    }
+
+    // Mappa dei 50 tavoli (1..50)
+    const tables = [];
+    for (let i = 1; i <= 50; i++) {
+      tables.push({ number: i, booking: null, isLinked: false });
+    }
+
+    let nextTableIdx = 0;
+    let totalGuestsCount = 0;
+    let totalTablesOccupied = 0;
+
+    // Assegna i tavoli contigui per ogni prenotazione
+    filtered.forEach(b => {
+      const guests = parseInt(b.guests, 10) || 2;
+      const needed = parseInt(b.tables, 10) || Math.ceil(guests / 2);
+      totalGuestsCount += guests;
+      totalTablesOccupied += needed;
+
+      const groupTables = [];
+      for (let k = 0; k < needed; k++) {
+        if (nextTableIdx < 50) {
+          tables[nextTableIdx].booking = b;
+          tables[nextTableIdx].isLinked = (needed > 1);
+          groupTables.push(tables[nextTableIdx].number);
+          nextTableIdx++;
+        }
+      }
+      b._assignedTableNumbers = groupTables;
+    });
+
+    // Aggiorna contatori in alto
+    const availableTables = Math.max(0, 50 - totalTablesOccupied);
+    const statAvail = document.getElementById('stat-available-tables');
+    const statOcc = document.getElementById('stat-occupied-tables');
+    const statGuests = document.getElementById('stat-total-guests');
+    const statCount = document.getElementById('stat-bookings-count');
+
+    if (statAvail) statAvail.textContent = availableTables;
+    if (statOcc) statOcc.textContent = totalTablesOccupied;
+    if (statGuests) statGuests.textContent = totalGuestsCount;
+    if (statCount) statCount.textContent = filtered.length;
+
+    // Renderizza i 50 blocchi tavolo nel rettangolo della sala
+    tables.forEach(t => {
+      const tableDiv = document.createElement('div');
+      tableDiv.className = 'table-box ' + (t.booking ? 'occupied' : 'available') + (t.isLinked ? ' linked-group' : '');
+
+      if (t.booking) {
+        // TAVOLO GRIGIO (OCCUPATO)
+        const b = t.booking;
+        tableDiv.innerHTML = `
+          <span class="table-num">T${String(t.number).padStart(2, '0')}</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-users"></i> ${b.guests}p</span>
+          <span class="table-guest-name">${b.name.split(' ')[0]}</span>
+        `;
+        tableDiv.title = `Tavolo ${t.number}: Occupato da ${b.name} (${b.guests} ospiti). Clicca per dettagli.`;
+        tableDiv.addEventListener('click', () => openBookingModal(b, t.number));
+      } else {
+        // TAVOLO ROSSO (DISPONIBILE)
+        tableDiv.innerHTML = `
+          <span class="table-num">T${String(t.number).padStart(2, '0')}</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        `;
+        tableDiv.title = `Tavolo ${t.number}: Disponibile (2 posti liberi).`;
+      }
+
+      gridContainer.appendChild(tableDiv);
+    });
   }
 
-  // Sincronizzazione automatica solo ogni 10 minuti, senza mai cancellare le schede a video
-  const TEN_MINUTES_MS = 10 * 60 * 1000;
-  setInterval(fetchFromSheet, TEN_MINUTES_MS);
+  function openBookingModal(b, clickedTableNum) {
+    currentSelectedBooking = b;
+    const modalTableLabel = document.getElementById('modal-table-label');
+    const modalBookingId = document.getElementById('modal-booking-id');
+    const modalClientName = document.getElementById('modal-client-name');
+    const modalClientPhone = document.getElementById('modal-client-phone');
+    const modalGuestsCount = document.getElementById('modal-guests-count');
+    const modalTablesCount = document.getElementById('modal-tables-count');
+    const modalShiftName = document.getElementById('modal-shift-name');
+    const modalNotes = document.getElementById('modal-notes');
+
+    const tableListStr = b._assignedTableNumbers && b._assignedTableNumbers.length > 0
+      ? b._assignedTableNumbers.map(n => `T${String(n).padStart(2, '0')}`).join(', ')
+      : `Tavolo T${String(clickedTableNum).padStart(2, '0')}`;
+
+    if (modalTableLabel) modalTableLabel.textContent = `Tavoli: ${tableListStr}`;
+    if (modalBookingId) modalBookingId.textContent = b.id || 'ID N/D';
+    if (modalClientName) modalClientName.textContent = b.name || '-';
+    if (modalClientPhone) {
+      modalClientPhone.textContent = b.phone || '-';
+      modalClientPhone.href = `tel:${b.phone}`;
+    }
+    if (modalGuestsCount) modalGuestsCount.textContent = `${b.guests} Ospiti`;
+    if (modalTablesCount) modalTablesCount.textContent = `${b.tables || Math.ceil(parseInt(b.guests, 10)/2)} Tavoli da 2 uniti`;
+    if (modalShiftName) modalShiftName.textContent = (currentShift === '20:00') ? '1° Turno (20:00 - 21:30)' : '2° Turno (dalle 21:30 in poi)';
+    if (modalNotes) modalNotes.textContent = b.notes && b.notes.trim() !== '' ? b.notes : 'Nessuna nota o intolleranza segnalata';
+
+    modal.classList.add('active');
+  }
+
+  // Caricamento iniziale
+  fetchFromSheet().then(() => renderHall());
+}
+
+
+// Inizializzazione Banner Cookie GDPR
+function initCookieBanner() {
+  try {
+    if (localStorage.getItem('ol3_cookie_ok') === 'true') return;
+  } catch(e) {}
+
+  const banner = document.createElement('div');
+  banner.className = 'cookie-banner';
+  banner.id = 'gdpr-cookie-banner';
+  banner.innerHTML = `
+    <p>
+      <i class="fa-solid fa-cookie-bite" style="color: var(--accent-red); margin-right: 6px;"></i>
+      Questo sito utilizza esclusivamente <strong>cookie tecnici</strong> indispensabili per la gestione delle prenotazioni e la sicurezza della navigazione. Nessun dato viene impiegato per profilazione o pubblicità. Per maggiori informazioni consulta la nostra <a href="cookie.html">Informativa sui cookie</a>.
+    </p>
+    <button class="cookie-btn" id="accept-cookie-btn">Accetta e Continua</button>
+  `;
+
+  document.body.appendChild(banner);
+
+  const btn = document.getElementById('accept-cookie-btn');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      try {
+        localStorage.setItem('ol3_cookie_ok', 'true');
+      } catch(e) {}
+      banner.style.display = 'none';
+    });
+  }
 }

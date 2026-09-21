@@ -3,144 +3,1315 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gestione Tavoli & Prenotazioni | OL3 Ristorante Pizzeria</title>
+  <title>Mappa Sala & Gestione Tavoli | OL3 Ristorante Pizzeria</title>
+  
+    <!-- Favicon & Icona Safari / Apple Touch -->
+  <link rel="icon" type="image/png" sizes="32x32" href="foto/icon.png?v=3">
+  <link rel="icon" type="image/png" sizes="16x16" href="foto/icon.png?v=3">
+  <link rel="apple-touch-icon" sizes="180x180" href="foto/icon.png?v=3">
+  <link rel="shortcut icon" href="foto/icon.png?v=3">
   
   <!-- Font Google -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   
   <!-- Icone FontAwesome -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
-  <!-- Stili -->
+  <!-- Stili Principali -->
+    <!-- Stili Principali (Dual Link Failsafe) -->
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    body {
+      background-color: #1a1718;
+      color: #ffffff;
+      min-height: 100vh;
+      font-family: var(--font-sans, 'Plus Jakarta Sans', sans-serif);
+      margin: 0;
+      padding: 0;
+    }
+
+    .admin-container {
+      max-width: 1350px;
+      margin: 0 auto;
+      padding: 24px 20px 80px;
+    }
+
+    .hall-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 24px;
+      padding-bottom: 20px;
+      border-bottom: 1.5px solid var(--border-light, rgba(43, 39, 41, 0.15));
+    }
+
+    .hall-title-area h1 {
+      font-family: var(--font-serif, 'Playfair Display', serif);
+      font-size: 2.1rem;
+      color: #ffffff;
+      margin: 0 0 4px 0;
+    }
+
+    .hall-title-area p {
+      color: var(--text-muted, #4a4447);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .controls-bar {
+      background-color: var(--bg-card, #f1e1c0);
+      border: 1.5px solid var(--border-card, rgba(43, 39, 41, 0.12));
+      border-radius: 12px;
+      padding: 16px 22px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+    }
+
+    .date-control-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-date-btn {
+      background: #1e1a1c;
+      border: 1px solid rgba(43, 39, 41, 0.2);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-weight: 700;
+      cursor: pointer;
+      font-size: 0.88rem;
+      transition: var(--transition, all 0.3s ease);
+    }
+
+    .nav-date-btn:hover {
+      background: var(--accent-red, #d63e30);
+      color: #fff;
+    }
+
+    .date-input-styled {
+      background: #ffffff;
+      border: 1.5px solid rgba(43, 39, 41, 0.25);
+      color: #ffffff;
+      font-weight: 700;
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      color-scheme: dark;
+      outline: none;
+    }
+
+    .shift-toggle-group {
+      display: flex;
+      gap: 8px;
+      background: #1e1a1c;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid rgba(43, 39, 41, 0.15);
+    }
+
+    .shift-btn {
+      padding: 8px 20px;
+      border-radius: 6px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.90rem;
+      cursor: pointer;
+      color: var(--text-main, #1f1c1d);
+      background: transparent;
+      transition: var(--transition, all 0.3s ease);
+    }
+
+    .shift-btn.active {
+      background: var(--accent-red, #d63e30);
+      color: #fff;
+      box-shadow: 0 2px 8px rgba(214, 62, 48, 0.35);
+    }
+
+    .hall-stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-pill {
+      background-color: var(--bg-card, #f1e1c0);
+      border: 1px solid var(--border-card, rgba(43, 39, 41, 0.12));
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+    }
+
+    .stat-icon-circle {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .stat-info h4 {
+      font-size: 0.80rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-muted, #4a4447);
+      margin: 0 0 2px 0;
+    }
+
+    .stat-info strong {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    /* RETTANGOLO DELLA SALA */
+    .restaurant-hall-frame {
+      background-color: #1e1a1c;
+      border: 2px solid var(--accent-gold);
+      border-radius: 16px;
+      padding: 26px;
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+      position: relative;
+    }
+
+    .hall-top-boundary {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 18px;
+      background: rgba(43, 39, 41, 0.08);
+      border-radius: 6px;
+      margin-bottom: 24px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted, #4a4447);
+      letter-spacing: 1px;
+    }
+
+    /* Griglia Tavoli */
+    .tables-grid {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .table-box {
+      min-height: 82px;
+      width: 100%;
+      border-radius: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      user-select: none;
+      box-sizing: border-box;
+    }
+
+    .table-box:hover {
+      transform: translateY(-4px) scale(1.04);
+      z-index: 10;
+    }
+
+    /* VERDE: DISPONIBILE / LIBERO */
+    .table-box.available {
+      background: linear-gradient(135deg, #28d06b, #1ea952);
+      color: #ffffff;
+      border: 2px solid #168a40;
+    }
+
+    .table-box.available:hover {
+      box-shadow: 0 8px 20px rgba(30, 169, 82, 0.45);
+    }
+
+    /* ROSSO: OCCUPATO / PRENOTATO */
+    .table-box.occupied {
+      background: linear-gradient(135deg, #e6392a, #d63e30);
+      color: #ffffff;
+      border: 2px solid #b52a1f;
+    }
+
+    .table-box.occupied:hover {
+      box-shadow: 0 8px 20px rgba(214, 62, 48, 0.45);
+    }
+
+    /* Tavoli uniti occupati (rosso profondo con bordo rifinito) */
+    .table-box.occupied.merged-table {
+      background: linear-gradient(135deg, #dc3526, #c22d1f) !important;
+      border: 2px solid #941e13 !important;
+      color: #ffffff;
+      box-shadow: 0 6px 18px rgba(214, 62, 48, 0.35);
+    }
+
+    .table-box.linked-group {
+      border: 2.5px dashed #f1e1c0;
+    }
+
+    .table-num {
+      font-size: 0.95rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .table-seats-badge {
+      font-size: 0.70rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0, 0, 0, 0.25);
+      line-height: 1;
+    }
+
+    .table-guest-name {
+      font-size: 0.68rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 90%;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    .hall-bottom-boundary {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+      border-top: 2px dashed rgba(43, 39, 41, 0.2);
+      font-weight: 700;
+      color: var(--text-muted, #4a4447);
+      font-size: 0.85rem;
+      letter-spacing: 1px;
+    }
+
+    .legend-bar {
+      display: flex;
+      justify-content: center;
+      gap: 24px;
+      margin-top: 18px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 700;
+      font-size: 0.90rem;
+    }
+
+    .legend-color-box {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+    }
+
+    /* MODALE DETTAGLI */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(4px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .detail-card-modal {
+      background-color: var(--bg-card, #f1e1c0);
+      border: 2px solid var(--accent-red, #d63e30);
+      border-radius: 12px;
+      max-width: 520px;
+      width: 100%;
+      padding: 28px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: 16px;
+      right: 18px;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: var(--text-muted, #4a4447);
+    }
+
+    @media (max-width: 1100px) {
+      .tables-grid { grid-template-columns: repeat(5, 1fr); }
+      .hall-stats-bar { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .tables-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .table-box { min-height: 72px; padding: 4px 2px; }
+      .hall-stats-bar { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body style="background-color: #1a1718;">
+<body>
 
   <!-- Barra Superiore -->
   <div class="top-bar">
     <div class="container">
       <div class="top-bar-contact">
-        <span><i class="fa-solid fa-lock"></i> Area Riservata Gestione Tavoli • OL3 Ristorante Pizzeria</span>
+        <span><i class="fa-solid fa-lock"></i> Area Riservata Sala • OL3 Ristorante Pizzeria</span>
       </div>
-      <div>
-        <a href="index.html" style="color: var(--accent-gold);"><i class="fa-solid fa-arrow-left"></i> Torna al Sito Pubblico</a>
+      <div style="display: flex; gap: 18px; align-items: center;">
+        <a href="https://docs.google.com/spreadsheets/d/1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI/edit" target="_blank" rel="noopener" style="color: var(--accent-red); font-weight: 700;">
+          <i class="fa-solid fa-table"></i> Apri Foglio Google
+        </a>
+        <a href="index.html" style="color: var(--text-dark); font-weight: 600;">
+          <i class="fa-solid fa-arrow-left"></i> Torna al Sito Pubblico
+        </a>
       </div>
     </div>
   </div>
 
-  <nav class="navbar">
-    <div class="container nav-container">
-      <a href="index.html" class="brand-logo">
-        <img src="foto/logo-2.png" alt="OL3 Ristorante Pizzeria" class="navbar-logo-img">
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.html">SITO PUBBLICO</a></li>
-        <li><a href="https://docs.google.com/spreadsheets/d/1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI/edit" target="_blank" rel="noopener" style="color: var(--accent-gold);"><i class="fa-solid fa-table"></i> FOGLIO GOOGLE</a></li>
-        <li><a href="gestione-prenotazioni.html" class="active">GESTIONE TAVOLI</a></li>
-      </ul>
+  <main class="admin-container">
+    <div class="hall-header">
+      <div class="hall-title-area">
+        <h1>Simulazione Piantina Sala</h1>
+        <p>Monitoraggio in tempo reale dei <strong>50 tavoli da 2 posti</strong> (100 coperti max per turno).</p>
+      </div>
+
+      <button id="refresh-data-btn" class="nav-date-btn" style="background: var(--accent-red); color: #fff; padding: 10px 20px; border: none;">
+        <i class="fa-solid fa-arrows-rotate"></i> Aggiorna Dati dal Foglio
+      </button>
     </div>
-  </nav>
 
-  <main style="padding: 40px 0 90px;">
-    <div class="container">
-      
-      <!-- Intestazione Dashboard -->
-      <div class="admin-header">
-        <div>
-          <h1 style="font-family: var(--font-serif); font-size: 2.2rem; color: #fff; margin-bottom: 6px;">
-            Pannello Gestione Tavoli
-          </h1>
-          <p style="color: var(--text-muted); font-size: 0.95rem;">
-            A sinistra consulti i <strong>tavoli confermati divisi per giorno</strong> (con scambiatore data avanti/indietro). A destra gestisci le <strong>nuove richieste in arrivo</strong> da confermare con un clic su WhatsApp.
-          </p>
+    <!-- Controlli Data e Turno -->
+    <div class="controls-bar">
+      <div class="date-control-group">
+        <button id="btn-prev-day" class="nav-date-btn" title="Giorno precedente"><i class="fa-solid fa-chevron-left"></i></button>
+        <input type="date" id="admin-target-date" class="date-input-styled" autocomplete="off" autocomplete="off">
+        <button id="btn-next-day" class="nav-date-btn" title="Giorno successivo"><i class="fa-solid fa-chevron-right"></i></button>
+        <button id="btn-today" class="nav-date-btn">Oggi</button>
+      </div>
+
+      <div class="shift-toggle-group">
+        <button id="btn-turno-1" class="shift-btn active" data-shift="20:00">
+          <i class="fa-solid fa-clock"></i> 1° Turno (20:00 - 21:30)
+        </button>
+        <button id="btn-turno-2" class="shift-btn" data-shift="21:30">
+          <i class="fa-solid fa-clock"></i> 2° Turno (dalle 21:30)
+        </button>
+      </div>
+    </div>
+
+    <div id="other-dates-hint" style="display: none; background: #1e1a1c; border: 1.5px dashed var(--accent-red); border-radius: 8px; padding: 12px 18px; margin-bottom: 20px; font-size: 0.92rem; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; color: var(--text-dark);"></div>
+
+    <!-- Statistiche -->
+    <div class="hall-stats-bar">
+      <div class="stat-pill">
+        <div class="stat-icon-circle" style="background: rgba(30, 169, 82, 0.15); color: #1ea952;">
+          <i class="fa-solid fa-chair"></i>
         </div>
-
-        <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
-          <button id="admin-refresh-btn" class="btn-primary" style="width: auto; padding: 10px 22px; font-size: 0.88rem; background-color: var(--accent-gold); color: #1a1718; border-color: var(--accent-gold);">
-            <i class="fa-solid fa-arrows-rotate"></i> Aggiorna Dati dal Foglio
-          </button>
-          <a href="https://docs.google.com/spreadsheets/d/1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI/edit" target="_blank" rel="noopener" class="btn-secondary-hero" style="width: auto; padding: 10px 18px; font-size: 0.85rem;">
-            <i class="fa-solid fa-table"></i> Foglio Drive
-          </a>
+        <div class="stat-info">
+          <h4>Tavoli Disponibili</h4>
+          <strong id="stat-available-tables" style="color: #1ea952;">50</strong> <span style="font-size: 0.85rem; color: var(--text-muted);">/ 50</span>
         </div>
       </div>
 
-      <!-- Griglia 2 Colonne -->
-      <div class="admin-columns-grid">
-        
-        <!-- COLONNA SINISTRA: TAVOLI CONFERMATI CON SCAMBIATORE DI DATA IN ALTO -->
-        <section class="admin-column" style="border-top: 4px solid var(--accent-green);">
-          <div class="column-header" style="margin-bottom: 14px;">
-            <h2 class="column-title">
-              <i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i>
-              Tavoli Confermati
-            </h2>
-            <span class="column-badge" id="confirmed-count-badge">0 tavoli</span>
-          </div>
-
-          <!-- SCAMBIATORE DI DATA IN ALTO AL TAB PRENOTAZIONI CONFERMATE -->
-          <div class="date-switcher-box">
-            <div class="date-switcher-row">
-              <button id="date-prev-btn" class="date-nav-btn" title="Giorno precedente">
-                <i class="fa-solid fa-chevron-left"></i> Giorno prima
-              </button>
-              
-              <input type="date" id="admin-date-picker" class="date-picker-large">
-              
-              <button id="date-next-btn" class="date-nav-btn" title="Giorno successivo">
-                Giorno dopo <i class="fa-solid fa-chevron-right"></i>
-              </button>
-            </div>
-
-            <div class="date-status-subbar">
-              <span id="date-display-friendly" style="color: var(--accent-gold); font-weight: 600;">
-                Oggi
-              </span>
-              <div style="display: flex; gap: 8px;">
-                <button id="date-today-btn" class="date-nav-today-btn">Oggi</button>
-                <button id="date-all-btn" class="date-nav-today-btn" style="border-color: var(--border-light); color: var(--text-muted);">Tutti i giorni</button>
-              </div>
-            </div>
-          </div>
-
-          <!-- Lista Tavoli Confermati del giorno o divisi per giorno -->
-          <div id="confirmed-bookings-list">
-            <!-- Popolato dinamicamente da script.js -->
-          </div>
-        </section>
-
-        <!-- COLONNA DESTRA: RICHIESTE IN ARRIVO (IN ORDINE DI ARRIVO) -->
-        <section class="admin-column" style="border-top: 4px solid var(--accent-gold);">
-          <div class="column-header" style="margin-bottom: 14px;">
-            <h2 class="column-title">
-              <i class="fa-solid fa-bell" style="color: var(--accent-gold);"></i>
-              Richieste in Arrivo
-            </h2>
-            <span class="column-badge" id="pending-count-badge">0 in attesa</span>
-          </div>
-          <p style="font-size: 0.82rem; color: var(--text-muted); margin-bottom: 16px;">
-            Elenco delle nuove prenotazioni in ordine di arrivo. Clicca su Conferma o Rifiuta per aprire WhatsApp col messaggio in grassetto.
-          </p>
-
-          <div id="pending-bookings-list">
-            <!-- Popolato dinamicamente da script.js -->
-          </div>
-        </section>
-
+      <div class="stat-pill">
+        <div class="stat-icon-circle" style="background: rgba(214, 62, 48, 0.15); color: var(--accent-red);">
+          <i class="fa-solid fa-ban"></i>
+        </div>
+        <div class="stat-info">
+          <h4>Tavoli Occupati</h4>
+          <strong id="stat-occupied-tables" style="color: var(--accent-red);">0</strong> <span style="font-size: 0.85rem; color: var(--text-muted);">/ 50</span>
+        </div>
       </div>
 
+      <div class="stat-pill">
+        <div class="stat-icon-circle" style="background: rgba(37, 211, 102, 0.15); color: var(--accent-green);">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <div class="stat-info">
+          <h4>Ospiti Prenotati</h4>
+          <strong id="stat-total-guests">0</strong>
+        </div>
+      </div>
+
+      <div class="stat-pill">
+        <div class="stat-icon-circle" style="background: rgba(43, 39, 41, 0.1); color: var(--text-dark);">
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+        <div class="stat-info">
+          <h4>Prenotazioni Turno</h4>
+          <strong id="stat-bookings-count">0</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- RETTANGOLO SALA -->
+    <div class="restaurant-hall-frame">
+      <div class="hall-top-boundary">
+        <span><i class="fa-solid fa-cash-register"></i> BANCONE CASSA & ORDINI</span>
+        <span>CUCINA & GRIGLIE <i class="fa-solid fa-fire-burner"></i></span>
+      </div>
+
+      <!-- I 50 Tavoli già pronti in HTML -->
+      <div class="tables-grid" id="tables-grid-container">
+        <div class="table-box available" id="table-box-1" data-table-num="1" title="Tavolo 1: Disponibile (2 posti)">
+          <span class="table-num">T01</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-2" data-table-num="2" title="Tavolo 2: Disponibile (2 posti)">
+          <span class="table-num">T02</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-3" data-table-num="3" title="Tavolo 3: Disponibile (2 posti)">
+          <span class="table-num">T03</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-4" data-table-num="4" title="Tavolo 4: Disponibile (2 posti)">
+          <span class="table-num">T04</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-5" data-table-num="5" title="Tavolo 5: Disponibile (2 posti)">
+          <span class="table-num">T05</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-6" data-table-num="6" title="Tavolo 6: Disponibile (2 posti)">
+          <span class="table-num">T06</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-7" data-table-num="7" title="Tavolo 7: Disponibile (2 posti)">
+          <span class="table-num">T07</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-8" data-table-num="8" title="Tavolo 8: Disponibile (2 posti)">
+          <span class="table-num">T08</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-9" data-table-num="9" title="Tavolo 9: Disponibile (2 posti)">
+          <span class="table-num">T09</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-10" data-table-num="10" title="Tavolo 10: Disponibile (2 posti)">
+          <span class="table-num">T10</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-11" data-table-num="11" title="Tavolo 11: Disponibile (2 posti)">
+          <span class="table-num">T11</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-12" data-table-num="12" title="Tavolo 12: Disponibile (2 posti)">
+          <span class="table-num">T12</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-13" data-table-num="13" title="Tavolo 13: Disponibile (2 posti)">
+          <span class="table-num">T13</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-14" data-table-num="14" title="Tavolo 14: Disponibile (2 posti)">
+          <span class="table-num">T14</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-15" data-table-num="15" title="Tavolo 15: Disponibile (2 posti)">
+          <span class="table-num">T15</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-16" data-table-num="16" title="Tavolo 16: Disponibile (2 posti)">
+          <span class="table-num">T16</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-17" data-table-num="17" title="Tavolo 17: Disponibile (2 posti)">
+          <span class="table-num">T17</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-18" data-table-num="18" title="Tavolo 18: Disponibile (2 posti)">
+          <span class="table-num">T18</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-19" data-table-num="19" title="Tavolo 19: Disponibile (2 posti)">
+          <span class="table-num">T19</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-20" data-table-num="20" title="Tavolo 20: Disponibile (2 posti)">
+          <span class="table-num">T20</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-21" data-table-num="21" title="Tavolo 21: Disponibile (2 posti)">
+          <span class="table-num">T21</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-22" data-table-num="22" title="Tavolo 22: Disponibile (2 posti)">
+          <span class="table-num">T22</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-23" data-table-num="23" title="Tavolo 23: Disponibile (2 posti)">
+          <span class="table-num">T23</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-24" data-table-num="24" title="Tavolo 24: Disponibile (2 posti)">
+          <span class="table-num">T24</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-25" data-table-num="25" title="Tavolo 25: Disponibile (2 posti)">
+          <span class="table-num">T25</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-26" data-table-num="26" title="Tavolo 26: Disponibile (2 posti)">
+          <span class="table-num">T26</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-27" data-table-num="27" title="Tavolo 27: Disponibile (2 posti)">
+          <span class="table-num">T27</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-28" data-table-num="28" title="Tavolo 28: Disponibile (2 posti)">
+          <span class="table-num">T28</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-29" data-table-num="29" title="Tavolo 29: Disponibile (2 posti)">
+          <span class="table-num">T29</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-30" data-table-num="30" title="Tavolo 30: Disponibile (2 posti)">
+          <span class="table-num">T30</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-31" data-table-num="31" title="Tavolo 31: Disponibile (2 posti)">
+          <span class="table-num">T31</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-32" data-table-num="32" title="Tavolo 32: Disponibile (2 posti)">
+          <span class="table-num">T32</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-33" data-table-num="33" title="Tavolo 33: Disponibile (2 posti)">
+          <span class="table-num">T33</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-34" data-table-num="34" title="Tavolo 34: Disponibile (2 posti)">
+          <span class="table-num">T34</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-35" data-table-num="35" title="Tavolo 35: Disponibile (2 posti)">
+          <span class="table-num">T35</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-36" data-table-num="36" title="Tavolo 36: Disponibile (2 posti)">
+          <span class="table-num">T36</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-37" data-table-num="37" title="Tavolo 37: Disponibile (2 posti)">
+          <span class="table-num">T37</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-38" data-table-num="38" title="Tavolo 38: Disponibile (2 posti)">
+          <span class="table-num">T38</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-39" data-table-num="39" title="Tavolo 39: Disponibile (2 posti)">
+          <span class="table-num">T39</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-40" data-table-num="40" title="Tavolo 40: Disponibile (2 posti)">
+          <span class="table-num">T40</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-41" data-table-num="41" title="Tavolo 41: Disponibile (2 posti)">
+          <span class="table-num">T41</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-42" data-table-num="42" title="Tavolo 42: Disponibile (2 posti)">
+          <span class="table-num">T42</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-43" data-table-num="43" title="Tavolo 43: Disponibile (2 posti)">
+          <span class="table-num">T43</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-44" data-table-num="44" title="Tavolo 44: Disponibile (2 posti)">
+          <span class="table-num">T44</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-45" data-table-num="45" title="Tavolo 45: Disponibile (2 posti)">
+          <span class="table-num">T45</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-46" data-table-num="46" title="Tavolo 46: Disponibile (2 posti)">
+          <span class="table-num">T46</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-47" data-table-num="47" title="Tavolo 47: Disponibile (2 posti)">
+          <span class="table-num">T47</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-48" data-table-num="48" title="Tavolo 48: Disponibile (2 posti)">
+          <span class="table-num">T48</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-49" data-table-num="49" title="Tavolo 49: Disponibile (2 posti)">
+          <span class="table-num">T49</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+        <div class="table-box available" id="table-box-50" data-table-num="50" title="Tavolo 50: Disponibile (2 posti)">
+          <span class="table-num">T50</span>
+          <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+          <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+        </div>
+      </div>
+
+      <div class="hall-bottom-boundary">
+        <i class="fa-solid fa-door-open"></i> INGRESSO PRINCIPALE SALA
+      </div>
+    </div>
+
+    <div class="legend-bar">
+      <div class="legend-item">
+        <div class="legend-color-box" style="background: #1ea952; border: 1.5px solid #168a40;"></div>
+        <span>Verde = Tavolo Disponibile (Libero)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-color-box" style="background: #d63e30; border: 1.5px solid #b52a1f;"></div>
+        <span>Rosso = Tavolo Occupato (Prenotato - Clicca per dettagli)</span>
+      </div>
     </div>
   </main>
 
-  <footer class="footer">
-    <div class="container">
-      <p class="footer-copy">© 2025 by OL3 Ristorante Pizzeria • Gestione Tavoli</p>
-    </div>
-  </footer>
+  
+  <!-- Modale Nuova Prenotazione Manuale del Ristoratore -->
+  <div class="modal-overlay" id="new-booking-modal">
+    <div class="detail-card-modal">
+      <button class="modal-close-btn" id="new-modal-close">&times;</button>
+      
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <div style="width: 48px; height: 48px; border-radius: 8px; background: #1ea952; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+          <i class="fa-solid fa-plus"></i>
+        </div>
+        <div>
+          <h3 id="new-modal-table-label" style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--text-dark); margin: 0 0 2px 0;">Nuova Prenotazione Sala</h3>
+          <span id="new-modal-sub-label" style="font-size: 0.82rem; color: #1ea952; font-weight: 700;">Assegna tavolo dal gestionale</span>
+        </div>
+      </div>
 
-  <script src="js/config.js"></script>
-  <script src="js/script.js"></script>
+      <form id="admin-new-booking-form">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Nome e Cognome *</label>
+            <input type="text" id="admin-book-name" required placeholder="Es. Marco Rossi" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Telefono *</label>
+            <input type="tel" id="admin-book-phone" required placeholder="Es. 333 123 4567" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Numero Persone (digita il numero) *</label>
+            <input type="number" id="admin-book-guests" min="1" max="100" value="2" required placeholder="Es. 4" style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-size: 1rem; font-weight: 700; box-sizing: border-box;">
+          </div>
+          <div>
+            <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Turno *</label>
+            <select id="admin-book-shift" required style="width: 100%; height: 42px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; font-weight: 600; box-sizing: border-box;">
+              <option value="20:00">1° Turno (20:00 - 21:30)</option>
+              <option value="21:30">2° Turno (dalle 21:30)</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="background: #1e1a1c; border-radius: 6px; padding: 10px 14px; margin-bottom: 14px; font-size: 0.88rem; color: var(--text-dark);">
+          <i class="fa-solid fa-calculator" style="color: var(--accent-red); margin-right: 6px;"></i>
+          <strong>Occupazione:</strong> <span id="admin-book-tables-calc" style="color: var(--accent-red); font-weight: 800;">1 Tavolo da 2 posti</span>
+        </div>
+
+        <div style="margin-bottom: 18px;">
+          <label style="display: block; font-size: 0.85rem; font-weight: 700; margin-bottom: 4px;">Note / Richieste</label>
+          <input type="text" id="admin-book-notes" placeholder="Es. Tavolo vicino al bancone, seggiolino..." style="width: 100%; height: 40px; padding: 0 12px; border-radius: 6px; border: 1.5px solid rgba(43,39,41,0.25); background: #ffffff; color: #ffffff; box-sizing: border-box;">
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-end;">
+          <button type="button" id="admin-book-cancel-btn" class="nav-date-btn" style="background: transparent;">Annulla</button>
+          <button type="submit" id="admin-book-submit-btn" class="nav-date-btn" style="background: #1ea952; color: #fff; border: none; padding: 10px 20px;">
+            <i class="fa-solid fa-check"></i> Assegna ed Occupa Tavoli
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modale Dettagli Tavolo -->
+  <div class="modal-overlay" id="table-modal">
+    <div class="detail-card-modal">
+      <button class="modal-close-btn" id="modal-close">&times;</button>
+      
+      <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 16px;">
+        <div style="width: 48px; height: 48px; border-radius: 8px; background: var(--accent-red); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 1.3rem;">
+          <i class="fa-solid fa-chair"></i>
+        </div>
+        <div>
+          <h3 id="modal-table-label" style="font-family: var(--font-serif); font-size: 1.4rem; color: var(--text-dark); margin: 0 0 2px 0;">Tavolo Occupato</h3>
+          <span id="modal-booking-id" style="font-size: 0.80rem; color: var(--accent-red); font-weight: 700;">ID Prenotazione</span>
+        </div>
+      </div>
+
+      <div style="background: #1e1a1c; border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+        <p style="margin: 0 0 8px 0;"><strong>Cliente:</strong> <span id="modal-client-name">-</span></p>
+        <p style="margin: 0 0 8px 0;"><strong>Telefono:</strong> <a id="modal-client-phone" href="#" style="color: var(--accent-red); font-weight: 700;">-</a></p>
+        <p style="margin: 0 0 8px 0;"><strong>Ospiti:</strong> <span id="modal-guests-count">-</span></p>
+        <p style="margin: 0 0 8px 0;"><strong>Tavoli Riservati:</strong> <span id="modal-tables-count">-</span></p>
+        <p style="margin: 0 0 8px 0;"><strong>Turno:</strong> <span id="modal-shift-name">-</span></p>
+        <p style="margin: 0;"><strong>Note / Allergie:</strong> <span id="modal-notes" style="color: var(--text-muted);">-</span></p>
+      </div>
+
+      <div style="display: flex; gap: 10px; justify-content: flex-end;">
+        <button id="modal-delete-btn" class="nav-date-btn" style="background: var(--accent-red); color: #fff; border: none;">
+          <i class="fa-solid fa-trash"></i> Libera Tavoli (Cancella)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
+      const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywuk8Mgl7oeB8vrXjmsftYINLiRTpuRNToJYdur0TDXJTXAvJXA_9GfmGeuQuwT80h/exec';
+
+      // Azzeramento totale memoria locale residua
+      try {
+        localStorage.removeItem('bullburger_prenotazioni_db');
+        localStorage.removeItem('ol3_prenotazioni_db');
+      } catch(e) {}
+
+      let allBookings = [];
+      function getLocalTodayIso() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+      let currentDate = getLocalTodayIso();
+      let currentShift = '20:00'; // 20:00 = 1° Turno, 21:30 = 2° Turno
+      let selectedBooking = null;
+
+      const dateInput = document.getElementById('admin-target-date');
+      const btnPrev = document.getElementById('btn-prev-day');
+      const btnNext = document.getElementById('btn-next-day');
+      const btnToday = document.getElementById('btn-today');
+      const btnTurno1 = document.getElementById('btn-turno-1');
+      const btnTurno2 = document.getElementById('btn-turno-2');
+      const btnRefresh = document.getElementById('refresh-data-btn');
+
+      const modal = document.getElementById('table-modal');
+      const modalClose = document.getElementById('modal-close');
+      const modalDelete = document.getElementById('modal-delete-btn');
+
+      // Modale nuova prenotazione
+      const newModal = document.getElementById('new-booking-modal');
+      const newModalClose = document.getElementById('new-modal-close');
+      const newModalCancel = document.getElementById('admin-book-cancel-btn');
+      const newBookingForm = document.getElementById('admin-new-booking-form');
+      const guestsInput = document.getElementById('admin-book-guests');
+      const tablesCalcSpan = document.getElementById('admin-book-tables-calc');
+      const shiftSelect = document.getElementById('admin-book-shift');
+
+      if (dateInput) {
+        dateInput.value = currentDate;
+        dateInput.addEventListener('change', () => {
+          dateInput.dataset.userChanged = 'true';
+          currentDate = dateInput.value;
+          updateHallDisplay();
+        });
+      }
+
+      if (btnPrev) {
+        btnPrev.addEventListener('click', () => {
+          const dt = new Date(currentDate);
+          dt.setDate(dt.getDate() - 1);
+          currentDate = dt.toISOString().split('T')[0];
+          if (dateInput) dateInput.value = currentDate;
+          updateHallDisplay();
+        });
+      }
+
+      if (btnNext) {
+        btnNext.addEventListener('click', () => {
+          const dt = new Date(currentDate);
+          dt.setDate(dt.getDate() + 1);
+          currentDate = dt.toISOString().split('T')[0];
+          if (dateInput) dateInput.value = currentDate;
+          updateHallDisplay();
+        });
+      }
+
+      if (btnToday) {
+        btnToday.addEventListener('click', () => {
+          currentDate = getLocalTodayIso();
+          if (dateInput) dateInput.value = currentDate;
+          updateHallDisplay();
+        });
+      }
+
+      if (btnTurno1 && btnTurno2) {
+        btnTurno1.addEventListener('click', () => {
+          currentShift = '20:00';
+          btnTurno1.classList.add('active');
+          btnTurno2.classList.remove('active');
+          updateHallDisplay();
+        });
+        btnTurno2.addEventListener('click', () => {
+          currentShift = '21:30';
+          btnTurno2.classList.add('active');
+          btnTurno1.classList.remove('active');
+          updateHallDisplay();
+        });
+      }
+
+      if (btnRefresh) {
+        btnRefresh.addEventListener('click', () => {
+          btnRefresh.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Aggiornamento...';
+          loadBookings().then(() => {
+        // Garantisce in modo assoluto l'apertura sulla data odierna del dispositivo
+        dateInput.value = currentDate;
+        updateHallDisplay();
+      });
+        });
+      }
+
+      if (modalClose) modalClose.addEventListener('click', () => modal.classList.remove('active'));
+      if (modal) modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('active'); });
+
+      if (modalDelete) {
+        modalDelete.addEventListener('click', () => {
+          if (!selectedBooking) return;
+          if (confirm(`Confermi di voler cancellare la prenotazione di ${selectedBooking.name}? I tavoli verranno liberati.`)) {
+            allBookings = allBookings.filter(b => b.id !== selectedBooking.id);
+            fetch(APPS_SCRIPT_URL, {
+              method: 'POST',
+              mode: 'no-cors',
+              headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+              body: JSON.stringify({ action: 'delete_booking', id: selectedBooking.id })
+            }).catch(() => {});
+            modal.classList.remove('active');
+            updateHallDisplay();
+          }
+        });
+      }
+
+      if (newModalClose) newModalClose.addEventListener('click', () => newModal.classList.remove('active'));
+      if (newModalCancel) newModalCancel.addEventListener('click', () => newModal.classList.remove('active'));
+      if (newModal) newModal.addEventListener('click', (e) => { if (e.target === newModal) newModal.classList.remove('active'); });
+
+      if (guestsInput && tablesCalcSpan) {
+        guestsInput.addEventListener('change', () => {
+          const g = parseInt(guestsInput.value, 10) || 2;
+          const t = Math.ceil(g / 2);
+          tablesCalcSpan.textContent = `${t} Tavol${t === 1 ? 'o' : 'i'} da 2 posti (${t * 2} posti totali)`;
+        });
+      }
+
+      function openNewBookingModal(startTableNum) {
+        const titleEl = document.getElementById('new-modal-table-label');
+        if (titleEl) titleEl.textContent = `Nuova Prenotazione (Tavolo T${String(startTableNum).padStart(2, '0')})`;
+        const nameInput = document.getElementById('admin-book-name');
+        if (nameInput) nameInput.value = '';
+        const phoneInput = document.getElementById('admin-book-phone');
+        if (phoneInput) phoneInput.value = '';
+        const notesInput = document.getElementById('admin-book-notes');
+        if (notesInput) notesInput.value = '';
+        if (guestsInput) {
+          guestsInput.value = '2';
+          if (tablesCalcSpan) tablesCalcSpan.textContent = '1 Tavolo da 2 posti';
+        }
+        if (shiftSelect) shiftSelect.value = currentShift;
+        if (newModal) newModal.classList.add('active');
+      }
+
+      if (newBookingForm) {
+        newBookingForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const name = document.getElementById('admin-book-name').value.trim();
+          const phone = document.getElementById('admin-book-phone').value.trim();
+          const guests = parseInt(guestsInput.value, 10) || 2;
+          const shiftVal = shiftSelect.value;
+          const notes = document.getElementById('admin-book-notes').value.trim();
+          const needed = Math.ceil(guests / 2);
+
+          const bookingId = 'OL3_' + Date.now();
+          const displayTurno = shiftVal.includes('20:00') ? '1° Turno (20:00 - 21:30)' : '2° Turno (dalle 21:30)';
+
+          const newBooking = {
+            id: bookingId,
+            created_at: new Date().toLocaleString('it-IT'),
+            name: name,
+            phone: phone,
+            date: currentDate,
+            time: displayTurno,
+            guests: guests,
+            tables: needed,
+            notes: notes ? (notes + ' [Inserito da Sala]') : '[Inserito da Sala]',
+            status: 'Confermata'
+          };
+
+          allBookings.push(newBooking);
+
+          // Sincronizza con Google Apps Script
+          fetch(APPS_SCRIPT_URL, {
+            method: 'POST',
+            mode: 'no-cors',
+            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+            body: JSON.stringify(newBooking)
+          }).catch(() => {});
+
+          const getParams = new URLSearchParams({
+            action: 'book',
+            id: newBooking.id,
+            name: newBooking.name,
+            phone: newBooking.phone,
+            date: newBooking.date,
+            time: newBooking.time,
+            guests: String(newBooking.guests),
+            tables: String(newBooking.tables),
+            notes: newBooking.notes
+          });
+          fetch(APPS_SCRIPT_URL + '?' + getParams.toString(), { mode: 'no-cors' }).catch(() => {});
+
+          if (newModal) newModal.classList.remove('active');
+          updateHallDisplay();
+        });
+      }
+
+      // Parser universale date
+      function toIso(d) {
+        if (!d) return '';
+        const s = String(d).trim();
+
+        // 1. Formato GVIZ Date(yyyy, m, d, ...) con m a base 0 (8 = Settembre)
+        const mGviz = s.match(/Date\s*\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+        if (mGviz) {
+          const y = mGviz[1];
+          const m = String(parseInt(mGviz[2], 10) + 1).padStart(2, '0');
+          const day = String(parseInt(mGviz[3], 10)).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        }
+
+        // 2. Formato ISO YYYY-MM-DD
+        const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (mIso) return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
+
+        // 3. Formato Italiano DD/MM/YYYY o DD-MM-YYYY
+        const mIt = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+        if (mIt) return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
+
+        return s;
+      }
+
+      function formatItalianDate(d) {
+        const iso = toIso(d);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+          const p = iso.split('-');
+          return `${p[2]}/${p[1]}/${p[0]}`;
+        }
+        return d;
+      }
+
+      function isTurno1(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
+        if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return false;
+        return s.includes('1°') || s.includes('primo') || s.includes('20:00') || s.includes('1');
+      }
+
+      function isTurno2(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
+        if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return true;
+        if (s.includes('21:30') && !s.includes('20:00')) return true;
+        return false;
+      }
+
+      // Lettura multi-canale dal Foglio Google
+      async function loadBookings() {
+        let loaded = [];
+
+        // Canale 1: GVIZ (lettura diretta del foglio)
+        try {
+          const res = await fetch(GVIZ_URL);
+          const txt = await res.text();
+          const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+          if (match) {
+            const json = JSON.parse(match[1]);
+            if (json && json.table && Array.isArray(json.table.rows)) {
+              json.table.rows.forEach(r => {
+                if (!r || !r.c) return;
+                const c = r.c;
+                const val = idx => {
+                  if (!c[idx]) return '';
+                  return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
+                };
+                const id = String(val(0));
+                if (!id || id.toLowerCase().includes('id')) return;
+                const rawDate = val(4);
+                loaded.push({
+                  id: id,
+                  created_at: String(val(1)),
+                  name: String(val(2)),
+                  phone: String(val(3)),
+                  date: toIso(rawDate),
+                  time: String(val(5)),
+                  guests: parseInt(val(6), 10) || 2,
+                  tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
+                  status: String(val(8) || 'Confermata'),
+                  notes: String(val(9) || '')
+                });
+              });
+            }
+          }
+        } catch(e) {
+          console.warn('GVIZ load fallback:', e);
+        }
+
+        // Canale 2: Apps Script Web App
+        if (loaded.length === 0) {
+          try {
+            const resp = await fetch(APPS_SCRIPT_URL);
+            const res = await resp.json();
+            if (res && res.status === 'success' && Array.isArray(res.data)) {
+              res.data.forEach(b => {
+                if (!b || !b.id) return;
+                loaded.push({
+                  id: String(b.id),
+                  created_at: b.created_at || '',
+                  name: b.name || 'Cliente',
+                  phone: b.phone || '',
+                  date: toIso(b.date),
+                  time: String(b.time || ''),
+                  guests: parseInt(b.guests, 10) || 2,
+                  tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
+                  status: b.status || 'Confermata',
+                  notes: b.notes || ''
+                });
+              });
+            }
+          } catch(err) {
+            console.warn('Lettura Apps Script:', err);
+          }
+        }
+
+        allBookings = loaded;
+
+        // Apertura garantita sempre sul giorno corrente
+      }
+
+      function updateHallDisplay() {
+        const grid = document.getElementById('tables-grid-container');
+        if (!grid) return;
+        grid.innerHTML = '';
+
+        // Filtra prenotazioni per data e turno
+        const activeForShift = allBookings.filter(b => {
+          const sameDate = (toIso(b.date) === currentDate);
+          const statusOk = !String(b.status || '').toLowerCase().includes('annull');
+          const sameShift = (currentShift === '20:00') ? isTurno1(b.time) : isTurno2(b.time);
+          return sameDate && statusOk && sameShift;
+        });
+
+        let totalGuests = 0;
+        let totalTables = 0;
+        let nextTable = 1;
+
+        // 1. Renderizza i Tavoli Occupati (UNICO TAVOLO ROSSO con dimensione proporzionale doppia, tripla, ecc.)
+        activeForShift.forEach(b => {
+          const needed = b.tables || Math.ceil(b.guests / 2);
+          totalGuests += b.guests;
+          totalTables += needed;
+
+          const startNum = nextTable;
+          const endNum = Math.min(50, nextTable + needed - 1);
+          const assignedNums = [];
+          for (let n = startNum; n <= endNum; n++) assignedNums.push(n);
+          nextTable = endNum + 1;
+          b._tableNums = assignedNums;
+
+          const tableLabel = (needed === 1) 
+            ? `T${String(startNum).padStart(2, '0')}` 
+            : `TAVOLO UNITO T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
+
+          const boxDiv = document.createElement('div');
+          boxDiv.className = 'table-box occupied merged-table';
+          boxDiv.style.gridColumn = `span ${Math.min(needed, 10)}`;
+          boxDiv.title = `${tableLabel}: Prenotato da ${b.name} (${b.guests} persone su ${needed} tavoli da 2). Clicca per dettagli.`;
+          boxDiv.onclick = () => showBookingDetail(b, assignedNums);
+
+          boxDiv.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: space-between; width: 100%; margin-bottom: 4px; padding: 0 4px;">
+              <span class="table-num" style="font-size: 0.95rem; font-weight: 800; letter-spacing: 0.5px;">${tableLabel}</span>
+              <span class="table-seats-badge" style="background: rgba(0,0,0,0.35); font-weight: 700;"><i class="fa-solid fa-users"></i> ${b.guests} Persone</span>
+            </div>
+            <strong style="font-size: 1.15rem; letter-spacing: 0.5px; text-transform: uppercase; margin: 3px 0; color: #ffffff;">${b.name}</strong>
+            <span style="font-size: 0.78rem; opacity: 0.9; margin-top: 2px;">
+              <i class="fa-solid fa-chair"></i> Dimensione ${needed === 2 ? 'Doppia (2 tavoli da 2)' : needed === 3 ? 'Tripla (3 tavoli da 2)' : needed + ' tavoli uniti'}
+            </span>
+          `;
+
+          grid.appendChild(boxDiv);
+        });
+
+        // 2. Renderizza i restanti Tavoli Liberi (Singoli in Verde da 2 posti)
+        for (let i = nextTable; i <= 50; i++) {
+          const freeDiv = document.createElement('div');
+          freeDiv.className = 'table-box available';
+          freeDiv.style.gridColumn = 'span 1';
+          freeDiv.title = `Tavolo ${i}: Disponibile (2 posti liberi). Clicca per prenotare.`;
+          freeDiv.onclick = () => openNewBookingModal(i);
+          freeDiv.innerHTML = `
+            <span class="table-num">T${String(i).padStart(2, '0')}</span>
+            <span class="table-seats-badge"><i class="fa-solid fa-chair"></i> 2p</span>
+            <span class="table-status-label" style="font-size: 0.65rem; font-weight: 700; margin-top: 3px; opacity: 0.9;">LIBERO</span>
+          `;
+          grid.appendChild(freeDiv);
+        }
+
+        // Aggiorna statistiche
+        const avail = Math.max(0, 50 - totalTables);
+        document.getElementById('stat-available-tables').textContent = avail;
+        document.getElementById('stat-occupied-tables').textContent = totalTables;
+        document.getElementById('stat-total-guests').textContent = totalGuests;
+        document.getElementById('stat-bookings-count').textContent = activeForShift.length;
+
+        // Hint date attive
+        const todayIso = getLocalTodayIso();
+        const otherDates = allBookings.filter(b => {
+          const bDate = toIso(b.date);
+          const isNotCurrent = (bDate !== currentDate);
+          const isNotPast = (bDate >= todayIso); // Mostra solo da oggi in poi (nessuna data passata!)
+          const isNotCancelled = !String(b.status || '').toLowerCase().includes('annull');
+          return isNotCurrent && isNotPast && isNotCancelled;
+        });
+        const hint = document.getElementById('other-dates-hint');
+        if (hint) {
+          if (otherDates.length > 0 && activeForShift.length === 0) {
+            const dates = [...new Set(otherDates.map(b => toIso(b.date)))].sort();
+            hint.style.display = 'flex';
+            hint.innerHTML = `
+              <span><i class="fa-solid fa-calendar-check" style="color: var(--accent-red);"></i> <strong>Prenotazioni trovate per altre date:</strong></span>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                ${dates.map(d => `<button class="nav-date-btn" style="background: var(--accent-red); color: #fff; border: none; padding: 5px 12px; font-size: 0.85rem;" onclick="document.getElementById('admin-target-date').value='${d}'; document.getElementById('admin-target-date').dispatchEvent(new Event('change'));"><i class="fa-solid fa-arrow-right"></i> Vai al ${formatItalianDate(d)}</button>`).join('')}
+              </div>
+            `;
+          } else {
+            hint.style.display = 'none';
+          }
+        }
+      }
+
+      function showBookingDetail(b, assignedNums) {
+        selectedBooking = b;
+        document.getElementById('modal-table-label').textContent = `Tavoli: ${assignedNums.map(n => 'T' + String(n).padStart(2, '0')).join(', ')}`;
+        document.getElementById('modal-booking-id').textContent = b.id;
+        document.getElementById('modal-client-name').textContent = b.name;
+        const phoneEl = document.getElementById('modal-client-phone');
+        phoneEl.textContent = b.phone;
+        phoneEl.href = `tel:${b.phone}`;
+        document.getElementById('modal-guests-count').textContent = `${b.guests} Persone`;
+        document.getElementById('modal-tables-count').textContent = `${b.tables || Math.ceil(b.guests/2)} Tavoli da 2 uniti`;
+        document.getElementById('modal-shift-name').textContent = (currentShift === '20:00') ? '1° Turno (20:00 - 21:30)' : '2° Turno (dalle 21:30)';
+        document.getElementById('modal-notes').textContent = b.notes || 'Nessuna nota segnalata';
+        modal.classList.add('active');
+      }
+
+      window.openNewBookingModal = openNewBookingModal;
+      window.showBookingDetail = showBookingDetail;
+      window.updateHallDisplay = updateHallDisplay;
+
+      // Avvio immediato con rendering garantito e caricamento automatico dal Foglio
+      updateHallDisplay();
+      loadBookings().then(() => {
+        // Garantisce in modo assoluto l'apertura sulla data odierna del dispositivo
+        dateInput.value = currentDate;
+        updateHallDisplay();
+      });
+    })();
+  </script>
 </body>
 </html>

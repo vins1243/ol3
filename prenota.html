@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Prenota un Tavolo | OL3 Ristorante Pizzeria</title>
+  
+    <!-- Favicon & Icona Safari / Apple Touch -->
+  <link rel="icon" type="image/png" sizes="32x32" href="foto/icon.png?v=3">
+  <link rel="icon" type="image/png" sizes="16x16" href="foto/icon.png?v=3">
+  <link rel="apple-touch-icon" sizes="180x180" href="foto/icon.png?v=3">
+  <link rel="shortcut icon" href="foto/icon.png?v=3">
   <meta name="description" content="Prenota comodamente online un tavolo da OL3 Ristorante Pizzeria a Villapiana Lido. Riceverai la conferma ufficiale direttamente su WhatsApp.">
   
   <!-- Font Google -->
@@ -15,7 +21,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   
   <!-- Stili -->
+    <!-- Stili Principali (Dual Link Failsafe) -->
   <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
@@ -23,11 +31,11 @@
   <div class="top-bar">
     <div class="container">
       <div class="top-bar-contact">
-        <span><i class="fa-solid fa-location-dot"></i> <span data-contact-address>Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS)</span></span>
+        <span><i class="fa-solid fa-location-dot"></i> <a href="https://www.google.com/maps/place/Bull+Burger/@39.8053935,16.3968208,13z/data=!4m21!1m14!4m13!1m4!2m2!1d16.3879341!2d39.8195049!4e1!1m6!1m2!1s0x133f5fc4a03ec043:0x80ad513960d73089!2sBull+Burger,+Via+Nazionale,+S.da+Statale+106+Jonica,+87076+Villapiana+Lido+CS!2m2!1d16.4871083!2d39.8060219!3e0!3m5!1s0x133f5fc4a03ec043:0x80ad513960d73089!8m2!3d39.8060219!4d16.4871083!16s%2Fg%2F11gjj9by7s?entry=ttu" target="_blank" rel="noopener" class="topbar-address-link" data-contact-address>Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS)</a></span>
         <span><i class="fa-solid fa-phone"></i> Tel: <a href="tel:3520389996" data-contact-phone>352 038 9996</a></span>
       </div>
       <div class="top-bar-hours">
-        <span><i class="fa-regular fa-clock"></i> <span data-contact-hours>Tutti i giorni 19:00 - 23:30</span></span>
+        <span><i class="fa-regular fa-clock"></i> <span data-contact-hours>Tutti i giorni 19:30 - 00:30</span></span>
       </div>
     </div>
   </div>
@@ -36,18 +44,18 @@
   <nav class="navbar">
     <div class="container nav-container">
       <a href="index.html" class="brand-logo" aria-label="OL3 Ristorante Pizzeria Home">
-        <img src="foto/logo-2.png" alt="OL3 Ristorante Pizzeria" class="navbar-logo-img">
+        <img src="foto/logo-2.png" alt="OL3 Ristorante Pizzeria" class="navbar-logo-img" style="max-height: 52px; width: auto; object-fit: contain; display: block;">
       </a>
 
       <ul class="nav-links">
         <li><a href="index.html">HOME</a></li>
         <li><a href="index.html#il-locale">IL LOCALE</a></li>
-        <li><a href="menu.html">MENU</a></li>
+        <li><a href="menu.html">MENÙ</a></li>
         <li><a href="prenota.html" class="active">PRENOTA UN TAVOLO</a></li>
         <li><a href="index.html#contatti">CONTATTI</a></li>
       </ul>
 
-      <button class="mobile-toggle" aria-label="Menu Mobile">
+      <button class="mobile-toggle" aria-label="Menù Mobile">
         <i class="fa-solid fa-bars"></i>
       </button>
     </div>
@@ -55,8 +63,8 @@
 
   <!-- Floating Social Icons con Link Ufficiali -->
   <aside class="floating-socials">
-    <a href="https://www.facebook.com/griglieria.ol3/?locale=it_IT" class="social-circle social-fb" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
-    <a href="https://www.instagram.com/ol3_ristorante/" class="social-circle social-ig" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+    <a href="https://www.facebook.com/" class="social-circle social-fb" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/" class="social-circle social-ig" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
   </aside>
 
   <!-- Banner Pagina Prenotazioni -->
@@ -76,8 +84,8 @@
         
         <!-- Avviso Numero WhatsApp -->
         <div class="whatsapp-notice-card">
-          <i class="fa-brands fa-whatsapp"></i>
-          <p><strong>ATTENZIONE:</strong> Inserisci con precisione il tuo <strong>numero di cellulare corretto</strong>. La conferma definitiva della disponibilità del tavolo ti verrà recapitata <strong>tramite WhatsApp</strong> dal nostro staff.</p>
+          <i class="fa-solid fa-circle-check" style="color: var(--accent-green);"></i>
+          <p><strong>PRENOTAZIONE IMMEDIATA AUTOMATICA:</strong> Seleziona data, turno e numero di persone. Il sistema verifica la disponibilità in tempo reale e conferma istantaneamente il tuo posto senza attese!</p>
         </div>
 
         <h2 class="form-title">Richiedi la Disponibilità</h2>
@@ -100,21 +108,21 @@
 
           <div class="form-grid">
             <div class="form-group">
-              <label for="res-date">Data della Prenotazione *</label>
-              <input type="date" id="res-date" name="data" required>
+              <label for="res-date"><i class="fa-solid fa-calendar-day" style="color: var(--accent-red);"></i> 1. Data della Prenotazione *</label>
+              <input type="date" id="res-date" name="data" required autocomplete="off">
+              <small style="display: block; margin-top: 6px; font-size: 0.80rem; color: var(--text-dark); font-weight: 600;">
+                👉 Scegli il giorno per verificare i turni disponibili
+              </small>
             </div>
             <div class="form-group">
-              <label for="res-time">Orario Desiderato *</label>
-              <select id="res-time" name="orario" required>
-                <option value="" disabled selected>Seleziona l'orario</option>
-                <option value="19:30">19:30</option>
-                <option value="20:00">20:00</option>
-                <option value="20:30">20:30</option>
-                <option value="21:00">21:00</option>
-                <option value="21:30">21:30</option>
-                <option value="22:00">22:00</option>
-                <option value="22:30">22:30</option>
+              <label for="res-time"><i class="fa-solid fa-clock" style="color: var(--accent-red);"></i> 2. Orario Desiderato (Turno) *</label>
+              <select id="res-time" name="orario" required disabled style="opacity: 0.8; cursor: not-allowed; background-color: #2b2527; color: #b8b1a9; font-weight: 700;">
+                <option value="" disabled selected>⚠️ Seleziona prima la data a sinistra</option>
               </select>
+              <small id="time-hint" style="display: block; margin-top: 6px; font-size: 0.80rem; color: var(--text-muted);">
+                Due turni serali: 20:00 - 21:30 e dalle 21:30 in poi
+              </small>
+              <div id="shift-availability-notice" style="display: none; margin-top: 8px; padding: 10px 14px; background: rgba(214, 62, 48, 0.12); border: 1.5px solid var(--accent-red); border-radius: 6px; font-size: 0.88rem; font-weight: 700; color: var(--accent-red);"></div>
             </div>
           </div>
 
@@ -123,14 +131,24 @@
               <label for="res-guests">Numero di Ospiti *</label>
               <select id="res-guests" name="ospiti" required>
                 <option value="" disabled selected>Seleziona persone</option>
-                <option value="1 persona">1 Persona</option>
-                <option value="2 persone">2 Persone</option>
-                <option value="3 persone">3 Persone</option>
-                <option value="4 persone">4 Persone</option>
-                <option value="5 persone">5 Persone</option>
-                <option value="6 persone">6 Persone</option>
-                <option value="7-10 persone">Da 7 a 10 Persone</option>
-                <option value="Gruppo numeroso (10+)">Gruppo numeroso (oltre 10)</option>
+                <option value="1">1 Persona</option>
+                <option value="2">2 Persone</option>
+                <option value="3">3 Persone</option>
+                <option value="4">4 Persone</option>
+                <option value="5">5 Persone</option>
+                <option value="6">6 Persone</option>
+                <option value="7">7 Persone</option>
+                <option value="8">8 Persone</option>
+                <option value="9">9 Persone</option>
+                <option value="10">10 Persone</option>
+                <option value="11">11 Persone</option>
+                <option value="12">12 Persone</option>
+                <option value="13">13 Persone</option>
+                <option value="14">14 Persone</option>
+                <option value="15">15 Persone</option>
+                <option value="16">16 Persone</option>
+                <option value="18">18 Persone</option>
+                <option value="20">20 Persone</option>
               </select>
             </div>
             <div class="form-group">
@@ -150,22 +168,31 @@
         <!-- Scheda Esito Ricezione Prenotazione -->
         <div id="booking-success-card" class="booking-success-box">
           <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
-          <h3>Grazie per la richiesta di prenotazione!</h3>
-          <p style="color: var(--text-muted); font-size: 1.05rem;">Abbiamo registrato con successo la tua richiesta:</p>
+          <h3 class="success-title">Prenotazione Confermata!</h3>
+          <p class="success-subtitle">Il tuo posto da OL3 Ristorante Pizzeria è riservato con successo. Ti aspettiamo!</p>
           
           <div class="booking-summary-pill">
-            <span id="confirmed-date-time">Data e Ora</span> • <span id="confirmed-guests">Persone</span>
+            <span id="confirmed-date-time">Data e Turno</span> • <span id="confirmed-guests">Ospiti</span>
           </div>
 
-          <div class="whatsapp-success-message">
-            <i class="fa-brands fa-whatsapp"></i>
-            <strong>La conferma dell'appuntamento ti arriverà tramite WhatsApp</strong> al numero indicato (<strong id="confirmed-phone" style="color: var(--accent-gold);">...</strong>). Il nostro staff verificherà la disponibilità del tavolo e ti invierà la conferma in tempi brevissimi.
+          <div class="booking-confirmed-card">
+            <div class="confirmed-row">
+              <span class="row-label"><i class="fa-solid fa-ticket"></i> Codice:</span>
+              <strong id="confirmed-code" class="code-value">OL3_...</strong>
+            </div>
+            <div class="confirmed-row">
+              <span class="row-label"><i class="fa-solid fa-user"></i> Intestata a:</span>
+              <strong id="confirmed-name">...</strong>
+            </div>
+            <div class="confirmed-row">
+              <span class="row-label"><i class="fa-solid fa-users"></i> Persone:</span>
+              <strong id="confirmed-guests-detail" style="color: var(--text-dark); font-weight: 700;">...</strong>
+            </div>
           </div>
 
-          <p style="font-size: 0.88rem; color: #a8a29b;">Per comunicazioni urgenti puoi contattarci al <a href="tel:3520389996" style="color: var(--accent-gold); font-weight:700;">352 038 9996</a>.</p>
-          <a href="index.html" class="btn-secondary-hero" style="display: inline-block; width: auto; margin-top: 20px; padding: 10px 28px;">TORNA ALLA HOME</a>
+          <p class="booking-note">In caso di variazioni o ritardo puoi contattarci al <a href="tel:3520389996">352 038 9996</a>.</p>
+          <a href="index.html" class="btn-secondary-hero" style="display: inline-block; width: auto; margin-top: 18px; padding: 10px 28px;">TORNA ALLA HOME</a>
         </div>
-
       </div>
 
       <!-- Info Box Laterale -->
@@ -182,7 +209,9 @@
           <div class="info-icon"><i class="fa-regular fa-clock"></i></div>
           <div class="info-content">
             <h4>Orari di Apertura</h4>
-            <p>Siamo aperti <strong>tutti i giorni</strong> a cena dalle <strong>19:00 alle 23:30</strong>.</p>
+            <p>Siamo aperti <strong>tutti i giorni</strong> con due turni serali:</p>
+            <p style="margin-top: 6px;">• <strong>1° Turno:</strong> 20:00 - 21:30<br>• <strong>2° Turno:</strong> dalle 21:30 in poi</p>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">Disponibilità sala: 50 tavoli da 2 posti (100 posti complessivi per turno).</p>
           </div>
         </div>
 
@@ -190,15 +219,15 @@
           <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
           <div class="info-content">
             <h4>Dove Siamo</h4>
-            <p>Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS).</p>
+            <p><a href="https://www.google.com/maps/place/Bull+Burger/@39.8053935,16.3968208,13z/data=!4m21!1m14!4m13!1m4!2m2!1d16.3879341!2d39.8195049!4e1!1m6!1m2!1s0x133f5fc4a03ec043:0x80ad513960d73089!2sBull+Burger,+Via+Nazionale,+S.da+Statale+106+Jonica,+87076+Villapiana+Lido+CS!2m2!1d16.4871083!2d39.8060219!3e0!3m5!1s0x133f5fc4a03ec043:0x80ad513960d73089!8m2!3d39.8060219!4d16.4871083!16s%2Fg%2F11gjj9by7s?entry=ttu" target="_blank" rel="noopener" style="color: inherit; text-decoration: underline;">Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS)</a>.</p>
           </div>
         </div>
 
         <div class="info-item">
           <div class="info-icon"><i class="fa-solid fa-utensils"></i></div>
           <div class="info-content">
-            <h4>Consulta il Menu</h4>
-            <p>Scopri in anticipo le nostre pizze speciali e i tagli pregiati di carne. <a href="menu.html" style="color: var(--accent-gold); text-decoration: underline;">Sfoglia il menu completo</a>.</p>
+            <h4>Consulta il Menù</h4>
+            <p>Scopri in anticipo i nostri smash burger speciali e gli hamburger gourmet. <a href="menu.html" style="color: var(--accent-gold); text-decoration: underline;">Sfoglia il Menù completo</a>.</p>
           </div>
         </div>
       </aside>
@@ -210,20 +239,284 @@
   <footer class="footer">
     <div class="container">
       <div class="footer-links">
-        <a href="#">Informativa sulla privacy</a>
+        <a href="privacy.html">Informativa sulla privacy</a>
         <span>•</span>
-        <a href="#">Termini e Condizioni</a>
+        <a href="termini.html">Termini e Condizioni</a>
         <span>•</span>
-        <a href="#">Informativa sui cookie</a>
+        <a href="cookie.html">Informativa sui cookie</a>
         <span>•</span>
-        <a href="#">Dichiarazione di accessibilità</a>
+        <a href="accessibilita.html">Dichiarazione di accessibilità</a>
       </div>
-      <p class="footer-copy">© 2025 by <span data-brand-name>OL3 Ristorante Pizzeria</span>. Tutti i diritti riservati.</p>
+      <p class="footer-copy">© 2026 by <span data-brand-name>OL3 Ristorante Pizzeria</span>. Tutti i diritti riservati.</p>
     </div>
   </footer>
 
   <!-- File JavaScript -->
   <script src="js/config.js"></script>
-  <script src="js/script.js"></script>
+  <script src="js/script.js?v=5.0"></script>
+
+  <script>
+    // CONTROLLO OBBLIGATORIO DELLA DATA E VERIFICA POSTI PER TURNO (OL3 RISTORANTE PIZZERIA)
+    (function() {
+      const form = document.getElementById('reservation-form');
+      const successCard = document.getElementById('booking-success-card');
+      const dateInput = document.getElementById('res-date');
+      const timeSelect = document.getElementById('res-time');
+      const guestsSelect = document.getElementById('res-guests');
+      const noticeEl = document.getElementById('shift-availability-notice');
+      const submitBtn = form ? form.querySelector('button[type="submit"]') : null;
+
+      const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
+      const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
+      const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbywuk8Mgl7oeB8vrXjmsftYINLiRTpuRNToJYdur0TDXJTXAvJXA_9GfmGeuQuwT80h/exec';
+
+      function getLocalTodayIso() {
+        const d = new Date();
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+      }
+
+      // Imposta data minima = oggi e lascia il campo vuoto per forzare la scelta del giorno
+      if (dateInput) {
+        dateInput.min = getLocalTodayIso();
+        dateInput.value = '';
+      }
+
+      // Blocca turno finché la data non viene selezionata
+      if (timeSelect) {
+        timeSelect.disabled = true;
+        timeSelect.style.opacity = '0.8';
+        timeSelect.style.cursor = 'not-allowed';
+        timeSelect.style.backgroundColor = '#f1e1c0';
+        timeSelect.innerHTML = '<option value="" disabled selected>⚠️ Seleziona prima la data a sinistra</option>';
+      }
+
+      function toIso(d) {
+        if (!d) return '';
+        const s = String(d).trim();
+        const mGviz = s.match(/Date\s*\(\s*(\d{4})\s*,\s*(\d{1,2})\s*,\s*(\d{1,2})/i);
+        if (mGviz) {
+          const y = mGviz[1];
+          const m = String(parseInt(mGviz[2], 10) + 1).padStart(2, '0');
+          const day = String(parseInt(mGviz[3], 10)).padStart(2, '0');
+          return `${y}-${m}-${day}`;
+        }
+        const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+        if (mIso) return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
+        const mIt = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+        if (mIt) return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
+        return s;
+      }
+
+      function isTurno1(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
+        if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return false;
+        return s.includes('1°') || s.includes('primo') || s.includes('20:00') || s.includes('1');
+      }
+
+      function isTurno2(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
+        if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return true;
+        if (s.includes('21:30') && !s.includes('20:00')) return true;
+        return false;
+      }
+
+      let allSheetBookings = [];
+
+      async function fetchLiveBookings() {
+        try {
+          const res = await fetch(GVIZ_URL);
+          const txt = await res.text();
+          const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+          if (match) {
+            const json = JSON.parse(match[1]);
+            if (json && json.table && Array.isArray(json.table.rows)) {
+              const list = [];
+              json.table.rows.forEach(r => {
+                if (!r || !r.c) return;
+                const c = r.c;
+                const val = idx => c[idx] ? ((c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : ((c[idx].v !== null && c[idx].v !== undefined) ? c[idx].v : '')) : '';
+                const bId = String(val(0));
+                if (!bId || bId.toLowerCase().includes('id')) return;
+                list.push({
+                  id: bId,
+                  date: toIso(val(4)),
+                  time: String(val(5)),
+                  guests: parseInt(val(6), 10) || 2,
+                  tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
+                  status: String(val(8) || 'Confermata')
+                });
+              });
+              allSheetBookings = list;
+              return list;
+            }
+          }
+        } catch(e) {
+          console.warn('GVIZ load error:', e);
+        }
+
+        try {
+          const resp = await fetch(APPS_SCRIPT_URL);
+          const res = await resp.json();
+          if (res && res.status === 'success' && Array.isArray(res.data)) {
+            allSheetBookings = res.data.map(b => ({
+              id: String(b.id),
+              date: toIso(b.date),
+              time: String(b.time || ''),
+              guests: parseInt(b.guests, 10) || 2,
+              tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
+              status: String(b.status || 'Confermata')
+            }));
+            return allSheetBookings;
+          }
+        } catch(err) {
+          console.warn('Apps Script load error:', err);
+        }
+
+        return allSheetBookings;
+      }
+
+      // Funzione che aggiorna i turni appena viene scelta la data
+      async function onDateSelected() {
+        if (!dateInput || !dateInput.value) {
+          if (timeSelect) {
+            timeSelect.disabled = true;
+            timeSelect.style.opacity = '0.8';
+            timeSelect.style.cursor = 'not-allowed';
+            timeSelect.style.backgroundColor = '#f1e1c0';
+            timeSelect.innerHTML = '<option value="" disabled selected>⚠️ Seleziona prima la data a sinistra</option>';
+          }
+          if (noticeEl) noticeEl.style.display = 'none';
+          return;
+        }
+
+        const chosenDate = toIso(dateInput.value);
+        const guests = guestsSelect ? (parseInt(guestsSelect.value, 10) || 2) : 2;
+        const neededTables = Math.ceil(guests / 2);
+
+        if (timeSelect) {
+          timeSelect.disabled = true;
+          timeSelect.style.opacity = '0.85';
+          timeSelect.style.cursor = 'wait';
+          timeSelect.style.backgroundColor = '#faf2e1';
+          timeSelect.innerHTML = '<option value="" disabled selected>⏳ Controllo posti disponibili...</option>';
+        }
+
+        const bookings = await fetchLiveBookings();
+        const activeToday = bookings.filter(b => {
+          return (toIso(b.date) === chosenDate) &&
+                 !String(b.status || '').toLowerCase().includes('annull') &&
+                 !String(b.status || '').toLowerCase().includes('rifiut');
+        });
+
+        let occ1 = 0;
+        let occ2 = 0;
+        activeToday.forEach(b => {
+          const t = b.tables || Math.ceil(b.guests / 2);
+          if (isTurno1(b.time)) occ1 += t;
+          else if (isTurno2(b.time)) occ2 += t;
+        });
+
+        // Capienza totale per turno: 50 tavoli da 2 posti (100 coperti max)
+        const avail1 = Math.max(0, 50 - occ1);
+        const avail2 = Math.max(0, 50 - occ2);
+
+        const canBook1 = (avail1 >= neededTables);
+        const canBook2 = (avail2 >= neededTables);
+
+        if (timeSelect) {
+          timeSelect.disabled = false;
+          timeSelect.style.opacity = '1';
+          timeSelect.style.cursor = 'pointer';
+          timeSelect.style.backgroundColor = '#ffffff';
+
+          let optionsHtml = '<option value="" disabled selected>Seleziona il turno desiderato</option>';
+
+          // 1° Turno
+          if (canBook1) {
+            optionsHtml += '<option value="20:00">1° Turno (20:00 - 21:30)</option>';
+          } else {
+            optionsHtml += '<option value="20:00" disabled style="color: #8e888b; background-color: #ede4d1; font-style: italic;">1° Turno (20:00 - 21:30) (posti esauriti)</option>';
+          }
+
+          // 2° Turno
+          if (canBook2) {
+            optionsHtml += '<option value="21:30">2° Turno (dalle 21:30 in poi)</option>';
+          } else {
+            optionsHtml += '<option value="21:30" disabled style="color: #8e888b; background-color: #ede4d1; font-style: italic;">2° Turno (dalle 21:30 in poi) (posti esauriti)</option>';
+          }
+
+          timeSelect.innerHTML = optionsHtml;
+        }
+
+        // Se entrambi i turni sono esauriti
+        if (!canBook1 && !canBook2) {
+          if (noticeEl) {
+            noticeEl.style.display = 'block';
+            noticeEl.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Tutti i posti per questa data sono esauriti (100 coperti max per turno raggiunti). Ti invitiamo a selezionare un\'altra data.';
+          }
+          if (submitBtn) {
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.5';
+            submitBtn.style.cursor = 'not-allowed';
+          }
+        } else {
+          if (noticeEl) noticeEl.style.display = 'none';
+          if (submitBtn) {
+            submitBtn.disabled = false;
+            submitBtn.style.opacity = '1';
+            submitBtn.style.cursor = 'pointer';
+          }
+        }
+      }
+
+      if (dateInput) {
+        dateInput.addEventListener('change', onDateSelected);
+        dateInput.addEventListener('input', onDateSelected);
+      }
+
+      if (guestsSelect) {
+        guestsSelect.addEventListener('change', () => {
+          if (dateInput && dateInput.value) {
+            onDateSelected();
+          }
+        });
+      }
+
+      // Pre-carica i dati dal foglio all'apertura della pagina
+      fetchLiveBookings();
+
+      // Blocco ferreo al submit se il turno scelto è esaurito
+      if (form) {
+        form.addEventListener('submit', function(e) {
+          if (!dateInput.value) {
+            e.preventDefault();
+            alert('Seleziona prima la data della prenotazione.');
+            dateInput.focus();
+            return false;
+          }
+          const chosenTurno = timeSelect ? timeSelect.value : '';
+          if (!chosenTurno) {
+            e.preventDefault();
+            alert('Seleziona un turno disponibile per la data scelta.');
+            timeSelect.focus();
+            return false;
+          }
+          const opt = timeSelect ? timeSelect.querySelector(`option[value="${chosenTurno}"]`) : null;
+          if (opt && opt.disabled) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            alert('Attenzione: i posti per questo turno sono esauriti. Scegli un altro turno o un\'altra data.');
+            return false;
+          }
+        }, true);
+      }
+    })();
+  </script>
+
 </body>
 </html>

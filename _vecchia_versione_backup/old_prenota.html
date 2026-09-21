@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Prenota un Tavolo | OL3 Ristorante Pizzeria</title>
+  <meta name="description" content="Prenota comodamente online un tavolo da OL3 Ristorante Pizzeria a Villapiana Lido. Riceverai la conferma ufficiale direttamente su WhatsApp.">
+  
+  <!-- Font Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Icone FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stili -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- Barra Superiore Info Contatto -->
+  <div class="top-bar">
+    <div class="container">
+      <div class="top-bar-contact">
+        <span><i class="fa-solid fa-location-dot"></i> <span data-contact-address>Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS)</span></span>
+        <span><i class="fa-solid fa-phone"></i> Tel: <a href="tel:3520389996" data-contact-phone>352 038 9996</a></span>
+      </div>
+      <div class="top-bar-hours">
+        <span><i class="fa-regular fa-clock"></i> <span data-contact-hours>Tutti i giorni 19:00 - 23:30</span></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Barra di Navigazione Principale -->
+  <nav class="navbar">
+    <div class="container nav-container">
+      <a href="index.html" class="brand-logo" aria-label="OL3 Ristorante Pizzeria Home">
+        <img src="foto/logo-2.png" alt="OL3 Ristorante Pizzeria" class="navbar-logo-img">
+      </a>
+
+      <ul class="nav-links">
+        <li><a href="index.html">HOME</a></li>
+        <li><a href="index.html#il-locale">IL LOCALE</a></li>
+        <li><a href="menu.html">MENU</a></li>
+        <li><a href="prenota.html" class="active">PRENOTA UN TAVOLO</a></li>
+        <li><a href="index.html#contatti">CONTATTI</a></li>
+      </ul>
+
+      <button class="mobile-toggle" aria-label="Menu Mobile">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Floating Social Icons con Link Ufficiali -->
+  <aside class="floating-socials">
+    <a href="https://www.facebook.com/griglieria.ol3/?locale=it_IT" class="social-circle social-fb" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+    <a href="https://www.instagram.com/ol3_ristorante/" class="social-circle social-ig" target="_blank" rel="noopener" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+  </aside>
+
+  <!-- Banner Pagina Prenotazioni -->
+  <section class="page-banner">
+    <div class="container">
+      <h1 class="page-banner-title">PRENOTA IL TUO TAVOLO</h1>
+      <p class="page-banner-subtitle">Compila il modulo con i tuoi dati. Ti risponderemo direttamente su WhatsApp con la conferma ufficiale.</p>
+    </div>
+  </section>
+
+  <!-- Sezione Form di Prenotazione + Informazioni -->
+  <main class="booking-section">
+    <div class="container booking-wrapper">
+      
+      <!-- Modulo Prenotazione -->
+      <div class="reservation-box">
+        
+        <!-- Avviso Numero WhatsApp -->
+        <div class="whatsapp-notice-card">
+          <i class="fa-brands fa-whatsapp"></i>
+          <p><strong>ATTENZIONE:</strong> Inserisci con precisione il tuo <strong>numero di cellulare corretto</strong>. La conferma definitiva della disponibilità del tavolo ti verrà recapitata <strong>tramite WhatsApp</strong> dal nostro staff.</p>
+        </div>
+
+        <h2 class="form-title">Richiedi la Disponibilità</h2>
+        <p class="form-subtitle">Tutti i campi contrassegnati da asterisco (*) sono necessari per riservare il tuo posto.</p>
+
+        <!-- Form configurato anche per Netlify Forms -->
+        <form id="reservation-form" name="prenotazioni" method="POST" data-netlify="true">
+          <input type="hidden" name="form-name" value="prenotazioni">
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="res-name">Nome e Cognome *</label>
+              <input type="text" id="res-name" name="nome" placeholder="Es. Mario Rossi" required>
+            </div>
+            <div class="form-group">
+              <label for="res-phone">Cellulare WhatsApp *</label>
+              <input type="tel" id="res-phone" name="telefono" placeholder="Es. 340 123 4567" required>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="res-date">Data della Prenotazione *</label>
+              <input type="date" id="res-date" name="data" required>
+            </div>
+            <div class="form-group">
+              <label for="res-time">Orario Desiderato *</label>
+              <select id="res-time" name="orario" required>
+                <option value="" disabled selected>Seleziona l'orario</option>
+                <option value="19:30">19:30</option>
+                <option value="20:00">20:00</option>
+                <option value="20:30">20:30</option>
+                <option value="21:00">21:00</option>
+                <option value="21:30">21:30</option>
+                <option value="22:00">22:00</option>
+                <option value="22:30">22:30</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label for="res-guests">Numero di Ospiti *</label>
+              <select id="res-guests" name="ospiti" required>
+                <option value="" disabled selected>Seleziona persone</option>
+                <option value="1 persona">1 Persona</option>
+                <option value="2 persone">2 Persone</option>
+                <option value="3 persone">3 Persone</option>
+                <option value="4 persone">4 Persone</option>
+                <option value="5 persone">5 Persone</option>
+                <option value="6 persone">6 Persone</option>
+                <option value="7-10 persone">Da 7 a 10 Persone</option>
+                <option value="Gruppo numeroso (10+)">Gruppo numeroso (oltre 10)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="res-email">Indirizzo Email (opzionale)</label>
+              <input type="email" id="res-email" name="email" placeholder="nome@esempio.it">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="res-notes">Note particolari, intolleranze o allergie</label>
+            <textarea id="res-notes" name="note" rows="3" placeholder="Segnalaci allergie, celiachia, seggioloni per bambini o richieste particolari..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" style="margin-top: 10px;">INVIA RICHIESTA DI PRENOTAZIONE</button>
+        </form>
+
+        <!-- Scheda Esito Ricezione Prenotazione -->
+        <div id="booking-success-card" class="booking-success-box">
+          <div class="success-icon"><i class="fa-solid fa-circle-check"></i></div>
+          <h3>Grazie per la richiesta di prenotazione!</h3>
+          <p style="color: var(--text-muted); font-size: 1.05rem;">Abbiamo registrato con successo la tua richiesta:</p>
+          
+          <div class="booking-summary-pill">
+            <span id="confirmed-date-time">Data e Ora</span> • <span id="confirmed-guests">Persone</span>
+          </div>
+
+          <div class="whatsapp-success-message">
+            <i class="fa-brands fa-whatsapp"></i>
+            <strong>La conferma dell'appuntamento ti arriverà tramite WhatsApp</strong> al numero indicato (<strong id="confirmed-phone" style="color: var(--accent-gold);">...</strong>). Il nostro staff verificherà la disponibilità del tavolo e ti invierà la conferma in tempi brevissimi.
+          </div>
+
+          <p style="font-size: 0.88rem; color: #a8a29b;">Per comunicazioni urgenti puoi contattarci al <a href="tel:3520389996" style="color: var(--accent-gold); font-weight:700;">352 038 9996</a>.</p>
+          <a href="index.html" class="btn-secondary-hero" style="display: inline-block; width: auto; margin-top: 20px; padding: 10px 28px;">TORNA ALLA HOME</a>
+        </div>
+
+      </div>
+
+      <!-- Info Box Laterale -->
+      <aside class="booking-info-box">
+        <div class="info-item">
+          <div class="info-icon"><i class="fa-solid fa-phone-volume"></i></div>
+          <div class="info-content">
+            <h4>Prenotazioni Telefoniche</h4>
+            <p>Hai richieste urgenti o siete un gruppo numeroso? Chiamaci direttamente al <a href="tel:3520389996" data-contact-phone style="color: var(--accent-gold); font-weight:700;">352 038 9996</a>.</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon"><i class="fa-regular fa-clock"></i></div>
+          <div class="info-content">
+            <h4>Orari di Apertura</h4>
+            <p>Siamo aperti <strong>tutti i giorni</strong> a cena dalle <strong>19:00 alle 23:30</strong>.</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon"><i class="fa-solid fa-location-dot"></i></div>
+          <div class="info-content">
+            <h4>Dove Siamo</h4>
+            <p>Piazza Enrico Berlinguer, 87076 Villapiana Lido (CS).</p>
+          </div>
+        </div>
+
+        <div class="info-item">
+          <div class="info-icon"><i class="fa-solid fa-utensils"></i></div>
+          <div class="info-content">
+            <h4>Consulta il Menu</h4>
+            <p>Scopri in anticipo le nostre pizze speciali e i tagli pregiati di carne. <a href="menu.html" style="color: var(--accent-gold); text-decoration: underline;">Sfoglia il menu completo</a>.</p>
+          </div>
+        </div>
+      </aside>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="#">Informativa sulla privacy</a>
+        <span>•</span>
+        <a href="#">Termini e Condizioni</a>
+        <span>•</span>
+        <a href="#">Informativa sui cookie</a>
+        <span>•</span>
+        <a href="#">Dichiarazione di accessibilità</a>
+      </div>
+      <p class="footer-copy">© 2025 by <span data-brand-name>OL3 Ristorante Pizzeria</span>. Tutti i diritti riservati.</p>
+    </div>
+  </footer>
+
+  <!-- File JavaScript -->
+  <script src="js/config.js"></script>
+  <script src="js/script.js"></script>
+</body>
+</html>
