@@ -168,11 +168,43 @@ function syncBookingsToComande(ss) {
 
 
 
-// Funzione unificata di registrazione prenotazione (scrive su entrambi i fogli)
+// Funzione unificata di registrazione prenotazione (scrive su entrambi i fogli CON DEDUPLICAZIONE RIGIDA)
 function processBooking(payload) {
   const ss = getSpreadsheet();
   const bookSheet = getBookingsSheet(ss);
   const comandeSheet = ensureComandeSheet(ss);
+
+  const bookingId = String(payload.id || ('OL3_' + Date.now())).trim();
+
+  // DEDUPLICAZIONE: controlla se l'ID esiste già in Foglio 1 o Foglio 2
+  SpreadsheetApp.flush();
+  const bookRows = bookSheet.getDataRange().getValues();
+  let existingInBook = false;
+  for (let i = 1; i < bookRows.length; i++) {
+    if (String(bookRows[i][0] || '').trim() === bookingId) {
+      existingInBook = true;
+      break;
+    }
+  }
+
+  const comandeRows = comandeSheet.getDataRange().getValues();
+  let existingInComande = false;
+  for (let j = 1; j < comandeRows.length; j++) {
+    if (String(comandeRows[j][0] || '').trim() === bookingId) {
+      existingInComande = true;
+      break;
+    }
+  }
+
+  if (existingInBook && existingInComande) {
+    return {
+      status: "success",
+      already_exists: true,
+      confirmed: true,
+      bookingId: bookingId,
+      message: "Prenotazione già presente nel database"
+    };
+  }
 
   const targetDate = normalizeDate(payload.date);
   const guests = parseInt(payload.guests, 10) || 2;
@@ -180,12 +212,10 @@ function processBooking(payload) {
   const chosenTurno = String(payload.time || '').trim();
 
   // Verifica occupazione nel turno
-  const rows = bookSheet.getDataRange().getValues();
   let occupied = 0;
-
-  for (let i = 1; i < rows.length; i++) {
-    const r = rows[i];
-    if (!r[0]) continue;
+  for (let i = 1; i < bookRows.length; i++) {
+    const r = bookRows[i];
+    if (!r[0] || String(r[0]).trim() === bookingId) continue;
     const rDate = normalizeDate(r[4]);
     const status = String(r[8] || '').trim().toLowerCase();
 
@@ -209,7 +239,6 @@ function processBooking(payload) {
     };
   }
 
-  const bookingId = payload.id || ('OL3_' + Date.now());
   const createdAt = new Date().toLocaleString('it-IT');
   const displayTurno = isTurno1(chosenTurno) ? "1° Turno (20:00 - 21:30)" : "2° Turno (dalle 21:30)";
 
@@ -220,36 +249,42 @@ function processBooking(payload) {
     ? `T${String(startNum).padStart(2, '0')}` 
     : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
 
-  // 1. Inserimento in Foglio 1 (Prenotazioni)
-  bookSheet.appendRow([
-    bookingId,
-    createdAt,
-    payload.name || '',
-    payload.phone || '',
-    targetDate,
-    displayTurno,
-    guests,
-    tablesNeeded,
-    'Confermata',
-    payload.notes || ''
-  ]);
+  // 1. Inserimento in Foglio 1 solo se non presente
+  if (!existingInBook) {
+    bookSheet.appendRow([
+      bookingId,
+      createdAt,
+      payload.name || '',
+      payload.phone || '',
+      targetDate,
+      displayTurno,
+      guests,
+      tablesNeeded,
+      'Confermata',
+      payload.notes || ''
+    ]);
+  }
 
-  // 2. Inserimento in Foglio 2 (Comande) con Stato Ordinazione inizialmente VUOTO ('')
-  comandeSheet.appendRow([
-    bookingId,
-    createdAt,
-    targetDate,
-    displayTurno,
-    chosenTurno,
-    tableLabel,
-    payload.name || '',
-    payload.phone || '',
-    guests,
-    payload.notes || '',
-    '', // Cella inizialmente vuota (ordinazione non ancora presa)
-    '', // Dettaglio piatti vuoto
-    ''  // Col M: Stato Pagamento inizialmente vuoto
-  ]);
+  // 2. Inserimento in Foglio 2 solo se non presente
+  if (!existingInComande) {
+    comandeSheet.appendRow([
+      bookingId,
+      createdAt,
+      targetDate,
+      displayTurno,
+      chosenTurno,
+      tableLabel,
+      payload.name || '',
+      payload.phone || '',
+      guests,
+      payload.notes || '',
+      '', // Cella inizialmente vuota (ordinazione non ancora presa)
+      '', // Dettaglio piatti vuoto
+      ''  // Col M: Stato Pagamento inizialmente vuoto
+    ]);
+  }
+
+  SpreadsheetApp.flush();
 
   return {
     status: "success",
@@ -337,34 +372,26 @@ function updateOrderStatus(params) {
 }
 
 function doGet(e) {
+  const lock = LockService.getScriptLock();
   try {
+    lock.waitLock(15000);
     const ss = getSpreadsheet();
-    syncBookingsToComande(ss);
     const params = e ? e.parameter : {};
 
     // 1. AGGIORNAMENTO ORDINAZIONE DA COMANDI SITO (INTERATTIVITÀ MULTI-DISPOSITIVO)
     if (params && (params.action === "update_order" || params.action === "save_order")) {
-      const lock = LockService.getScriptLock();
-      try {
-        lock.waitLock(15000);
-        const res = updateOrderStatus(params);
-        return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
-      } finally {
-        lock.releaseLock();
-      }
+      const res = updateOrderStatus(params);
+      return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
     }
 
     // 2. REGISTRAZIONE VIA GET (FALLBACK SENZA PROBLEMI CORS)
     if (params && params.action === "book") {
-      const lock = LockService.getScriptLock();
-      try {
-        lock.waitLock(15000);
-        const res = processBooking(params);
-        return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
-      } finally {
-        lock.releaseLock();
-      }
+      const res = processBooking(params);
+      return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
     }
+
+    // Sincronizza fogli solo per letture ordinarie
+    syncBookingsToComande(ss);
 
     // 3. VERIFICA DISPONIBILITÀ
     if (params && params.action === "check_availability") {
@@ -487,7 +514,6 @@ function doPost(e) {
     }
 
     const ss = getSpreadsheet();
-    syncBookingsToComande(ss);
     const bookSheet = getBookingsSheet(ss);
 
     // 2. Aggiornamento stato prenotazione o cancellazione (sincronizza sia Foglio 1 sia Foglio 2)

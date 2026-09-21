@@ -1041,26 +1041,26 @@
 
           allBookings.push(newBooking);
 
-          // Sincronizza con Google Apps Script
+          // Sincronizza con Google Apps Script (POST con Fallback GET)
           fetch(APPS_SCRIPT_URL, {
             method: 'POST',
             mode: 'no-cors',
             headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             body: JSON.stringify(newBooking)
-          }).catch(() => {});
-
-          const getParams = new URLSearchParams({
-            action: 'book',
-            id: newBooking.id,
-            name: newBooking.name,
-            phone: newBooking.phone,
-            date: newBooking.date,
-            time: newBooking.time,
-            guests: String(newBooking.guests),
-            tables: String(newBooking.tables),
-            notes: newBooking.notes
+          }).catch(() => {
+            const getParams = new URLSearchParams({
+              action: 'book',
+              id: newBooking.id,
+              name: newBooking.name,
+              phone: newBooking.phone,
+              date: newBooking.date,
+              time: newBooking.time,
+              guests: String(newBooking.guests),
+              tables: String(newBooking.tables),
+              notes: newBooking.notes
+            });
+            fetch(APPS_SCRIPT_URL + '?' + getParams.toString(), { mode: 'no-cors' }).catch(() => {});
           });
-          fetch(APPS_SCRIPT_URL + '?' + getParams.toString(), { mode: 'no-cors' }).catch(() => {});
 
           if (newModal) newModal.classList.remove('active');
           updateHallDisplay();

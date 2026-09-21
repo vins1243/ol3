@@ -536,7 +536,7 @@ function initReservationForm() {
       status: 'Confermata'
     };
 
-    // Sincronizzazione con Google Sheet via Google Apps Script (POST + GET Fallback)
+    // Sincronizzazione con Google Sheet via Google Apps Script (POST con Fallback GET sequenziale)
     const endpoint = getGoogleSheetEndpoint();
     if (endpoint) {
       fetch(endpoint, {
@@ -544,21 +544,22 @@ function initReservationForm() {
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(booking)
-      }).catch(err => console.log('Sincronizzazione POST Sheet:', err));
-
-      const getParams = new URLSearchParams({
-        action: 'book',
-        id: booking.id,
-        name: booking.name,
-        phone: booking.phone,
-        date: booking.date,
-        time: booking.time,
-        guests: booking.guests,
-        tables: String(booking.tables),
-        notes: booking.notes
+      }).catch(err => {
+        console.log('POST non riuscita, attivo Fallback GET:', err);
+        const getParams = new URLSearchParams({
+          action: 'book',
+          id: booking.id,
+          name: booking.name,
+          phone: booking.phone,
+          date: booking.date,
+          time: booking.time,
+          guests: booking.guests,
+          tables: String(booking.tables),
+          notes: booking.notes
+        });
+        fetch(endpoint + '?' + getParams.toString(), { mode: 'no-cors' })
+          .catch(e => console.log('Errore anche su fallback GET:', e));
       });
-      fetch(endpoint + '?' + getParams.toString(), { mode: 'no-cors' })
-        .catch(err => console.log('Sincronizzazione GET Sheet:', err));
     }
 
     cachedBookings = null;
