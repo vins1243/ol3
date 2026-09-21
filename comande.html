@@ -1096,12 +1096,8 @@
         border-radius: 12px;
       }
       .menu-selection-col {
-      display: block;
-      overflow-y: auto;
-      padding: 24px 28px;
-      border-right: 1.5px solid rgba(255, 255, 255, 0.08);
-      max-height: calc(94vh - 150px);
-    }
+        padding: 16px 14px;
+      }
     }
   
     * {
@@ -1111,6 +1107,121 @@
       overflow-x: hidden;
       max-width: 100vw;
       width: 100%;
+    }
+
+    /* Switcher Vista Mobile Modal (Menu Piatti vs Comanda Tavolo) */
+    .modal-view-toggle {
+      display: none;
+      background: #191617;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 8px 12px;
+      gap: 8px;
+    }
+    .view-toggle-btn {
+      flex: 1;
+      background: #252022;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #ede9de;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .view-toggle-btn.active {
+      background: var(--accent-gold);
+      color: #141213;
+      border-color: var(--accent-gold);
+    }
+
+    /* Barra Sticky Flottante Carrello su Mobile */
+    .mobile-sticky-cart-bar {
+      display: none;
+      position: fixed;
+      bottom: 14px;
+      left: 14px;
+      right: 14px;
+      background: linear-gradient(135deg, #1ea952, #14803d);
+      border-radius: 12px;
+      padding: 12px 18px;
+      color: #fff;
+      cursor: pointer;
+      z-index: 2500;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), 0 0 16px rgba(30, 169, 82, 0.4);
+      justify-content: space-between;
+      align-items: center;
+      animation: slideUp 0.3s ease;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .sticky-cart-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .sticky-cart-badge {
+      background: #ffffff;
+      color: #14803d;
+      font-weight: 900;
+      font-size: 0.85rem;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sticky-cart-text {
+      display: flex;
+      flex-direction: column;
+    }
+    .sticky-cart-label {
+      font-size: 0.72rem;
+      opacity: 0.9;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .sticky-cart-price {
+      font-size: 1.15rem;
+      font-weight: 900;
+    }
+    .sticky-cart-cta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      font-weight: 800;
+      background: rgba(255, 255, 255, 0.18);
+      padding: 6px 12px;
+      border-radius: 20px;
+    }
+    .btn-back-to-menu {
+      display: none;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      cursor: pointer;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+    .btn-back-to-menu:hover {
+      background: rgba(214, 175, 93, 0.2);
+      border-color: var(--accent-gold);
+      color: var(--accent-gold);
     }
 
     .btn-reset-order {
@@ -1133,6 +1244,56 @@
     .btn-reset-order:hover {
       background: var(--accent-red);
       color: #ffffff;
+    }
+
+    @media (max-width: 980px) {
+      .modal-view-toggle {
+        display: flex;
+      }
+      .btn-back-to-menu {
+        display: flex;
+      }
+      .modal-body-layout {
+        display: block;
+        height: calc(100vh - 125px);
+        overflow-y: auto;
+      }
+      .menu-selection-col {
+        display: block;
+        padding: 14px 12px 90px;
+        max-height: none;
+        border-right: none;
+      }
+      .order-cart-col {
+        display: none;
+        padding: 16px 14px 30px;
+        max-height: none;
+        border-left: none;
+      }
+      .menu-items-grid-staff {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .menu-card-staff {
+        padding: 12px 14px;
+        gap: 12px;
+        min-height: auto;
+      }
+      .menu-card-thumb {
+        width: 72px;
+        height: 72px;
+      }
+      .menu-item-name {
+        font-size: 1.0rem;
+      }
+      .menu-item-price {
+        font-size: 0.95rem;
+      }
+      .menu-item-desc {
+        font-size: 0.80rem;
+        line-height: 1.35;
+        margin-bottom: 8px;
+      }
     }
 
     @media (max-width: 768px) {
@@ -1326,7 +1487,6 @@
         line-height: 1.2;
         word-break: normal;
       }
-
       .modal-overlay {
         padding: 0;
       }
@@ -1335,32 +1495,6 @@
         height: 100vh;
         max-height: 100vh;
         border-radius: 0;
-      }
-      .modal-head {
-        padding: 12px 14px;
-      }
-      .modal-head-title h2 {
-        font-size: 1.15rem;
-      }
-      .modal-body-layout {
-        display: flex;
-        flex-direction: column;
-        height: calc(100vh - 65px);
-        overflow-y: auto;
-      }
-      .menu-selection-col {
-        padding: 14px 10px;
-        max-height: none;
-      }
-      .order-cart-col {
-        padding: 16px 12px 24px;
-        border-left: none;
-        border-top: 1.5px solid rgba(255, 255, 255, 0.12);
-        max-height: none;
-      }
-      .menu-items-grid-staff {
-        grid-template-columns: 1fr;
-        gap: 14px;
       }
     }
 </style>
@@ -1484,6 +1618,16 @@
         <button class="modal-close-btn" onclick="closeOrderModal()" aria-label="Chiudi popup">&times;</button>
       </div>
 
+      <!-- Switcher Vista per Smartphone (Menu Piatti vs Comanda Tavolo) -->
+      <div class="modal-view-toggle" id="modal-view-toggle">
+        <button type="button" class="view-toggle-btn active" id="toggle-menu-tab" onclick="switchMobileModalView('menu')">
+          <i class="fa-solid fa-utensils"></i> Scegli dal Menu
+        </button>
+        <button type="button" class="view-toggle-btn" id="toggle-cart-tab" onclick="switchMobileModalView('cart')">
+          <i class="fa-solid fa-receipt"></i> Comanda (<span id="mobile-cart-badge">0</span>)
+        </button>
+      </div>
+
       <!-- Corpo Modal: Menu identico a menu.html a sinistra, Carrello Comanda a destra -->
       <div class="modal-body-layout">
         
@@ -1510,6 +1654,9 @@
         <!-- Colonna Destra: Carrello Comanda del Tavolo -->
         <div class="order-cart-col">
           <div>
+            <button type="button" class="btn-back-to-menu" onclick="switchMobileModalView('menu')">
+              <i class="fa-solid fa-arrow-left"></i> Aggiungi altri piatti dal menu
+            </button>
             <div class="cart-title">
               <span><i class="fa-solid fa-receipt" style="color: var(--accent-gold);"></i> Comanda Tavolo</span>
               <span id="cart-item-count" style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-sans);">0 portate</span>
@@ -1546,6 +1693,19 @@
 
       </div>
 
+      <!-- Barra Flottante Comanda per Smartphone (Glovo/Deliveroo Style) -->
+      <div class="mobile-sticky-cart-bar" id="mobile-sticky-cart-bar" onclick="switchMobileModalView('cart')">
+        <div class="sticky-cart-left">
+          <span class="sticky-cart-badge" id="sticky-bar-count">0</span>
+          <div class="sticky-cart-text">
+            <span class="sticky-cart-label">Comanda Tavolo</span>
+            <span class="sticky-cart-price" id="sticky-bar-price">0,00 €</span>
+          </div>
+        </div>
+        <div class="sticky-cart-cta">
+          <span>Vedi e Salva</span> <i class="fa-solid fa-arrow-right"></i>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -1571,6 +1731,18 @@
 
     (function() {
       const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
+      
+      // ELIMINAZIONE TOTALE MEMORIA LOCALE (richiesta esplicita: zero localStorage)
+      try {
+        if (typeof localStorage !== 'undefined') {
+          for (let i = localStorage.length - 1; i >= 0; i--) {
+            const k = localStorage.key(i);
+            if (k && k.includes('ol3_comande')) {
+              localStorage.removeItem(k);
+            }
+          }
+        }
+      } catch(e) {}
       const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
       const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec';
 
@@ -1601,23 +1773,10 @@
       let currentShift = '20:00'; // '20:00', '21:30', 'all'
       let currentFilter = 'all';  // 'all', 'da-servire', 'presa'
       let activeShiftTables = [];
-      let savedOrders = {}; // In-memory ONLY, popolato esclusivamente dal Foglio Google
+      let savedOrders = {};
       let currentActiveTable = null;
       let currentOrderItems = {};
       let selectedCategory = 'all';
-
-      // ELIMINAZIONE TOTALE MEMORIA LOCALE: rimossa ogni dipendenza da cache o localStorage
-      try {
-        if (typeof localStorage !== 'undefined') {
-          for (let i = localStorage.length - 1; i >= 0; i--) {
-            const k = localStorage.key(i);
-            if (k && k.includes('ol3_comande')) {
-              localStorage.removeItem(k);
-            }
-          }
-        }
-      } catch(e) {}
-
 
       // Parser date universale (identico a gestione-prenotazioni.html)
       function toIso(d) {
@@ -1668,16 +1827,6 @@
         return false;
       }
 
-      function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/"/g, '&quot;')
-          .replace(/'/g, '&#039;');
-      }
-
       // Elementi DOM Controlli
       const dateInput = document.getElementById('admin-target-date');
       const btnPrev = document.getElementById('btn-prev-day');
@@ -1699,10 +1848,9 @@
 
       if (btnPrev) {
         btnPrev.addEventListener('click', () => {
-          const [y, m, d] = currentDate.split('-');
-          const dt = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+          const dt = new Date(currentDate);
           dt.setDate(dt.getDate() - 1);
-          currentDate = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+          currentDate = dt.toISOString().split('T')[0];
           if (dateInput) dateInput.value = currentDate;
           updateDateDisplay();
           renderTables();
@@ -1711,10 +1859,9 @@
 
       if (btnNext) {
         btnNext.addEventListener('click', () => {
-          const [y, m, d] = currentDate.split('-');
-          const dt = new Date(parseInt(y, 10), parseInt(m, 10) - 1, parseInt(d, 10));
+          const dt = new Date(currentDate);
           dt.setDate(dt.getDate() + 1);
-          currentDate = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, '0')}-${String(dt.getDate()).padStart(2, '0')}`;
+          currentDate = dt.toISOString().split('T')[0];
           if (dateInput) dateInput.value = currentDate;
           updateDateDisplay();
           renderTables();
@@ -1768,7 +1915,96 @@
         const opt = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
         const dStr = dt.toLocaleDateString('it-IT', opt);
         const cap = dStr.charAt(0).toUpperCase() + dStr.slice(1);
-        textEl.innerHTML = `<strong>${cap}</strong> • Sincronizzazione in tempo reale dal Foglio Google`;
+        textEl.innerHTML = `<strong>${cap}</strong> • Tavoli prenotati dal Foglio Google`;
+      }
+
+      // Memoria locale disabilitata: funzioni sostituite per operare 100% in rete
+      function loadSavedOrders() {}
+      function persistSavedOrders() {}
+
+
+      // Parser avanzato per estrarre e ricostruire le portate esistenti dal Foglio Google
+      function parseOrderDetails(detailsStr) {
+        if (!detailsStr) return { items: [], notes: '' };
+
+        // 1. Prova estrazione JSON strutturato ad alta precisione
+        const mJson = detailsStr.match(/\[JSON:(.*?)\]/);
+        if (mJson) {
+          try {
+            const parsed = JSON.parse(mJson[1]);
+            if (parsed && Array.isArray(parsed.items)) {
+              return { items: parsed.items, notes: parsed.notes || '' };
+            }
+          } catch(e) {}
+        }
+
+        // 2. Parser di fallback testuale per stringhe esistenti
+        let notes = '';
+        let text = detailsStr;
+        if (text.includes('| Note:')) {
+          const parts = text.split('| Note:');
+          text = parts[0];
+          notes = parts[1].split('[JSON:')[0].trim();
+        }
+        if (text.includes('| Totale:')) {
+          text = text.split('| Totale:')[0];
+        }
+
+        const items = [];
+        const segments = text.trim().split(/,\s*(?=\d+x)/);
+        segments.forEach(seg => {
+          const m = seg.trim().match(/^(\d+)x\s+(.+?)(?:\s*\(([\d.,\s€]+)\))?$/);
+          if (m) {
+            const qty = parseInt(m[1], 10);
+            const name = m[2].trim();
+            const priceStr = m[3] ? m[3].trim() : '0,00 €';
+            let unitPrice = 0;
+            try {
+              const pVal = parseFloat(priceStr.replace('€', '').replace(',', '.').trim());
+              unitPrice = (qty > 0 && !isNaN(pVal)) ? (pVal / qty) : (isNaN(pVal) ? 0 : pVal);
+            } catch(e) {}
+
+            items.push({
+              name: name,
+              qty: qty,
+              price: `${unitPrice.toFixed(2).replace('.', ',')} €`,
+              priceNum: unitPrice
+            });
+          }
+        });
+
+        return { items, notes };
+      }
+
+      // Switcher Vista per Mobile (Menu vs Comanda)
+      function switchMobileModalView(view) {
+        const menuCol = document.querySelector('.menu-selection-col');
+        const cartCol = document.querySelector('.order-cart-col');
+        const toggleMenuBtn = document.getElementById('toggle-menu-tab');
+        const toggleCartBtn = document.getElementById('toggle-cart-tab');
+        const stickyBar = document.getElementById('mobile-sticky-cart-bar');
+
+        if (window.innerWidth > 980) {
+          if (menuCol) menuCol.style.display = 'block';
+          if (cartCol) cartCol.style.display = 'flex';
+          if (stickyBar) stickyBar.style.display = 'none';
+          return;
+        }
+
+        if (view === 'cart') {
+          if (menuCol) menuCol.style.display = 'none';
+          if (cartCol) cartCol.style.display = 'block';
+          if (toggleMenuBtn) toggleMenuBtn.classList.remove('active');
+          if (toggleCartBtn) toggleCartBtn.classList.add('active');
+          if (stickyBar) stickyBar.style.display = 'none';
+        } else {
+          if (menuCol) menuCol.style.display = 'block';
+          if (cartCol) cartCol.style.display = 'none';
+          if (toggleMenuBtn) toggleMenuBtn.classList.add('active');
+          if (toggleCartBtn) toggleCartBtn.classList.remove('active');
+          const totalQty = Object.values(currentOrderItems).reduce((sum, it) => sum + it.qty, 0);
+          if (stickyBar) stickyBar.style.display = totalQty > 0 ? 'flex' : 'none';
+        }
       }
 
       // Sincronizzazione interattiva multi-canale su Google Apps Script
@@ -1840,7 +2076,7 @@
         });
       }
 
-      // Sincronizzazione al 100% dal Foglio Google in Rete (Master Foglio1 + Foglio Comande)
+      // Connessione reale al Foglio Google
       async function syncFromGoogleSheet(showToast = false) {
         if (syncEl) syncEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google in corso...';
         
@@ -1998,9 +2234,12 @@
         allBookings.forEach(b => {
           const st = String(b.orderStatus || '').toLowerCase();
           if (st.includes('prenotat') || st.includes('ordinat') || st.includes('pres')) {
+            const parsed = parseOrderDetails(b.orderDetails);
             savedOrders[b.id] = {
               status: 'presa',
               bookingId: b.id,
+              items: parsed.items,
+              notes: parsed.notes,
               details: b.orderDetails || 'Ordinazione salvata sul Foglio Google'
             };
           }
@@ -2016,7 +2255,9 @@
           showToastNotification(`Aggiornato dal Foglio Google: ${allBookings.length} prenotazioni sincronizzate`);
         }
       }
+
       function renderTables() {
+        loadSavedOrders();
         const grid = document.getElementById('tables-cards-grid');
         const searchVal = (document.getElementById('search-table-input')?.value || '').toLowerCase().trim();
         if (!grid) return;
@@ -2224,8 +2465,34 @@
           Ospite: ${tableObj.customerName} (${tableObj.guests} persone) • ${tableObj.shiftTag}
         `;
 
+        // 1. Carica le portate già salvate sul Foglio Google per questo tavolo (senza azzerare!)
+        const existingOrder = savedOrders[tableObj.bookingId];
+        let existingItems = [];
+        let existingNotes = '';
+
+        if (existingOrder && Array.isArray(existingOrder.items) && existingOrder.items.length > 0) {
+          existingItems = existingOrder.items;
+          existingNotes = existingOrder.notes || '';
+        } else if (tableObj.orderDetails) {
+          const parsed = parseOrderDetails(tableObj.orderDetails);
+          existingItems = parsed.items;
+          existingNotes = parsed.notes;
+        }
+
+        existingItems.forEach(it => {
+          currentOrderItems[it.name] = {
+            name: it.name,
+            price: it.price,
+            priceNum: it.priceNum,
+            qty: it.qty
+          };
+        });
+
+        document.getElementById('order-notes').value = existingNotes;
+
+        // Visibilità pulsante Reset (solo se già ordinato sul Foglio Google)
         const resetBtn = document.getElementById('btn-reset-order');
-        const isAlreadyOrdered = (savedOrders[tableObj.bookingId] && savedOrders[tableObj.bookingId].status === 'presa') ||
+        const isAlreadyOrdered = (existingOrder && existingOrder.status === 'presa') ||
                                 (tableObj.orderStatus && tableObj.orderStatus.toLowerCase().includes('prenotat'));
         if (resetBtn) {
           resetBtn.style.display = isAlreadyOrdered ? 'flex' : 'none';
@@ -2235,17 +2502,18 @@
 
         const saveBtn = document.getElementById('btn-save-order');
         if (saveBtn) {
-          saveBtn.disabled = true;
+          saveBtn.disabled = false;
           saveBtn.innerHTML = '<i class="fa-solid fa-check"></i> Salva Ordinazione Tavolo';
         }
-
-        document.getElementById('order-notes').value = '';
 
         clearMenuSearch(false);
         selectedCategory = 'all';
         initMenuCategoriesTabs();
         renderMenuCards();
         updateCartDisplay();
+
+        // Su smartphone imposta la vista menu di partenza
+        switchMobileModalView('menu');
 
         document.getElementById('order-modal-overlay').classList.add('active');
         document.body.style.overflow = 'hidden';
@@ -2356,7 +2624,7 @@
           container.appendChild(groupDiv);
         });
 
-        if (container.children.length === 0) {
+        if (!container.hasChildNodes()) {
           container.innerHTML = `
             <div style="text-align: center; padding: 50px 20px; color: var(--text-muted); background: #221e20; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
               <i class="fa-solid fa-magnifying-glass" style="font-size: 2.4rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
@@ -2414,6 +2682,22 @@
         countEl.textContent = `${totalQty} ${totalQty === 1 ? 'portata' : 'portate'}`;
         totalEl.textContent = `${totalPriceNum.toFixed(2).replace('.', ',')} €`;
 
+        // Aggiorna Badge Mobile e Barra Flottante Carrello
+        const mobileBadge = document.getElementById('mobile-cart-badge');
+        if (mobileBadge) mobileBadge.textContent = totalQty;
+
+        const stickyBar = document.getElementById('mobile-sticky-cart-bar');
+        const stickyBarCount = document.getElementById('sticky-bar-count');
+        const stickyBarPrice = document.getElementById('sticky-bar-price');
+
+        if (stickyBarCount) stickyBarCount.textContent = totalQty;
+        if (stickyBarPrice) stickyBarPrice.textContent = `${totalPriceNum.toFixed(2).replace('.', ',')} €`;
+
+        if (window.innerWidth <= 980 && stickyBar) {
+          const isCartTabActive = document.getElementById('toggle-cart-tab')?.classList.contains('active');
+          stickyBar.style.display = (!isCartTabActive && totalQty > 0) ? 'flex' : 'none';
+        }
+
         if (totalQty === 0) {
           listDiv.innerHTML = `
             <div class="cart-empty-msg">
@@ -2464,7 +2748,22 @@
         }
 
         const itemsSummary = items.map(it => `${it.qty}x ${it.name} (${(it.priceNum * it.qty).toFixed(2)}€)`).join(', ');
-        const fullDetails = `${itemsSummary} | Totale: ${totalPriceStr}${notesVal ? ' | Note: ' + notesVal : ''}`;
+        const payloadData = {
+          items: items,
+          notes: notesVal,
+          total: totalPriceStr
+        };
+        const fullDetails = `${itemsSummary} | Totale: ${totalPriceStr}${notesVal ? ' | Note: ' + notesVal : ''} [JSON:${JSON.stringify(payloadData)}]`;
+
+        // Aggiorna subito in memoria per non perdere nulla
+        savedOrders[currentActiveTable.bookingId] = {
+          status: 'presa',
+          bookingId: currentActiveTable.bookingId,
+          items: items,
+          notes: notesVal,
+          details: fullDetails,
+          totalPrice: totalPriceStr
+        };
 
         // Invia aggiornamento in tempo reale al Foglio Google
         await syncOrderToGoogleSheet({
@@ -2481,7 +2780,7 @@
         // Breve attesa per consentire la scrittura sui server di Google e refresh automatico dalla rete
         setTimeout(async () => {
           await syncFromGoogleSheet(false);
-          showToastNotification(`Comanda sincronizzata sul Foglio Google per ${currentActiveTable ? currentActiveTable.tableLabel : 'tavolo'}!`);
+          showToastNotification(`Comanda salvata per ${currentActiveTable ? currentActiveTable.tableLabel : 'tavolo'}!`);
           closeOrderModal();
         }, 1200);
       }
@@ -2551,6 +2850,7 @@
       window.clearMenuSearch = clearMenuSearch;
       window.saveCurrentOrder = saveCurrentOrder;
       window.revertCurrentOrder = revertCurrentOrder;
+      window.switchMobileModalView = switchMobileModalView;
       window.setTableFilter = setTableFilter;
       window.syncFromGoogleSheet = syncFromGoogleSheet;
       window.openMenuConsultationModal = openMenuConsultationModal;
