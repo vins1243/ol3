@@ -90,7 +90,7 @@ img {
 }
 
 .top-bar-contact i,
-.top-bar-hours i {
+.topbar-hours i {
   color: var(--accent-gold);
 }
 
@@ -120,26 +120,34 @@ img {
   z-index: 1000;
   background-color: rgba(26, 23, 24, 0.96);
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(214, 175, 93, 0.25);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(214, 175, 93, 0.22);
   transition: var(--transition);
 }
 
 .navbar.scrolled {
-  background-color: rgba(229, 211, 178, 0.98);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  background-color: rgba(20, 18, 19, 0.98) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.65) !important;
+  border-bottom: 1px solid rgba(214, 175, 93, 0.35) !important;
 }
 
+.navbar .nav-container,
 .nav-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
   height: 80px;
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 48px !important;
+  box-sizing: border-box !important;
 }
 
 .brand-logo {
   display: flex;
   align-items: center;
+  margin-right: auto !important;
 }
 
 .navbar-logo-img {
@@ -155,7 +163,8 @@ img {
   display: flex;
   list-style: none;
   align-items: center;
-  gap: 28px;
+  gap: 32px;
+  margin-left: auto !important;
 }
 
 .nav-links a {
@@ -1369,9 +1378,10 @@ img {
 
   .nav-links {
     position: absolute;
-    top: 80px;
+    top: 64px !important;
     left: 0;
     width: 100%;
+    margin-left: 0 !important;
     background-color: var(--bg-card);
     flex-direction: column;
     padding: 24px 0;
@@ -1792,8 +1802,10 @@ img {
    ========================================================================== */
 
 @media (max-width: 768px) {
+  .navbar .nav-container,
   .nav-container {
     height: 64px !important;
+    padding: 0 18px !important;
   }
   .navbar-logo-img {
     height: 42px !important;
@@ -2594,4 +2606,14 @@ img {
 
 .code-value {
   color: var(--accent-gold) !important;
+}
+
+@media (max-width: 1024px) and (min-width: 769px) {
+  .navbar .nav-container,
+  .nav-container {
+    padding: 0 24px !important;
+  }
+  .nav-links {
+    gap: 20px;
+  }
 }
