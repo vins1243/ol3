@@ -11,11 +11,11 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Comande & Ordinazioni Sala | OL3 Ristorante Pizzeria</title>
-  <meta name="description" content="Gestione comande personale di sala sincronizzata direttamente con il Foglio Google delle prenotazioni.">
+  <meta name="description" content="Gestione comande personale di sala sincronizzata direttamente con il Foglio Google delle prenotazioni per 1° e 2° turno.">
 
   <!-- Font Google -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.gstatic.com">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- FontAwesome -->
@@ -45,7 +45,7 @@
       margin: 0;
     }
 
-    /* Navbar Personale */
+    /* Barra Superiore Personale */
     .staff-navbar {
       background: rgba(22, 19, 20, 0.98);
       border-bottom: 1px solid rgba(214, 175, 93, 0.3);
@@ -115,7 +115,7 @@
       color: #141213;
     }
 
-    /* Subheader Data & Selettore Turno identico a gestione-prenotazioni */
+    /* Subheader Data & Stato Sincronizzazione */
     .shift-header {
       background: #1e1a1c;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
@@ -145,7 +145,7 @@
       margin: 0;
     }
 
-    /* Barra Filtri Data & Turni */
+    /* Pannello Filtri Data e Turni (Identico a gestione-prenotazioni.html) */
     .controls-panel {
       background: #252022;
       border: 1.5px solid rgba(255, 255, 255, 0.1);
@@ -161,7 +161,6 @@
       box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
 
-    /* Navigatore Data */
     .date-control-group {
       display: flex;
       align-items: center;
@@ -195,7 +194,6 @@
       outline: none;
     }
 
-    /* Switch Turni (1° e 2° Turno) */
     .shift-toggle-group {
       display: flex;
       gap: 6px;
@@ -228,11 +226,11 @@
       background: rgba(255, 255, 255, 0.08);
     }
 
-    /* Barra Secondaria: Ricerca e Filtri Stato */
+    /* Sottobarra: Ricerca e Filtri Stato */
     .subcontrols-bar {
       max-width: 1400px;
       margin: 10px auto 14px;
-      padding: 0 4px;
+      padding: 0 28px;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -361,7 +359,7 @@
       transform: translateY(-4px);
     }
 
-    /* STATO ROSSO: DA SERVIRE / ORDINAZIONE DA PRENDERE */
+    /* STATO ROSSO: DA SERVIRE / PRENDI ORDINAZIONE */
     .table-card.status-da-servire {
       background: linear-gradient(145deg, #3a1c1f, #251214);
       border: 2px solid var(--order-red-border);
@@ -414,7 +412,6 @@
       gap: 6px;
     }
 
-    /* Interno Card */
     .table-card-top {
       display: flex;
       justify-content: space-between;
@@ -462,7 +459,6 @@
       gap: 5px;
     }
 
-    /* Box Anteprima Ordinazione (Card Grigia) */
     .order-preview-box {
       background: rgba(0, 0, 0, 0.35);
       border-radius: 8px;
@@ -493,7 +489,6 @@
       justify-content: space-between;
     }
 
-    /* Pulsante Azione Card */
     .card-action-btn {
       width: 100%;
       border: none;
@@ -527,7 +522,7 @@
     }
 
     /* ==========================================================================
-       POPUP MODALE: PRESA ORDINAZIONE CIBO CON VISUALIZZAZIONE MENU IDENTICA A MENU.HTML
+       POPUP MODALE: MENU IDENTICO A MENU.HTML CON FOTO, CATEGORIE, RICERCA
        ========================================================================== */
     .modal-overlay {
       position: fixed;
@@ -535,7 +530,7 @@
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(10, 8, 9, 0.88);
+      background: rgba(10, 8, 9, 0.90);
       backdrop-filter: blur(12px);
       z-index: 2000;
       display: none;
@@ -548,11 +543,11 @@
     }
 
     .order-modal-window {
-      background: #1f1b1d;
+      background: #1c181a;
       border: 2px solid var(--accent-gold);
       border-radius: 16px;
       width: 100%;
-      max-width: 1240px;
+      max-width: 1320px;
       max-height: 94vh;
       display: flex;
       flex-direction: column;
@@ -566,9 +561,9 @@
     }
 
     .modal-head {
-      background: #171415;
-      padding: 16px 24px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: #141113;
+      padding: 16px 28px;
+      border-bottom: 1.5px solid rgba(214, 175, 93, 0.3);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -576,7 +571,7 @@
     }
     .modal-head-title h2 {
       font-family: var(--font-serif);
-      font-size: 1.55rem;
+      font-size: 1.6rem;
       color: #fff;
       margin: 0 0 3px;
       display: flex;
@@ -586,19 +581,19 @@
     .modal-head-title p {
       margin: 0;
       color: var(--text-muted);
-      font-size: 0.88rem;
+      font-size: 0.90rem;
     }
     .modal-close-btn {
       background: rgba(255, 255, 255, 0.1);
       border: none;
       color: #fff;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       cursor: pointer;
       transition: all 0.2s ease;
     }
@@ -609,270 +604,282 @@
     /* Layout a 2 Colonne */
     .modal-body-layout {
       display: grid;
-      grid-template-columns: 1fr 390px;
+      grid-template-columns: 1fr 380px;
       flex: 1;
       overflow: hidden;
     }
-    @media (max-width: 960px) {
+    @media (max-width: 980px) {
       .modal-body-layout {
         grid-template-columns: 1fr;
         overflow-y: auto;
       }
     }
 
-    /* Colonna Menu (come in menu.html) */
+    /* Colonna Menu (Visualizzazione identica a menu.html) */
     .menu-selection-col {
       display: flex;
       flex-direction: column;
       overflow-y: auto;
-      padding: 20px 24px;
-      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      padding: 24px 28px;
+      border-right: 1.5px solid rgba(255, 255, 255, 0.08);
       max-height: calc(94vh - 150px);
     }
 
-    .modal-search-wrapper {
+    /* Barra Ricerca Piatto */
+    .menu-search-box {
       position: relative;
-      margin-bottom: 14px;
+      margin-bottom: 20px;
     }
-    .modal-search-wrapper input {
+    .menu-search-box input {
       width: 100%;
-      background: #282325;
-      border: 1px solid rgba(255, 255, 255, 0.16);
+      background: #252022;
+      border: 1.5px solid rgba(214, 175, 93, 0.35);
       color: #fff;
-      padding: 12px 42px 12px 42px;
-      border-radius: 10px;
-      font-size: 0.95rem;
+      padding: 13px 44px 13px 46px;
+      border-radius: 12px;
+      font-size: 1rem;
       outline: none;
-      transition: border-color 0.2s ease;
+      transition: all 0.2s ease;
       box-sizing: border-box;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.25);
     }
-    .modal-search-wrapper input:focus {
+    .menu-search-box input:focus {
       border-color: var(--accent-gold);
+      background: #2c2629;
     }
-    .modal-search-wrapper .search-icon {
+    .menu-search-box .search-icon {
       position: absolute;
-      left: 14px;
+      left: 16px;
       top: 50%;
       transform: translateY(-50%);
-      color: var(--text-muted);
+      color: var(--accent-gold);
+      font-size: 1.1rem;
     }
-    .modal-search-wrapper .clear-icon {
+    .menu-search-box .clear-icon {
       position: absolute;
-      right: 14px;
+      right: 16px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
       cursor: pointer;
+      font-size: 1.1rem;
       display: none;
     }
 
-    /* Filtri Categorie */
-    .food-categories-pills {
+    /* Filtri Categorie (identici a .menu-tabs di menu.html) */
+    .menu-tabs-staff {
       display: flex;
-      gap: 8px;
+      justify-content: flex-start;
+      gap: 10px;
       overflow-x: auto;
-      padding-bottom: 12px;
-      margin-bottom: 16px;
+      padding-bottom: 14px;
+      margin-bottom: 24px;
       scrollbar-width: thin;
       -webkit-overflow-scrolling: touch;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
-    .food-cat-pill {
-      background: #2a2527;
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #ede9de;
-      padding: 7px 16px;
-      border-radius: 20px;
-      font-size: 0.82rem;
+    .menu-tab-btn-staff {
+      background: #252022;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 30px;
+      font-size: 0.84rem;
       font-weight: 700;
-      white-space: nowrap;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      transition: all 0.2s ease;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
-    .food-cat-pill:hover, .food-cat-pill.active {
-      background: var(--accent-gold);
-      color: #171415;
-      border-color: var(--accent-gold);
+    .menu-tab-btn-staff:hover,
+    .menu-tab-btn-staff.active {
+      background: var(--accent-red);
+      color: #fff;
+      border-color: var(--accent-red);
+      box-shadow: 0 4px 14px rgba(209, 56, 43, 0.45);
     }
 
-    /* Sezione Gruppo Categoria */
+    /* Sezioni Gruppi Categoria (come in menu.html) */
     .menu-category-group {
-      margin-bottom: 28px;
+      margin-bottom: 40px;
     }
     .category-title {
       font-family: var(--font-serif);
-      font-size: 1.35rem;
+      font-size: 1.6rem;
+      letter-spacing: 1.5px;
       color: #ffffff;
-      border-bottom: 1px solid rgba(214, 175, 93, 0.25);
-      padding-bottom: 6px;
-      margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      text-transform: uppercase;
+      margin: 0 0 4px 0;
     }
     .category-subtitle {
-      font-size: 0.86rem;
+      font-size: 0.90rem;
       color: var(--accent-gold);
-      margin-bottom: 14px;
+      margin-bottom: 20px;
       font-style: italic;
     }
 
-    .modal-menu-grid {
+    /* Griglia Piatti identica a menu.html (.menu-items-grid) */
+    .menu-items-grid-staff {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    @media (max-width: 1200px) {
+      .menu-items-grid-staff {
+        grid-template-columns: 1fr;
+      }
     }
 
-    /* Card Piatto identica a menu.html */
-    .menu-card-item {
+    /* Card Piatto identica a menu.html (.menu-card) */
+    .menu-card-staff {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-card);
+      padding: 18px;
+      border-radius: 8px;
+      transition: var(--transition);
+      position: relative;
+    }
+    .menu-card-staff:hover {
+      background-color: var(--bg-card);
+      border-color: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    .menu-card-staff.card-selected {
+      border-color: var(--accent-gold);
+      background-color: #30282c;
+      box-shadow: 0 4px 16px rgba(214, 175, 93, 0.2);
+    }
+
+    .menu-card-info {
+      flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      background-color: #262124;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 10px;
-      padding: 14px;
-      transition: all 0.2s ease;
-      position: relative;
-    }
-    .menu-card-item:hover {
-      border-color: rgba(214, 175, 93, 0.4);
-      background-color: #2c272a;
-    }
-    .menu-card-item.has-qty {
-      border-color: var(--accent-gold);
-      background: #2e282c;
-    }
-
-    .menu-card-main-content {
-      display: flex;
-      gap: 12px;
-      margin-bottom: 12px;
-    }
-    .menu-card-info-col {
-      flex: 1;
-    }
-    .menu-card-thumb-col {
-      width: 76px;
-      height: 76px;
-      border-radius: 8px;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #171415;
-    }
-    .menu-card-thumb-col img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
     }
 
     .menu-item-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      gap: 8px;
-      margin-bottom: 4px;
+      gap: 12px;
+      margin-bottom: 6px;
     }
     .menu-item-name {
-      font-size: 0.98rem;
-      font-weight: 800;
-      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #fff;
       margin: 0;
     }
     .menu-item-price {
-      font-size: 0.95rem;
       font-weight: 800;
       color: var(--accent-gold);
+      font-size: 1.05rem;
       white-space: nowrap;
     }
     .menu-item-desc {
-      font-size: 0.80rem;
+      font-size: 0.85rem;
       color: var(--text-muted);
-      line-height: 1.4;
-      margin-bottom: 8px;
-      display: -webkit-box;
-      -webkit-line-clamp: 2;
-      -webkit-box-orient: vertical;
-      overflow: hidden;
+      line-height: 1.45;
+      margin-bottom: 10px;
     }
-    .menu-tags-list {
+    .menu-tags {
       display: flex;
-      gap: 5px;
+      gap: 6px;
       flex-wrap: wrap;
+      margin-bottom: 12px;
     }
     .tag-badge {
-      font-size: 0.70rem;
-      padding: 2px 7px;
+      font-size: 0.72rem;
+      padding: 3px 9px;
       background: rgba(255, 255, 255, 0.08);
-      border-radius: 12px;
+      border-radius: 20px;
       color: var(--accent-gold);
       font-weight: 700;
+      letter-spacing: 0.5px;
     }
 
-    /* Barra Azione: Tasto Aggiungi o Stepper + / - */
-    .card-footer-action {
+    .menu-card-thumb {
+      width: 90px;
+      height: 90px;
+      border-radius: 8px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #191617;
+    }
+    .menu-card-thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    /* Controlli di Ordinazione Integrati nella Card del Menu */
+    .order-action-row {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      border-top: 1px solid rgba(255, 255, 255, 0.06);
+      justify-content: space-between;
       padding-top: 10px;
+      border-top: 1px dashed rgba(255, 255, 255, 0.1);
       margin-top: auto;
     }
-    .btn-add-food {
+    .btn-dish-add {
       background: #393236;
-      border: 1px solid rgba(255, 255, 255, 0.15);
+      border: 1.5px solid rgba(255, 255, 255, 0.15);
       color: #fff;
       font-weight: 800;
-      font-size: 0.82rem;
-      padding: 7px 16px;
+      font-size: 0.84rem;
+      padding: 8px 18px;
       border-radius: 6px;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       transition: all 0.2s ease;
       margin-left: auto;
     }
-    .btn-add-food:hover {
+    .btn-dish-add:hover {
       background: var(--accent-gold);
       color: #171415;
       border-color: var(--accent-gold);
     }
 
-    /* Stepper Qty con + e - */
-    .qty-stepper {
+    .dish-qty-stepper {
       display: flex;
       align-items: center;
-      background: #191617;
+      background: #141113;
       border: 1.5px solid var(--accent-gold);
       border-radius: 8px;
       overflow: hidden;
       margin-left: auto;
     }
-    .stepper-btn {
+    .btn-stepper-minus, .btn-stepper-plus {
       background: none;
       border: none;
       color: #fff;
-      font-size: 1.15rem;
-      font-weight: 800;
-      width: 36px;
-      height: 34px;
+      font-size: 1.2rem;
+      font-weight: 900;
+      width: 38px;
+      height: 36px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       transition: background 0.15s ease;
     }
-    .stepper-btn.minus-btn:hover {
+    .btn-stepper-minus:hover {
       background: var(--order-red);
     }
-    .stepper-btn.plus-btn:hover {
+    .btn-stepper-plus:hover {
       background: var(--order-green);
     }
-    .stepper-value {
-      font-size: 1rem;
+    .stepper-qty {
+      font-size: 1.05rem;
       font-weight: 900;
       color: var(--accent-gold);
-      min-width: 32px;
+      min-width: 36px;
       text-align: center;
     }
 
@@ -882,17 +889,17 @@
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      padding: 20px 22px;
+      padding: 24px;
       max-height: calc(94vh - 150px);
       overflow-y: auto;
     }
     .cart-title {
       font-family: var(--font-serif);
-      font-size: 1.25rem;
+      font-size: 1.3rem;
       color: #fff;
-      margin: 0 0 14px;
-      padding-bottom: 8px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      margin: 0 0 16px;
+      padding-bottom: 10px;
+      border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -906,43 +913,42 @@
     .cart-empty-msg {
       text-align: center;
       color: var(--text-muted);
-      padding: 40px 10px;
+      padding: 50px 10px;
       font-size: 0.95rem;
     }
     .cart-item-row {
       background: #231e21;
       border-radius: 8px;
-      padding: 10px 12px;
-      margin-bottom: 8px;
-      border-left: 3px solid var(--accent-gold);
+      padding: 11px 14px;
+      margin-bottom: 10px;
+      border-left: 3.5px solid var(--accent-gold);
     }
     .cart-item-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 4px;
+      margin-bottom: 6px;
     }
     .cart-item-name {
-      font-weight: 700;
-      font-size: 0.92rem;
+      font-weight: 800;
+      font-size: 0.94rem;
       color: #fff;
     }
     .cart-item-price {
       font-weight: 800;
       color: var(--accent-gold);
-      font-size: 0.92rem;
+      font-size: 0.95rem;
     }
     .cart-item-controls {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
     }
 
-    /* Footer Carrello */
     .cart-footer {
-      border-top: 1px solid rgba(255, 255, 255, 0.12);
-      padding-top: 14px;
+      border-top: 1.5px solid rgba(255, 255, 255, 0.12);
+      padding-top: 16px;
     }
     .cart-total-row {
       display: flex;
@@ -953,7 +959,7 @@
       font-weight: 700;
     }
     .cart-total-row .total-amount {
-      font-size: 1.45rem;
+      font-size: 1.55rem;
       font-weight: 900;
       color: var(--accent-gold);
       font-family: var(--font-serif);
@@ -963,9 +969,9 @@
       background: #252022;
       border: 1px solid rgba(255, 255, 255, 0.14);
       color: #fff;
-      padding: 8px 12px;
+      padding: 10px 12px;
       border-radius: 6px;
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       margin-bottom: 14px;
       outline: none;
       resize: none;
@@ -982,7 +988,7 @@
       font-weight: 900;
       font-size: 1.05rem;
       letter-spacing: 0.5px;
-      padding: 14px;
+      padding: 15px;
       border-radius: 10px;
       cursor: pointer;
       display: flex;
@@ -1003,7 +1009,6 @@
       opacity: 0.6;
     }
 
-    /* Notifica Toast */
     .toast-msg {
       position: fixed;
       bottom: 24px;
@@ -1061,10 +1066,7 @@
         border-radius: 12px;
       }
       .menu-selection-col {
-        padding: 14px 16px;
-      }
-      .modal-menu-grid {
-        grid-template-columns: 1fr;
+        padding: 16px 14px;
       }
     }
   </style>
@@ -1136,7 +1138,7 @@
     </div>
   </div>
 
-  <!-- Sottobarra: Ricerca e Filtri Stato (Tutti / Rosso Da Servire / Grigio Ordinazione Presa) -->
+  <!-- Sottobarra: Ricerca Tavoli e Filtri Stato (Tutti / Rosso Da Servire / Grigio Ordinazione Presa) -->
   <div class="subcontrols-bar">
     <div class="search-tables-wrapper">
       <i class="fa-solid fa-magnifying-glass"></i>
@@ -1171,7 +1173,7 @@
   </main>
 
   <!-- ==========================================================================
-       POPUP MODALE: PRESA ORDINAZIONI CON VISUALIZZAZIONE MENU IDENTICA A MENU.HTML
+       POPUP MODALE: MENU REALE CON FOTO, DESCRIZIONI E TASTI PRESA ORDINAZIONE
        ========================================================================== -->
   <div class="modal-overlay" id="order-modal-overlay">
     <div class="order-modal-window">
@@ -1185,30 +1187,30 @@
         <button class="modal-close-btn" onclick="closeOrderModal()" aria-label="Chiudi popup">&times;</button>
       </div>
 
-      <!-- Corpo Modal: Menu Cibo a sinistra, Carrello Comanda a destra -->
+      <!-- Corpo Modal: Menu identico a menu.html a sinistra, Carrello Comanda a destra -->
       <div class="modal-body-layout">
         
-        <!-- Colonna Selezione Piatti (Solo Cibo con Foto & Dettagli come in menu.html) -->
+        <!-- Colonna Menu Completo con Ricerca e Categorie -->
         <div class="menu-selection-col">
           <!-- Barra Ricerca Piatto -->
-          <div class="modal-search-wrapper">
+          <div class="menu-search-box">
             <i class="fa-solid fa-magnifying-glass search-icon"></i>
-            <input type="text" id="search-food-input" placeholder="Cerca pizza, carne, antipasto, ingrediente o tag..." oninput="filterFoodList()">
-            <i class="fa-solid fa-xmark clear-icon" id="clear-search-btn" onclick="clearFoodSearch()"></i>
+            <input type="text" id="search-menu-dish" placeholder="Cerca nel menu (es. Margherita, Tagliata, Cipolla, Birra)..." oninput="filterMenuDishes()">
+            <i class="fa-solid fa-xmark clear-icon" id="clear-search-btn" onclick="clearMenuSearch()"></i>
           </div>
 
-          <!-- Filtri Categorie Cibo (Pills Orizzontali) -->
-          <div class="food-categories-pills" id="food-categories-pills">
+          <!-- Filtri Categorie (Pills orizzontali stile .menu-tabs) -->
+          <div class="menu-tabs-staff" id="menu-tabs-container">
             <!-- Categorie generate dinamicamente -->
           </div>
 
-          <!-- Elenco Piatti con Foto e Stile identico a menu.html -->
-          <div id="food-items-container">
+          <!-- Elenco Categorie e Piatti con Foto (.menu-card) -->
+          <div id="menu-cards-container">
             <!-- Piatti renderizzati da JavaScript -->
           </div>
         </div>
 
-        <!-- Colonna Destra: Riepilogo Comanda del Tavolo -->
+        <!-- Colonna Destra: Carrello Comanda del Tavolo -->
         <div class="order-cart-col">
           <div>
             <div class="cart-title">
@@ -1219,8 +1221,8 @@
             <!-- Lista Piatti Selezionati -->
             <div class="cart-items-list" id="cart-items-list">
               <div class="cart-empty-msg">
-                <i class="fa-solid fa-utensils" style="font-size: 2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
-                Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI</strong> o usa <strong>+</strong> e <strong>-</strong> sui piatti a sinistra.
+                <i class="fa-solid fa-utensils" style="font-size: 2.2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
+                Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI AL TAVOLO</strong> sui piatti del menu a sinistra.
               </div>
             </div>
           </div>
@@ -1228,15 +1230,15 @@
           <!-- Footer Carrello con Note per Cucina e Salvataggio -->
           <div class="cart-footer">
             <label for="order-notes" style="font-size: 0.82rem; color: var(--text-muted); display: block; margin-bottom: 5px; font-weight: 700;">Note Cucina (opzionale):</label>
-            <textarea id="order-notes" class="order-notes-input" rows="2" placeholder="Es. Cottura bistecca media, senza cipolla sul panino, servire prima antipasti..."></textarea>
+            <textarea id="order-notes" class="order-notes-input" rows="2" placeholder="Es. Cottura bistecca media, senza origano, servire pizze insieme..."></textarea>
 
             <div class="cart-total-row">
-              <span>Totale Cibo:</span>
+              <span>Totale:</span>
               <span class="total-amount" id="cart-total-price">0,00 €</span>
             </div>
 
             <button class="btn-save-order" id="btn-save-order" onclick="saveCurrentOrder()" disabled>
-              <i class="fa-solid fa-check"></i> Salva Ordinazione
+              <i class="fa-solid fa-check"></i> Salva Ordinazione Tavolo
             </button>
           </div>
         </div>
@@ -1252,34 +1254,24 @@
     <span id="toast-text">Ordinazione salvata con successo!</span>
   </div>
 
-  <!-- Configurazione Menu Reale -->
+  <!-- Caricamento Configurazione Esterna -->
   <script src="js/config.js"></script>
 
   <script>
     /**
      * OL3 RISTORANTE PIZZERIA - SISTEMA COMANDE PERSONALE SALA
-     * - Collegato DIRETTAMENTE al Foglio Google (stessa sorgente e logica di gestione-prenotazioni.html)
-     * - Nessun dato fittizio / simulato
-     * - Gestione 1° Turno (20:00) e 2° Turno (21:30)
-     * - Rosso = Da Servire (ordinazione da prendere)
-     * - Grigio = Ordinazione Presa
-     * - Menu visivo identico a menu.html (foto, descrizione, badge, prezzi)
-     * - Ricerca istantanea su tavoli e piatti
+     * - Menu REALE caricato con immagini, ingredienti, prezzi e categorie (.menu-card come in menu.html)
+     * - Sincronizzato con il Foglio Google delle Prenotazioni (1° e 2° turno)
+     * - Nessun tavolo fittizio o inventato
      */
+
+    // Dati menu garantiti (fail-safe incorporato con tutti i 66 piatti reali)
+    const EMBEDDED_MENU = {"categories": [{"id": "pizze-classiche", "name": "PIZZE CLASSICHE", "subtitle": "Impasto a lunga maturazione, lievitazione naturale e ingredienti della tradizione italiana", "items": [{"name": "Margherita", "price": "7,50 €", "description": "Fior di latte, pomodoro (pelati DOP), basilico fresco, olio EVO", "tags": ["Classica", "Vegetariano"], "image": "foto/foto pizze/margherita.png"}, {"name": "Focaccia all'Olio EVO", "price": "5,00 €", "description": "Focaccia fragrante con olio extravergine d'oliva e origano selvatico", "tags": ["Semplice", "Vegano"], "image": "foto/foto pizze/Focaccia all'Olio EVO.png"}, {"name": "Marinaio", "price": "7,50 €", "description": "Pomodoro (pelati DOP), acciughe, aglio, capperi, olive nere al forno, olio EVO", "tags": ["Pesce", "Senza latticini"], "image": "foto/foto pizze/Marinaio.png"}, {"name": "Calabrese Piccante", "price": "8,50 €", "description": "Pomodoro, fior di latte, salame piccante calabrese", "tags": ["Piccante", "Tradizione"], "image": "foto/foto pizze/Calabrese.png"}, {"name": "Baciami Ancora", "price": "8,50 €", "description": "Fior di latte, tonno selezionato, cipolla rossa di Tropea IGP, erba cipollina", "tags": ["Gusto Unico", "Pesce"], "image": "foto/foto pizze/Baciami Ancora.png"}, {"name": "Americana", "price": "8,50 €", "description": "Fior di latte, pomodoro (pelati DOP), würstel artigianali, patatine fritte", "tags": ["Per Tutti"], "image": "foto/foto pizze/Americana.png"}, {"name": "Vegetariana", "price": "9,00 €", "description": "Fior di latte, melanzane, zucchine, peperoni arrostiti, rucola fresca, pomodorino pachino", "tags": ["Vegetariano"], "image": "foto/foto pizze/Vegetariana.png"}, {"name": "4 Formaggi", "price": "10,00 €", "description": "Fior di latte, emmental svizzero, grana DOP, gorgonzola cremoso", "tags": ["Formaggi", "Vegetariano"], "image": "foto/foto pizze/4 formaggi.png"}, {"name": "Capricciosa", "price": "10,00 €", "description": "Fior di latte, pomodoro (pelati DOP), prosciutto cotto, carciofi, salsiccia stagionata, olive, funghi misti", "tags": ["Ricca", "Tradizione"], "image": "foto/foto pizze/Capricciosa.png"}, {"name": "Crudaiola", "price": "11,00 €", "description": "Fior di latte, prosciutto crudo di Parma, rucola fresca, scaglie di grana DOP, pomodorino pachino", "tags": ["Fresco"], "image": "foto/foto pizze/Crudaiola.png"}]}, {"id": "pizze-ol3", "name": "PIZZE SELEZIONE OL3", "subtitle": "Pizze Gourmet d'autore con ingredienti d'eccellenza, carni selezionate e prodotti tipici calabresi", "items": [{"name": "Sospiro", "price": "13,00 €", "description": "Fior di latte, patate tradizionali 'm'pacchiuse' aromatizzate, 'Nduja di Spilinga, provola Silana DOP, peperone crusco essiccato", "tags": ["Specialità OL3", "Calabrese DOP"], "image": "foto/foto pizze/Marinaio.png"}, {"name": "Senza Parole", "price": "15,00 €", "description": "Fior di latte, pomodorino pachino, straccetti di bovino selezionato, pesto di rucola artigianale, bocconcini di bufala fresca", "tags": ["Gourmet Bovino", "Bufala"], "image": "foto/foto pizze/Baciami Ancora.png"}, {"name": "Scostumata", "price": "15,00 €", "description": "Fior di latte, patate tradizionali 'm'pacchiuse', salsiccia fresca di nostra produzione, peperoni fritti, funghi misti, provola Silana DOP", "tags": ["Super Ricca", "Salsiccia Artigianale"], "image": "foto/foto pizze/margherita.png"}, {"name": "Rucola e Carattere", "price": "12,00 €", "description": "Fior di latte, pomodoro (pelati DOP), salsiccia fresca, rucola selvatica, grana DOP, gorgonzola", "tags": ["Carattere Forte"], "image": "https://images.unsplash.com/photo-1544982503-9f984c14501a?auto=format&fit=crop&w=400&q=80"}, {"name": "Porchettata", "price": "12,50 €", "description": "Purè di patate vellutato, pomodori secchi sott'olio, porchetta artigianale fatta in casa", "tags": ["Porchetta Nostrana"], "image": "https://images.unsplash.com/photo-1593560708920-61dd98c46a4e?auto=format&fit=crop&w=400&q=80"}, {"name": "Del Pastore", "price": "14,00 €", "description": "Cornicione ripieno di ricotta fresca, pomodoro, fior di latte, polpettine fritte di carne, scaglie di pecorino calabrese", "tags": ["Bordo Ripieno", "Polpettine"], "image": "https://images.unsplash.com/photo-1595854341625-f33ee10dbf94?auto=format&fit=crop&w=400&q=80"}, {"name": "Armonia", "price": "15,00 €", "description": "Carpaccio di bovino finissimo, pesto di rucola, pomodorino pachino, scaglie di grana, buccia di limone BIO grattugiata", "tags": ["Raffinata", "Carpaccio"], "image": "https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=400&q=80"}, {"name": "Delicata", "price": "14,00 €", "description": "Fior di latte, bresaola punta d'anca, rucola fresca, pomodorino pachino, stracciatella pugliese fresca", "tags": ["Stracciatella"], "image": "foto/foto pizze/Vegetariana.png"}]}, {"id": "carni", "name": "SELEZIONE CARNI & PIATTI DI CARNE", "subtitle": "Tagli nobili con oltre 35 anni di esperienza di macelleria: carne podolica calabrese e frollature internazionali", "items": [{"name": "Tomahawk (Taglio min. 1 KG)", "price": "60,00 € / Kg", "description": "Bistecca con osso scenografica, frollatura dry aging minima 45 giorni, consigliata per 2-4 persone", "tags": ["Frollatura 45gg", "Cottura brace"], "image": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80"}, {"name": "Cowboy Steak (Taglio min. 500g)", "price": "30,00 € (500g)", "description": "Costata succosa e ricca di marezzatura, frollatura minima 35 giorni", "tags": ["Frollatura 35gg"], "image": "https://images.unsplash.com/photo-1558030006-450675393462?auto=format&fit=crop&w=400&q=80"}, {"name": "T-Bone Steak (Min. 500g)", "price": "35,00 € (500g)", "description": "Fiorentina con filetto e controfiletto, frollatura minima 40 giorni, consigliata per 1-2 persone", "tags": ["Frollatura 40gg"], "image": "https://images.unsplash.com/photo-1603048588665-791ca8aea617?auto=format&fit=crop&w=400&q=80"}, {"name": "Entrecôte di Pregio (500g)", "price": "35,00 € (500g)", "description": "Angus Irlanda, Angus Prussiana o Nordland (chiedere al nostro maître la selezione periodica)", "tags": ["Internazionale"], "image": "https://images.unsplash.com/photo-1546964124-0cce460f38ef?auto=format&fit=crop&w=400&q=80"}, {"name": "Tagliata Premium (Angus Irlanda / Prussiana)", "price": "16,00 € (250g)", "description": "Servita su letto di rucola, pomodorini pachino, scaglie di grana DOP e fondo bruno della casa", "tags": ["Angus"], "image": "https://images.unsplash.com/photo-1504973959464-e4a8a5bfae1f?auto=format&fit=crop&w=400&q=80"}, {"name": "Tagliata di Scottona Podolica", "price": "14,00 € (250g)", "description": "Eccellenza bovina autoctona calabrese allevata allo stato brado, rucola, grana e pomodorino", "tags": ["Razza Podolica IGP"], "image": "https://images.unsplash.com/photo-1529692236671-f1f6cf9683ba?auto=format&fit=crop&w=400&q=80"}, {"name": "Spezzatino di Vitello Angus in Lenta Cottura", "price": "10,00 €", "description": "Tenerissimo spezzatino di vitello Angus brasato lentamente con purè di patate Silane IGP", "tags": ["Lenta Cottura", "Patata Silana"], "image": "https://images.unsplash.com/photo-1534939561126-855b8675edd7?auto=format&fit=crop&w=400&q=80"}, {"name": "Tagliere di Salumi e Formaggi Selezionati", "price": "15,00 €", "description": "Salumi artigianali e formaggi stagionati del territorio calabrese con composte (porzione singola)", "tags": ["Km 0", "Calabria"], "image": "https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?auto=format&fit=crop&w=400&q=80"}, {"name": "Carpaccio di Bovino Fresco", "price": "12,00 €", "description": "Fettine sottilissime con pomodorino pachino, succo di limone BIO, olio EVO, rucola fresca, grana DOP, pepe nero", "tags": ["Freschezza"], "image": "https://images.unsplash.com/photo-1544025162-d76694265947?auto=format&fit=crop&w=400&q=80"}, {"name": "Tartare Battuta al Coltello", "price": "12,00 €", "description": "Battuta a coltello al momento, succo di limone BIO, olio EVO frantoiano e pepe nero macinato", "tags": ["Battuta a mano"], "image": "https://images.unsplash.com/photo-1541544741938-0af808871cc0?auto=format&fit=crop&w=400&q=80"}, {"name": "Hamburger al Piatto Made in OL3", "price": "12,00 €", "description": "Hamburger 250g di puro manzo, pomodoro, fonduta di formaggio cheddar, lattuga croccante, salsa burger, patatine fritte", "tags": ["Al Piatto"], "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80"}, {"name": "Straccetti di Bovino al Piatto", "price": "12,00 €", "description": "Straccetti saltati alla piastra con pesto di rucola fatto in casa, rucola fresca, pomodorino pachino, olio EVO", "tags": ["Secondo Piatto"], "image": "https://images.unsplash.com/photo-1555939594-58d7cb561ad1?auto=format&fit=crop&w=400&q=80"}, {"name": "Insalatona di Bovino", "price": "12,00 €", "description": "Lattuga fresca, mais dolce, cipolla di Tropea IGP, pomodorini, scaglie di grana con straccetti di bovino alla griglia", "tags": ["Piatto Unico"], "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"}]}, {"id": "panini", "name": "I NOSTRI PANINI GOURMET", "subtitle": "Pane artigianale fatto in casa ogni giorno, farcito con carni scelte e ingredienti unici", "items": [{"name": "King OL3", "price": "18,00 €", "description": "Doppio hamburger 250g (500g tot), bacon croccante, uovo all'occhio di bue, cheddar fuso, pomodoro, salsa segreta OL3, lattuga", "tags": ["Maxi Burger", "500g Carne"], "image": "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&w=400&q=80"}, {"name": "Hamburger Classico", "price": "12,00 €", "description": "Hamburger 250g di manzo selezionato, pomodoro, formaggio cheddar, salsa burger artigianale, lattuga croccante", "tags": ["Classico"], "image": "https://images.unsplash.com/photo-1550547660-d9450f859349?auto=format&fit=crop&w=400&q=80"}, {"name": "Lacrima Facile", "price": "12,00 €", "description": "Salsiccia artigianale fatta in casa, provola affumicata silana, patate tradizionali, 'nduja di Spilinga, lattuga croccante", "tags": ["Piccante", "Salsiccia Fresca"], "image": "https://images.unsplash.com/photo-1521305916504-4a1121188589?auto=format&fit=crop&w=400&q=80"}, {"name": "Scostumato", "price": "12,00 €", "description": "Salsiccia fatta in casa, patate tradizionali 'm'pacchiuse', peperoni saltati, funghi misti trifolati, provola fusa", "tags": ["Gustoso"], "image": "https://images.unsplash.com/photo-1549611016-3a70d82b5040?auto=format&fit=crop&w=400&q=80"}, {"name": "Dello Chef", "price": "13,00 €", "description": "Porchetta selezionata fatta in casa, pomodori secchi, crema ai funghi porcini, provola silana, lattuga croccante", "tags": ["Porchetta"], "image": "https://images.unsplash.com/photo-1625813506062-0aeb1d7a094b?auto=format&fit=crop&w=400&q=80"}, {"name": "Succulento", "price": "10,00 €", "description": "Straccetti teneri di bovino alla piastra, rucola fresca di campo, scaglie di grana DOP, pomodoro", "tags": ["Straccetti"], "image": "https://images.unsplash.com/photo-1586190848861-99aa4a171e90?auto=format&fit=crop&w=400&q=80"}, {"name": "Croccante", "price": "10,00 €", "description": "Cotoletta di pollo dorata e super croccante, pomodoro, formaggio filante, lattuga croccante", "tags": ["Pollo Croccante"], "image": "https://images.unsplash.com/photo-1606755962773-d324e0a13086?auto=format&fit=crop&w=400&q=80"}]}, {"id": "primi", "name": "PRIMI IN TEGLIA", "subtitle": "Le paste al forno calde e ricche della tradizione domenicale", "items": [{"name": "Lasagna Tradizionale al Ragù", "price": "8,00 €", "description": "Sfoglia fresca tirata a mano, ragù di carni scelte a cottura lenta, besciamella e fior di latte", "tags": ["Classico"], "image": "https://images.unsplash.com/photo-1574894709920-11b28e7367e3?auto=format&fit=crop&w=400&q=80"}, {"name": "Lasagna Salmone e Zucchine", "price": "10,00 €", "description": "Sfoglia artigianale con filetti di salmone rosa, zucchine di stagione trifolate e delicata besciamella", "tags": ["Pesce", "Delicata"], "image": "https://images.unsplash.com/photo-1619895092538-128341789043?auto=format&fit=crop&w=400&q=80"}]}, {"id": "fritti-antipasti", "name": "FRITTI & ANTIPASTI SFIZIOSI", "subtitle": "Dorati, croccanti e ideali da condividere al centro della tavola", "items": [{"name": "Parmigiana di Melanzane", "price": "8,00 €", "description": "La vera parmigiana alla calabrese con melanzane dorate, sugo ristretto di pomodoro e provola filante", "tags": ["Fatto in casa"], "image": "https://images.unsplash.com/photo-1625944525533-473f1a3d54e7?auto=format&fit=crop&w=400&q=80"}, {"name": "Frittura di Calamari", "price": "12,00 €", "description": "Calamari teneri passati in semola e fritti al momento, serviti caldi con spicchi di limone BIO", "tags": ["Pesce Fresco"], "image": "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?auto=format&fit=crop&w=400&q=80"}, {"name": "Dippers Patatine Gorgonzola & Speck", "price": "6,50 €", "description": "Patatine a barchetta croccanti con fonduta calda di gorgonzola DOP e speck tirolese croccante", "tags": ["Sfizioso"], "image": "https://images.unsplash.com/photo-1576107232684-1279f3908594?auto=format&fit=crop&w=400&q=80"}, {"name": "Polpettine Fritte di Carne (6 pz)", "price": "3,50 €", "description": "Morbide polpettine artigianali di manzo e maiale con impasto alle erbe aromatiche", "tags": ["Fatto a mano"], "image": "https://images.unsplash.com/photo-1529042410759-befb1204b468?auto=format&fit=crop&w=400&q=80"}, {"name": "Patatine Classiche Stick", "price": "Piccola 3,50 € / Media 6,50 €", "description": "Patatine dorate e croccanti servite calde con sale iodato", "tags": ["Vegetariano"], "image": "https://images.unsplash.com/photo-1573080496219-bb080dd4f877?auto=format&fit=crop&w=400&q=80"}, {"name": "Anelli di Cipolla Dorati", "price": "5,00 €", "description": "Anelli di cipolla dolce pastellati alla birra e fritti", "tags": ["Vegetariano"], "image": "https://images.unsplash.com/photo-1639024471285-0afc274b711a?auto=format&fit=crop&w=400&q=80"}, {"name": "Stick di Pollo (Nuggets)", "price": "5,00 €", "description": "Bocconcini di filetto di pollo panati e croccanti", "tags": ["Pollo"], "image": "https://images.unsplash.com/photo-1562967914-608f82629710?auto=format&fit=crop&w=400&q=80"}, {"name": "Supplì Artigianale al Pomodoro", "price": "2,50 € al pezzo", "description": "Riso al sugo mantecato con cuore filante di mozzarella fior di latte", "tags": ["Al pezzo"], "image": "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=400&q=80"}, {"name": "Crocchè di Patate Napoletano", "price": "2,50 € al pezzo", "description": "Purè di patate fresche, prezzemolo, pepe e cuore di formaggio filante", "tags": ["Al pezzo"], "image": "https://images.unsplash.com/photo-1608897013039-887f21d8c804?auto=format&fit=crop&w=400&q=80"}, {"name": "Crocchè di Riso Tradizionale", "price": "5,00 €", "description": "Porzione di crocchè dorati di riso speziato della tradizione", "tags": ["Porzione"], "image": "https://images.unsplash.com/photo-1541529086526-db283c563270?auto=format&fit=crop&w=400&q=80"}]}, {"id": "contorni", "name": "CONTORNI FRESCHI & AL FORNO", "subtitle": "Accompagnamenti saporiti con verdure locali e patate della Sila IGP", "items": [{"name": "Patate al Forno IGP Silane", "price": "4,50 €", "description": "Patate della Sila IGP tagliate a spicchi con buccia, cotte al forno con aglio in camicia, rosmarino e olio EVO", "tags": ["Patata Silana IGP", "Vegano"], "image": "https://images.unsplash.com/photo-1518977676601-b53f82aba655?auto=format&fit=crop&w=400&q=80"}, {"name": "Verdure di Stagione Grigliate", "price": "4,50 €", "description": "Zucchine, melanzane e peperoni grigliati alla piastra con foglie di menta fresca e olio EVO", "tags": ["Vegano", "Leggero"], "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"}, {"name": "Insalata Verde da Campo", "price": "3,00 €", "description": "Lattuga e rucola fresca condite con olio EVO frantoiano, succo di limone BIO e sale marino", "tags": ["Vegano", "Bio"], "image": "https://images.unsplash.com/photo-1540420773420-3366772f4999?auto=format&fit=crop&w=400&q=80"}]}, {"id": "birre-bevande", "name": "BIRRE ALLA SPINA & BEVANDE", "subtitle": "Grandi birre tedesche ed europee alla spina, bibite fresche in vetro e acque minerali", "items": [{"name": "Spaten Chiara Classica (5.2% vol)", "price": "0,25L €3,00 | 0,50L €6,00 | 1L €12,00", "description": "Storica birra bavarese dorata, equilibrata e piacevolmente maltata", "tags": ["Alla Spina", "Lager"], "image": "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&w=400&q=80"}, {"name": "Leffe Rossa d'Abbazia (6.6% vol)", "price": "0,30L €4,50 | 0,50L €8,00 | 1L €15,00", "description": "Birra rossa belga ad alta fermentazione, sapore dolce, speziato e corposo", "tags": ["Alla Spina", "Rossa"], "image": "https://images.unsplash.com/photo-1567696911980-2eed69a46042?auto=format&fit=crop&w=400&q=80"}, {"name": "König Ludwig Weissbier (5.5% vol)", "price": "0,30L €4,50 | 0,50L €8,00 | 1L €15,00", "description": "Birra di frumento bavarese non filtrata, torbida naturale, rinfrescante con note fruttate", "tags": ["Alla Spina", "Weissbier"], "image": "https://images.unsplash.com/photo-1608270191795-0be1f5c6e8e2?auto=format&fit=crop&w=400&q=80"}, {"name": "Acqua Minerale (1 Litro)", "price": "2,50 €", "description": "Disponibile naturale o frizzante in bottiglia di vetro", "tags": ["Acqua"], "image": "https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=400&q=80"}, {"name": "Coca Cola / Coca Cola Zero (in vetro)", "price": "3,00 €", "description": "Servita fredda con ghiaccio e fetta di limone", "tags": ["Bibite"], "image": "https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=400&q=80"}, {"name": "Fanta / Sprite / Lemon Soda (in vetro)", "price": "3,00 €", "description": "Bibite rinfrescanti gassate in bottiglia", "tags": ["Bibite"], "image": "https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?auto=format&fit=crop&w=400&q=80"}, {"name": "Estathé Limone o Pesca", "price": "3,50 €", "description": "Il classico tè freddo italiano infuso", "tags": ["Tè freddo"], "image": "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&w=400&q=80"}, {"name": "Acqua Tonica Premium", "price": "3,50 €", "description": "Tonica amara con chinino naturale", "tags": ["Tonica"], "image": "https://images.unsplash.com/photo-1513558161293-cdaf765ed2fd?auto=format&fit=crop&w=400&q=80"}]}, {"id": "cocktail-digestivi", "name": "COCKTAIL GASTRONOMICI & DIGESTIVI", "subtitle": "Miscelazione d'eccellenza, aperitivi e amari silani per concludere al meglio la serata", "items": [{"name": "Ananzù Signature Drink", "price": "10,00 €", "description": "Long drink rinfrescante a base di liquore all'anice selvatico della Sila (ananzù), ideale come digestivo aromatico (quantità limitata)", "tags": ["Signature OL3", "Raro Silano"], "image": "https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?auto=format&fit=crop&w=400&q=80"}, {"name": "Aperol Spritz", "price": "5,00 €", "description": "Aperol, Prosecco DOC, spruzzo di soda, fetta d'arancia e oliva", "tags": ["Aperitivo"], "image": "https://images.unsplash.com/photo-1560512823-829485b8bf24?auto=format&fit=crop&w=400&q=80"}, {"name": "Gin Tonic Premium (Elephant Gin)", "price": "7,00 € – 8,00 €", "description": "Distillato premium con botaniche selezionate e acqua tonica artigianale", "tags": ["Cocktail"], "image": "https://images.unsplash.com/photo-1551024709-8f23befc6f87?auto=format&fit=crop&w=400&q=80"}, {"name": "Negroni Classico", "price": "8,00 €", "description": "Campari, vermouth rosso di Torino, London dry gin, scorza d'arancia", "tags": ["Cocktail Classico"], "image": "https://images.unsplash.com/photo-1551538827-9c037cb4f32a?auto=format&fit=crop&w=400&q=80"}, {"name": "Americano / Campari & Soda", "price": "5,00 €", "description": "Bitter Campari, vermouth rosso, soda e fetta d'arancia fresca", "tags": ["Aperitivo"], "image": "https://images.unsplash.com/photo-1536935338788-846bb9981813?auto=format&fit=crop&w=400&q=80"}]}]};
 
     (function() {
       const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
       const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
       const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec';
-
-      // Azzeramento totale di eventuali vecchie memorie locali fittizie o walk-in simulate
-      try {
-        Object.keys(localStorage).forEach(k => {
-          if (k.startsWith('ol3_walkin_tables_')) {
-            localStorage.removeItem(k);
-          }
-        });
-      } catch(e) {}
 
       function getLocalTodayIso() {
         const d = new Date();
@@ -1289,26 +1281,29 @@
         return `${year}-${month}-${day}`;
       }
 
+      // Risoluzione menu reale garantita
+      function getMenuData() {
+        if (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.menu) {
+          return window.SITE_CONFIG.menu;
+        }
+        if (typeof SITE_CONFIG !== 'undefined' && SITE_CONFIG.menu) {
+          return SITE_CONFIG.menu;
+        }
+        if (typeof globalThis !== 'undefined' && globalThis.SITE_CONFIG && globalThis.SITE_CONFIG.menu) {
+          return globalThis.SITE_CONFIG.menu;
+        }
+        return EMBEDDED_MENU;
+      }
+
       let allBookings = [];
       let currentDate = getLocalTodayIso();
-      let currentShift = '20:00'; // '20:00' = 1° Turno, '21:30' = 2° Turno, 'all' = Tutti
+      let currentShift = '20:00'; // '20:00', '21:30', 'all'
       let currentFilter = 'all';  // 'all', 'da-servire', 'presa'
       let activeShiftTables = [];
-      let savedOrders = {}; // key: tableKey, value: order object
+      let savedOrders = {};
       let currentActiveTable = null;
       let currentOrderItems = {};
-      let selectedFoodCategory = 'all';
-
-      // Categorie di solo CIBO
-      const FOOD_CATEGORY_IDS = [
-        'pizze-classiche',
-        'pizze-ol3',
-        'carni',
-        'panini',
-        'primi',
-        'fritti-antipasti',
-        'contorni'
-      ];
+      let selectedCategory = 'all';
 
       // Parser date universale (identico a gestione-prenotazioni.html)
       function toIso(d) {
@@ -1369,7 +1364,6 @@
       const btnTurnoAll = document.getElementById('btn-turno-all');
       const syncEl = document.getElementById('sheet-sync-indicator');
 
-      // Inizializzazione Data
       if (dateInput) {
         dateInput.value = currentDate;
         dateInput.addEventListener('change', () => {
@@ -1451,7 +1445,6 @@
         textEl.innerHTML = `<strong>${cap}</strong> • Tavoli prenotati dal Foglio Google`;
       }
 
-      // Memoria Comande Prese
       function loadSavedOrders() {
         try {
           const raw = localStorage.getItem(`ol3_comande_${currentDate}`);
@@ -1467,12 +1460,12 @@
         } catch(e) {}
       }
 
-      // Lettura REALE dal Foglio Google (Identica a gestione-prenotazioni.html)
+      // Connessione reale al Foglio Google
       async function syncFromGoogleSheet(showToast = false) {
         if (syncEl) syncEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google...';
         let loaded = [];
 
-        // Canale 1: GVIZ (lettura diretta del foglio)
+        // Canale 1: GVIZ
         try {
           const res = await fetch(GVIZ_URL);
           const txt = await res.text();
@@ -1539,7 +1532,7 @@
         allBookings = loaded;
 
         if (syncEl) {
-          syncEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Sincronizzato con il Foglio (${allBookings.length} prenotazioni registrate)`;
+          syncEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Sincronizzato con il Foglio (${allBookings.length} prenotazioni)`;
         }
 
         renderTables();
@@ -1549,7 +1542,6 @@
         }
       }
 
-      // Render dei Tavoli Esclusivamente dal Foglio Google
       function renderTables() {
         loadSavedOrders();
         const grid = document.getElementById('tables-cards-grid');
@@ -1558,7 +1550,7 @@
 
         grid.innerHTML = '';
 
-        // Filtra esattamente come in gestione-prenotazioni.html: data, stato non annullato, turno
+        // Filtro per data e turno reale
         const activeForShift = allBookings.filter(b => {
           const sameDate = (toIso(b.date) === currentDate);
           const statusOk = !String(b.status || '').toLowerCase().includes('annull');
@@ -1566,7 +1558,6 @@
           return sameDate && statusOk && sameShift;
         });
 
-        // Assegnazione dei tavoli progressiva da 1 a 50 (come nella Mappa Sala!)
         let nextTable = 1;
         const tables = [];
 
@@ -1617,11 +1608,9 @@
             countDaServire++;
           }
 
-          // Filtri stato pill
           if (currentFilter === 'da-servire' && isOrderTaken) return;
           if (currentFilter === 'presa' && !isOrderTaken) return;
 
-          // Filtro ricerca testo
           if (searchVal) {
             const matchLabel = t.tableLabel.toLowerCase().includes(searchVal) || t.tableKey.toLowerCase().includes(searchVal);
             const matchName = t.customerName.toLowerCase().includes(searchVal);
@@ -1687,7 +1676,7 @@
 
             <div style="margin-top: 10px;">
               <button class="card-action-btn" onclick="event.stopPropagation(); openOrderModal(${JSON.stringify(t).replace(/"/g, '&quot;')})">
-                ${isOrderTaken ? '<i class="fa-solid fa-pen-to-square"></i> Vedi / Modifica Comanda' : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
+                ${isOrderTaken ? '<i class="fa-solid fa-pen-to-square"></i> Modifica Comanda' : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
               </button>
             </div>
           `;
@@ -1695,7 +1684,6 @@
           grid.appendChild(card);
         });
 
-        // Aggiornamento contatori
         document.getElementById('count-all').textContent = activeShiftTables.length;
         document.getElementById('count-da-servire').textContent = countDaServire;
         document.getElementById('count-presa').textContent = countPresa;
@@ -1705,10 +1693,10 @@
           grid.innerHTML = `
             <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted); background: #1e1a1c; border-radius: 12px; border: 1.5px dashed rgba(255,255,255,0.12);">
               <i class="fa-solid fa-calendar-xmark" style="font-size: 2.8rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
-              <h3 style="color: #fff; margin: 0 0 6px; font-family: var(--font-serif);">Nessun tavolo nel Foglio per ${formatItalianDate(currentDate)} (${shiftLabel})</h3>
-              <p style="margin: 0; font-size: 0.9rem;">I tavoli appariranno qui automaticamente quando verranno inserite prenotazioni nel Foglio Google.</p>
+              <h3 style="color: #fff; margin: 0 0 6px; font-family: var(--font-serif);">Nessun tavolo registrato per il ${formatItalianDate(currentDate)} (${shiftLabel})</h3>
+              <p style="margin: 0; font-size: 0.9rem;">I tavoli appariranno qui automaticamente non appena inseriti nel Foglio Google.</p>
               <button class="btn-refresh-sync" style="margin-top: 16px;" onclick="syncFromGoogleSheet(true)">
-                <i class="fa-solid fa-arrows-rotate"></i> Ricarica dal Foglio
+                <i class="fa-solid fa-arrows-rotate"></i> Aggiorna dal Foglio
               </button>
             </div>
           `;
@@ -1725,37 +1713,39 @@
       }
 
       // ==========================================================================
-      // POPUP MODALE: PRESA ORDINAZIONE CIBO (Grafica identica a menu.html)
+      // POPUP MODALE: VISUALIZZAZIONE MENU IDENTICA A MENU.HTML
       // ==========================================================================
 
-      function initFoodCategories() {
-        const container = document.getElementById('food-categories-pills');
-        if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+      function initMenuCategoriesTabs() {
+        const container = document.getElementById('menu-tabs-container');
+        const menuObj = getMenuData();
+        if (!container || !menuObj || !menuObj.categories) return;
 
         container.innerHTML = '';
 
-        const allPill = document.createElement('button');
-        allPill.className = 'food-cat-pill active';
-        allPill.textContent = 'Tutto il Cibo';
-        allPill.onclick = () => selectCategory('all', allPill);
-        container.appendChild(allPill);
+        const totalDishes = menuObj.categories.reduce((acc, c) => acc + c.items.length, 0);
 
-        window.SITE_CONFIG.menu.categories.forEach(cat => {
-          if (!FOOD_CATEGORY_IDS.includes(cat.id)) return; // SOLO CIBO
+        // Tab "TUTTO IL MENU"
+        const allBtn = document.createElement('button');
+        allBtn.className = 'menu-tab-btn-staff active';
+        allBtn.textContent = `TUTTO IL MENU (${totalDishes})`;
+        allBtn.onclick = () => selectMenuCategory('all', allBtn);
+        container.appendChild(allBtn);
 
-          const pill = document.createElement('button');
-          pill.className = 'food-cat-pill';
-          pill.textContent = cat.name;
-          pill.onclick = () => selectCategory(cat.id, pill);
-          container.appendChild(pill);
+        menuObj.categories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = 'menu-tab-btn-staff';
+          btn.textContent = `${cat.name} (${cat.items.length})`;
+          btn.onclick = () => selectMenuCategory(cat.id, btn);
+          container.appendChild(btn);
         });
       }
 
-      function selectCategory(catId, btnEl) {
-        selectedFoodCategory = catId;
-        document.querySelectorAll('.food-cat-pill').forEach(p => p.classList.remove('active'));
+      function selectMenuCategory(catId, btnEl) {
+        selectedCategory = catId;
+        document.querySelectorAll('.menu-tab-btn-staff').forEach(b => b.classList.remove('active'));
         if (btnEl) btnEl.classList.add('active');
-        renderFoodList();
+        renderMenuCards();
       }
 
       function openOrderModal(tableObj) {
@@ -1764,10 +1754,10 @@
 
         document.getElementById('modal-table-label').innerHTML = `
           <i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> 
-          ${tableObj.tableLabel} • Ordinazione Cibo
+          ${tableObj.tableLabel} • Presa Ordinazione
         `;
         document.getElementById('modal-table-subtitle').textContent = `
-          Cliente: ${tableObj.customerName} (${tableObj.guests} persone) • ${tableObj.shiftTag}
+          Ospite: ${tableObj.customerName} (${tableObj.guests} persone) • ${tableObj.shiftTag}
         `;
 
         const existing = savedOrders[tableObj.tableKey];
@@ -1777,8 +1767,7 @@
               name: it.name,
               price: it.price,
               priceNum: it.priceNum,
-              qty: it.qty,
-              category: it.category || ''
+              qty: it.qty
             };
           });
           document.getElementById('order-notes').value = existing.notes || '';
@@ -1786,13 +1775,10 @@
           document.getElementById('order-notes').value = '';
         }
 
-        clearFoodSearch(false);
-        selectedFoodCategory = 'all';
-        document.querySelectorAll('.food-cat-pill').forEach((p, idx) => {
-          p.classList.toggle('active', idx === 0);
-        });
-
-        renderFoodList();
+        clearMenuSearch(false);
+        selectedCategory = 'all';
+        initMenuCategoriesTabs();
+        renderMenuCards();
         updateCartDisplay();
 
         document.getElementById('order-modal-overlay').classList.add('active');
@@ -1806,20 +1792,20 @@
         currentOrderItems = {};
       }
 
-      function renderFoodList() {
-        const container = document.getElementById('food-items-container');
-        const searchVal = (document.getElementById('search-food-input')?.value || '').toLowerCase().trim();
+      // Render dei Piatti con Card (.menu-card identiche a menu.html)
+      function renderMenuCards() {
+        const container = document.getElementById('menu-cards-container');
+        const searchVal = (document.getElementById('search-menu-dish')?.value || '').toLowerCase().trim();
         const clearBtn = document.getElementById('clear-search-btn');
-        if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+        const menuObj = getMenuData();
+        if (!container || !menuObj || !menuObj.categories) return;
 
         if (clearBtn) clearBtn.style.display = searchVal ? 'block' : 'none';
 
         container.innerHTML = '';
 
-        const categories = window.SITE_CONFIG.menu.categories.filter(c => FOOD_CATEGORY_IDS.includes(c.id));
-
-        categories.forEach(cat => {
-          if (selectedFoodCategory !== 'all' && cat.id !== selectedFoodCategory) return;
+        menuObj.categories.forEach(cat => {
+          if (selectedCategory !== 'all' && cat.id !== selectedCategory) return;
 
           let items = cat.items || [];
           if (searchVal) {
@@ -1836,51 +1822,51 @@
           groupDiv.className = 'menu-category-group';
 
           groupDiv.innerHTML = `
-            <div class="category-title">
-              <span>${cat.name}</span>
-              <span style="font-size: 0.8rem; font-family: var(--font-sans); color: var(--text-muted); font-weight: 600;">${items.length} portate</span>
-            </div>
-            <div class="category-subtitle">${cat.subtitle || ''}</div>
-            <div class="modal-menu-grid"></div>
+            <h3 class="category-title">${cat.name}</h3>
+            <p class="category-subtitle">${cat.subtitle || ''}</p>
+            <div class="menu-items-grid-staff"></div>
           `;
 
-          const gridDiv = groupDiv.querySelector('.modal-menu-grid');
+          const gridDiv = groupDiv.querySelector('.menu-items-grid-staff');
 
           items.forEach(dish => {
             const currentQty = (currentOrderItems[dish.name] && currentOrderItems[dish.name].qty) ? currentOrderItems[dish.name].qty : 0;
             const priceNum = parseFloat(dish.price.replace('€', '').replace(',', '.').trim()) || 0;
 
             const card = document.createElement('div');
-            card.className = `menu-card-item ${currentQty > 0 ? 'has-qty' : ''}`;
+            card.className = `menu-card-staff ${currentQty > 0 ? 'card-selected' : ''}`;
 
+            // Tag alimentari (es. Vegetariano, Piccante)
+            const tagsHtml = (Array.isArray(dish.tags) && dish.tags.length > 0)
+              ? `<div class="menu-tags">${dish.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>`
+              : '';
+
+            // Thumbnail foto piatto (identico a menu.html)
+            const thumbHtml = dish.image 
+              ? `<div class="menu-card-thumb"><img src="${dish.image}" alt="${dish.name}" loading="lazy"></div>` 
+              : '';
+
+            // Controlli Cameriere (Aggiungi o Stepper + / -)
             let actionHtml = '';
             if (currentQty === 0) {
               actionHtml = `
-                <button class="btn-add-food" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)">
-                  <i class="fa-solid fa-plus"></i> AGGIUNGI
+                <button class="btn-dish-add" onclick="updateItemQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, 1)">
+                  <i class="fa-solid fa-plus"></i> AGGIUNGI AL TAVOLO
                 </button>
               `;
             } else {
               actionHtml = `
-                <div class="qty-stepper">
-                  <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', -1)" title="Diminuisci">−</button>
-                  <span class="stepper-value">${currentQty}</span>
-                  <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)" title="Aggiungi">+</button>
+                <div class="dish-qty-stepper">
+                  <button class="btn-stepper-minus" onclick="updateItemQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, -1)" title="Diminuisci">−</button>
+                  <span class="stepper-qty">${currentQty}</span>
+                  <button class="btn-stepper-plus" onclick="updateItemQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, 1)" title="Aggiungi">+</button>
                 </div>
               `;
             }
 
-            const tagsHtml = (Array.isArray(dish.tags) && dish.tags.length > 0)
-              ? `<div class="menu-tags-list">${dish.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>`
-              : '';
-
-            const thumbHtml = dish.image 
-              ? `<div class="menu-card-thumb-col"><img src="${dish.image}" alt="${dish.name}" loading="lazy"></div>` 
-              : '';
-
             card.innerHTML = `
-              <div class="menu-card-main-content">
-                <div class="menu-card-info-col">
+              <div class="menu-card-info">
+                <div>
                   <div class="menu-item-header">
                     <h4 class="menu-item-name">${dish.name}</h4>
                     <span class="menu-item-price">${dish.price}</span>
@@ -1888,15 +1874,14 @@
                   <p class="menu-item-desc">${dish.description || ''}</p>
                   ${tagsHtml}
                 </div>
-                ${thumbHtml}
+                <div class="order-action-row">
+                  <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">
+                    ${currentQty > 0 ? `Ordinati: <strong style="color: var(--accent-gold);">${currentQty}</strong>` : ''}
+                  </span>
+                  ${actionHtml}
+                </div>
               </div>
-
-              <div class="card-footer-action">
-                <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">
-                  ${currentQty > 0 ? `Selezionati: <strong style="color: var(--accent-gold);">${currentQty}</strong>` : ''}
-                </span>
-                ${actionHtml}
-              </div>
+              ${thumbHtml}
             `;
 
             gridDiv.appendChild(card);
@@ -1907,37 +1892,36 @@
 
         if (container.children.length === 0) {
           container.innerHTML = `
-            <div style="text-align: center; padding: 45px 12px; color: var(--text-muted); background: #252022; border-radius: 12px;">
-              <i class="fa-solid fa-magnifying-glass" style="font-size: 2.2rem; margin-bottom: 10px; display: block; color: var(--accent-gold);"></i>
-              Nessun piatto o pizza corrisponde alla ricerca "<strong>${searchVal}</strong>".
-              <div style="margin-top: 12px;">
-                <button class="food-cat-pill" onclick="clearFoodSearch()">Azzera ricerca</button>
+            <div style="text-align: center; padding: 50px 20px; color: var(--text-muted); background: #221e20; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+              <i class="fa-solid fa-magnifying-glass" style="font-size: 2.4rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
+              Nessun piatto o prodotto trovato per "<strong>${searchVal}</strong>".
+              <div style="margin-top: 14px;">
+                <button class="menu-tab-btn-staff active" onclick="clearMenuSearch()">Mostra Tutto il Menu</button>
               </div>
             </div>
           `;
         }
       }
 
-      function filterFoodList() {
-        renderFoodList();
+      function filterMenuDishes() {
+        renderMenuCards();
       }
 
-      function clearFoodSearch(reRender = true) {
-        const input = document.getElementById('search-food-input');
+      function clearMenuSearch(reRender = true) {
+        const input = document.getElementById('search-menu-dish');
         if (input) input.value = '';
         const clearBtn = document.getElementById('clear-search-btn');
         if (clearBtn) clearBtn.style.display = 'none';
-        if (reRender) renderFoodList();
+        if (reRender) renderMenuCards();
       }
 
-      function changeFoodQty(dishName, priceStr, priceNum, category, delta) {
+      function updateItemQty(dishName, priceStr, priceNum, delta) {
         if (!currentOrderItems[dishName]) {
           currentOrderItems[dishName] = {
             name: dishName,
             price: priceStr,
             priceNum: priceNum,
-            qty: 0,
-            category: category
+            qty: 0
           };
         }
 
@@ -1947,7 +1931,7 @@
           delete currentOrderItems[dishName];
         }
 
-        renderFoodList();
+        renderMenuCards();
         updateCartDisplay();
       }
 
@@ -1967,8 +1951,8 @@
         if (totalQty === 0) {
           listDiv.innerHTML = `
             <div class="cart-empty-msg">
-              <i class="fa-solid fa-utensils" style="font-size: 2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
-              Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI</strong> o usa i tasti <strong>+</strong> e <strong>-</strong> sui piatti a sinistra.
+              <i class="fa-solid fa-utensils" style="font-size: 2.2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
+              Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI AL TAVOLO</strong> sui piatti del menu a sinistra.
             </div>
           `;
           saveBtn.disabled = true;
@@ -1982,10 +1966,10 @@
               </div>
               <div class="cart-item-controls">
                 <span style="color: var(--text-muted);">${it.price} cad.</span>
-                <div class="qty-stepper" style="transform: scale(0.9); transform-origin: right center;">
-                  <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', -1)">−</button>
-                  <span class="stepper-value">${it.qty}</span>
-                  <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', 1)">+</button>
+                <div class="dish-qty-stepper" style="transform: scale(0.9); transform-origin: right center;">
+                  <button class="btn-stepper-minus" onclick="updateItemQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, -1)">−</button>
+                  <span class="stepper-qty">${it.qty}</span>
+                  <button class="btn-stepper-plus" onclick="updateItemQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, 1)">+</button>
                 </div>
               </div>
             </div>
@@ -2022,7 +2006,7 @@
           totalPrice: `${totalPriceNum.toFixed(2).replace('.', ',')} €`,
           totalPriceNum: totalPriceNum,
           notes: notesVal,
-          status: 'presa' // Segna come presa (diventa GRIGIO)
+          status: 'presa'
         };
 
         savedOrders[currentActiveTable.tableKey] = orderRecord;
@@ -2037,7 +2021,7 @@
         const dummyTable = {
           tableKey: 'CONSULTAZIONE',
           tableNum: 0,
-          tableLabel: 'Consulta Menu Completo',
+          tableLabel: 'Menu Completo Ristorante',
           customerName: 'Visualizzazione Personale',
           shiftTag: 'Menu Ufficiale OL3',
           shiftId: '',
@@ -2063,20 +2047,18 @@
         return String(str).replace(/'/g, "\'");
       }
 
-      // Esportazione funzioni su window per eventi HTML inline
       window.openOrderModal = openOrderModal;
       window.closeOrderModal = closeOrderModal;
-      window.changeFoodQty = changeFoodQty;
-      window.filterFoodList = filterFoodList;
-      window.clearFoodSearch = clearFoodSearch;
+      window.updateItemQty = updateItemQty;
+      window.filterMenuDishes = filterMenuDishes;
+      window.clearMenuSearch = clearMenuSearch;
       window.saveCurrentOrder = saveCurrentOrder;
       window.setTableFilter = setTableFilter;
       window.syncFromGoogleSheet = syncFromGoogleSheet;
       window.openMenuConsultationModal = openMenuConsultationModal;
 
-      // Avvio al caricamento:
       updateDateDisplay();
-      initFoodCategories();
+      initMenuCategoriesTabs();
       syncFromGoogleSheet();
     })();
   </script>

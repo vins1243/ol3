@@ -779,3 +779,10 @@ const SITE_CONFIG = {
   ]
 }
 };
+
+if (typeof window !== 'undefined') {
+  window.SITE_CONFIG = SITE_CONFIG;
+}
+if (typeof globalThis !== 'undefined') {
+  globalThis.SITE_CONFIG = SITE_CONFIG;
+}
