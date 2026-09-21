@@ -386,11 +386,11 @@ function initReservationForm() {
             if (!bId || bId.toLowerCase() === 'id' || bId.toLowerCase() === 'id prenotazione') return;
             list.push({
               id: bId,
-              date: toIsoDate(val(4)),
-              time: String(val(5)),
-              guests: parseInt(val(6), 10) || 2,
-              tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
-              status: String(val(8) || 'Confermata')
+              date: toIsoDate(val(2)),
+              time: String(val(4) || val(3) || ''),
+              guests: parseInt(val(8), 10) || 2,
+              tables: parseInt(val(9), 10) || Math.ceil((parseInt(val(8), 10) || 2) / 2),
+              status: String(val(11) || 'Confermata')
             });
           });
           cachedBookings = list;

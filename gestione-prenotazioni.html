@@ -1135,20 +1135,23 @@
                   if (!c[idx]) return '';
                   return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
                 };
-                const id = String(val(0));
+                const id = String(val(0)).trim();
                 if (!id || id.toLowerCase().includes('id')) return;
-                const rawDate = val(4);
                 loaded.push({
                   id: id,
                   created_at: String(val(1)),
-                  name: String(val(2)),
-                  phone: String(val(3)),
-                  date: toIso(rawDate),
-                  time: String(val(5)),
-                  guests: parseInt(val(6), 10) || 2,
-                  tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
-                  status: String(val(8) || 'Confermata'),
-                  notes: String(val(9) || '')
+                  name: String(val(6) || 'Cliente'),
+                  phone: String(val(7)),
+                  date: toIso(val(2)),
+                  time: String(val(4) || val(3) || ''),
+                  tableLabel: String(val(5) || ''),
+                  guests: parseInt(val(8), 10) || 2,
+                  tables: parseInt(val(9), 10) || Math.ceil((parseInt(val(8), 10) || 2) / 2),
+                  status: String(val(11) || 'Confermata'), // Col L: Stato Prenotazione
+                  orderStatus: String(val(12) || ''),     // Col M: Stato Ordinazione
+                  orderDetails: String(val(13) || ''),    // Col N: Dettaglio Piatti Comanda
+                  paymentStatus: String(val(14) || ''),   // Col O: Stato Pagamento
+                  notes: String(val(10) || '')
                 });
               });
             }
@@ -1171,10 +1174,14 @@
                   name: b.name || 'Cliente',
                   phone: b.phone || '',
                   date: toIso(b.date),
-                  time: String(b.time || ''),
+                  time: String(b.time || b.turno || ''),
+                  tableLabel: b.table || '',
                   guests: parseInt(b.guests, 10) || 2,
                   tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
-                  status: b.status || 'Confermata',
+                  status: String(b.booking_status || b.status || 'Confermata'),
+                  orderStatus: String(b.order_status || ''),
+                  orderDetails: String(b.order_details || ''),
+                  paymentStatus: String(b.payment_status || ''),
                   notes: b.notes || ''
                 });
               });

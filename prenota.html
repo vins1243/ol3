@@ -344,11 +344,11 @@
                 if (!bId || bId.toLowerCase().includes('id')) return;
                 list.push({
                   id: bId,
-                  date: toIso(val(4)),
-                  time: String(val(5)),
-                  guests: parseInt(val(6), 10) || 2,
-                  tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
-                  status: String(val(8) || 'Confermata')
+                  date: toIso(val(2)),
+                  time: String(val(4) || val(3) || ''),
+                  guests: parseInt(val(8), 10) || 2,
+                  tables: parseInt(val(9), 10) || Math.ceil((parseInt(val(8), 10) || 2) / 2),
+                  status: String(val(11) || 'Confermata')
                 });
               });
               allSheetBookings = list;
@@ -366,10 +366,10 @@
             allSheetBookings = res.data.map(b => ({
               id: String(b.id),
               date: toIso(b.date),
-              time: String(b.time || ''),
+              time: String(b.time || b.turno || ''),
               guests: parseInt(b.guests, 10) || 2,
               tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
-              status: String(b.status || 'Confermata')
+              status: String(b.booking_status || b.status || 'Confermata')
             }));
             return allSheetBookings;
           }

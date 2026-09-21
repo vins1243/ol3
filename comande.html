@@ -2409,9 +2409,10 @@
           for (let n = startNum; n <= endNum; n++) assignedNums.push(n);
           nextTable = endNum + 1;
 
-          const tableLabel = (needed === 1) 
+          const autoLabel = (needed === 1) 
             ? `T${String(startNum).padStart(2, '0')}` 
             : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
+          const tableLabel = b.tableLabel || autoLabel;
 
           const shiftName = isTurno1(b.time) ? '1° Turno (20:00)' : (isTurno2(b.time) ? '2° Turno (21:30)' : b.time);
           const shiftId = isTurno1(b.time) ? 'T1' : 'T2';

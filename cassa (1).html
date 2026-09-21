@@ -1246,70 +1246,19 @@
         }
       }
 
-      // Sincronizzazione in tempo reale dal Foglio Google 2 ("Comande") e Foglio 1
+      // Sincronizzazione in tempo reale dal Foglio Google UNIFICATO (Prenotazioni - 15 Colonne)
       async function syncFromGoogleSheet(notify = false) {
+        const syncIndicator = document.getElementById('sync-indicator');
         const syncIcon = document.getElementById('sync-icon');
         if (syncIcon) syncIcon.classList.add('fa-spin');
         if (syncIndicator) {
           syncIndicator.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google in corso...';
         }
 
-        let comandeMap = {};
-
-        // 1. Lettura Foglio 2 ("Comande")
-        try {
-          const res = await fetch(GVIZ_COMANDE_URL);
-          const txt = await res.text();
-          const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
-          if (match) {
-            const json = JSON.parse(match[1]);
-            if (json && json.table && Array.isArray(json.table.rows)) {
-              json.table.rows.forEach(r => {
-                if (!r || !r.c) return;
-                const c = r.c;
-                const val = idx => {
-                  if (!c[idx]) return '';
-                  return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
-                };
-                const id = String(val(0)).trim();
-                if (!id || id.toLowerCase().includes('id') || id.toLowerCase().includes('prenotazione')) return;
-                const st = String(val(10) || '').trim(); // Col K: Stato Ordinazione
-                const det = String(val(11) || '').trim(); // Col L: Dettaglio Piatti Comanda
-                const paySt = String(val(12) || '').trim(); // Col M: Stato Pagamento (Da Saldare / Saldato)
-                const tbl = String(val(5) || '').trim();
-                const d = toIso(val(2));
-                const nm = String(val(6) || '').trim().toLowerCase();
-
-                if (!comandeMap[id] || det || st || paySt) {
-                  comandeMap[id] = {
-                    status: st || (comandeMap[id] ? comandeMap[id].status : ''),
-                    details: det || (comandeMap[id] ? comandeMap[id].details : ''),
-                    table: tbl || (comandeMap[id] ? comandeMap[id].table : ''),
-                    paymentStatus: paySt || (comandeMap[id] ? comandeMap[id].paymentStatus : '')
-                  };
-                }
-                if (d && nm) {
-                  const k = `${d}_${nm}`;
-                  if (!comandeMap[k] || det || st || paySt) {
-                    comandeMap[k] = {
-                      status: st || (comandeMap[k] ? comandeMap[k].status : ''),
-                      details: det || (comandeMap[k] ? comandeMap[k].details : ''),
-                      table: tbl || (comandeMap[k] ? comandeMap[k].table : ''),
-                      paymentStatus: paySt || (comandeMap[k] ? comandeMap[k].paymentStatus : '')
-                    };
-                  }
-                }
-              });
-            }
-          }
-        } catch(e) {
-          console.warn('Errore lettura Foglio Comande:', e);
-        }
-
-        // 2. Lettura Foglio 1 ("Foglio1" Prenotazioni Master)
         let loaded = [];
         try {
-          const res = await fetch(GVIZ_FOGLIO1_URL);
+          const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+          const res = await fetch(GVIZ_URL);
           const txt = await res.text();
           const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
           if (match) {
@@ -1323,45 +1272,33 @@
                   return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
                 };
                 const id = String(val(0)).trim();
-                const name = String(val(2) || '').trim();
+                const name = String(val(6) || '').trim();
                 if (!id || id.toLowerCase().includes('id') || !name) return;
 
-                const rawDate = val(4);
+                const rawDate = val(2);
                 const isoDate = toIso(rawDate);
-                const timeVal = String(val(5) || '').trim();
-                const guestsVal = parseInt(val(6), 10) || 2;
-                const notesVal = String(val(7) || '').trim();
+                const timeVal = String(val(4) || val(3) || '').trim();
+                const tableAssigned = String(val(5) || '').trim();
+                const guestsVal = parseInt(val(8), 10) || 2;
+                const tablesVal = parseInt(val(9), 10) || Math.ceil(guestsVal / 2);
+                const notesVal = String(val(10) || '').trim();
 
-                let orderStatus = '';
-                let orderDetails = '';
-                let paymentStatus = '';
-                let tableFromComande = '';
-
-                if (comandeMap[id]) {
-                  orderStatus = comandeMap[id].status;
-                  orderDetails = comandeMap[id].details;
-                  paymentStatus = comandeMap[id].paymentStatus;
-                  tableFromComande = comandeMap[id].table;
-                } else if (isoDate && comandeMap[`${isoDate}_${name.toLowerCase()}`]) {
-                  orderStatus = comandeMap[`${isoDate}_${name.toLowerCase()}`].status;
-                  orderDetails = comandeMap[`${isoDate}_${name.toLowerCase()}`].details;
-                  paymentStatus = comandeMap[`${isoDate}_${name.toLowerCase()}`].paymentStatus;
-                  tableFromComande = comandeMap[`${isoDate}_${name.toLowerCase()}`].table;
-                }
-
-                const statusSheet = String(val(8) || '').trim();
+                const bookingStatus = String(val(11) || 'Confermata').trim(); // Col L (12): Stato Prenotazione
+                const orderStatus = String(val(12) || '').trim();            // Col M (13): Stato Ordinazione
+                const orderDetails = String(val(13) || '').trim();           // Col N (14): Dettaglio Piatti Comanda
+                const paymentStatus = String(val(14) || '').trim();          // Col O (15): Stato Pagamento
 
                 loaded.push({
                   id: id,
                   name: name,
-                  phone: String(val(3)),
+                  phone: String(val(7)),
                   date: isoDate,
                   time: timeVal,
                   guests: guestsVal,
-                  tables: Math.ceil(guestsVal / 2),
+                  tables: tablesVal,
                   notes: notesVal,
-                  status: statusSheet,
-                  tableLabel: tableFromComande || '',
+                  bookingStatus: bookingStatus, // Stato Prenotazione: MAI toccato da cassa/comande!
+                  tableLabel: tableAssigned,
                   orderStatus: orderStatus,
                   orderDetails: orderDetails,
                   paymentStatus: paymentStatus
@@ -1370,7 +1307,7 @@
             }
           }
         } catch(e) {
-          console.warn('Errore lettura Foglio1:', e);
+          console.warn('Errore lettura Foglio Unificato:', e);
         }
 
         allBookings = loaded;
@@ -1412,9 +1349,10 @@
           const endNum = Math.min(50, nextTable + needed - 1);
           nextTable = endNum + 1;
 
-          const tableLabel = (needed === 1) 
+          const autoLabel = (needed === 1) 
             ? `T${String(startNum).padStart(2, '0')}` 
             : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
+          const tableLabel = b.tableLabel || autoLabel;
 
           const shiftName = isTurno1(b.time) ? '1° Turno (20:00)' : (isTurno2(b.time) ? '2° Turno (21:30)' : b.time);
 
