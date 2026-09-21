@@ -26,7 +26,7 @@
   <link rel="stylesheet" href="styles.css?v=7.0">
 
   <style>
-:root {
+    :root {
       --order-red: #d1382b;
       --order-red-bg: #2d191b;
       --order-red-border: #e64535;
@@ -1103,7 +1103,7 @@
       max-height: calc(94vh - 150px);
     }
     }
-/* Reset e prevenzione overflow orizzontale */
+  
     * {
       box-sizing: border-box;
     }
@@ -1113,7 +1113,6 @@
       width: 100%;
     }
 
-    /* Pulsante Annulla Ordinazione (Rimetti Da Servire) */
     .btn-reset-order {
       width: 100%;
       background: rgba(209, 56, 43, 0.15);
@@ -1340,6 +1339,9 @@
       .modal-head {
         padding: 12px 14px;
       }
+      .modal-head-title h2 {
+        font-size: 1.15rem;
+      }
       .modal-body-layout {
         display: flex;
         flex-direction: column;
@@ -1361,7 +1363,7 @@
         gap: 14px;
       }
     }
-  </style>
+</style>
 </head>
 <body>
 
@@ -1395,7 +1397,7 @@
         <p id="current-shift-date-text">Caricamento data...</p>
       </div>
 
-      <div class="sync-actions-row">
+      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
         <span class="sheet-sync-status" id="sheet-sync-indicator">
           <i class="fa-solid fa-circle-notch fa-spin"></i> Connessione Foglio Google...
         </span>
@@ -1447,12 +1449,14 @@
       </button>
 
       <button class="stat-pill-btn pill-red" id="filter-da-servire-btn" onclick="setTableFilter('da-servire')">
-        <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i> Da Servire</span>
+        <i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i>
+        <span>Da Servire (Rosso)</span>
         <span class="count-bubble" id="count-da-servire">0</span>
       </button>
 
       <button class="stat-pill-btn pill-grey" id="filter-presa-btn" onclick="setTableFilter('presa')">
-        <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i> Ordinazione Presa</span>
+        <i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i>
+        <span>Ordinazione Presa (Grigio)</span>
         <span class="count-bubble" id="count-presa">0</span>
       </button>
     </div>
@@ -1597,12 +1601,12 @@
       let currentShift = '20:00'; // '20:00', '21:30', 'all'
       let currentFilter = 'all';  // 'all', 'da-servire', 'presa'
       let activeShiftTables = [];
-      let savedOrders = {}; // In-memory ONLY: popolato al 100% dal Foglio Google
+      let savedOrders = {}; // In-memory ONLY, popolato esclusivamente dal Foglio Google
       let currentActiveTable = null;
       let currentOrderItems = {};
       let selectedCategory = 'all';
 
-      // ELIMINAZIONE TOTALE MEMORIA LOCALE: nessuna dipendenza da cache o localStorage
+      // ELIMINAZIONE TOTALE MEMORIA LOCALE: rimossa ogni dipendenza da cache o localStorage
       try {
         if (typeof localStorage !== 'undefined') {
           for (let i = localStorage.length - 1; i >= 0; i--) {
@@ -1613,6 +1617,7 @@
           }
         }
       } catch(e) {}
+
 
       // Parser date universale (identico a gestione-prenotazioni.html)
       function toIso(d) {
@@ -1630,32 +1635,42 @@
 
         // Formato ISO YYYY-MM-DD
         const mIso = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
-        if (mIso) return mIso[0];
+        if (mIso) return `${mIso[1]}-${mIso[2]}-${mIso[3]}`;
 
-        // Formato Italiano DD/MM/YYYY o DD-MM-YYYY
+        // Formato Italiano DD/MM/YYYY
         const mIt = s.match(/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
-        if (mIt) {
-          return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
-        }
+        if (mIt) return `${mIt[3]}-${mIt[2].padStart(2, '0')}-${mIt[1].padStart(2, '0')}`;
 
         return s;
       }
 
-      function isTurno1(turno) {
-        const s = String(turno || '').toLowerCase().trim();
+      function formatItalianDate(d) {
+        const iso = toIso(d);
+        if (/^\d{4}-\d{2}-\d{2}$/.test(iso)) {
+          const p = iso.split('-');
+          return `${p[2]}/${p[1]}/${p[0]}`;
+        }
+        return d;
+      }
+
+      function isTurno1(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
         if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return false;
         return s.includes('1°') || s.includes('primo') || s.includes('20:00') || s.includes('1');
       }
 
-      function isTurno2(turno) {
-        const s = String(turno || '').toLowerCase().trim();
+      function isTurno2(tStr) {
+        if (!tStr) return false;
+        const s = String(tStr).toLowerCase().trim();
         if (s.includes('2°') || s.includes('secondo') || s.includes('dalle 21:30') || s.startsWith('21:30')) return true;
         if (s.includes('21:30') && !s.includes('20:00')) return true;
         return false;
       }
 
       function escapeHtml(str) {
-        return String(str || '')
+        if (!str) return '';
+        return String(str)
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;')
@@ -1796,7 +1811,6 @@
         }).toString();
 
         uniqueEndpoints.forEach(ep => {
-          // 1. Invio POST update_order
           try {
             fetch(ep, {
               method: 'POST',
@@ -1806,7 +1820,6 @@
             }).catch(() => {});
           } catch(e) {}
 
-          // 2. Invio POST update_status (retrocompatibile con la prima versione dello script)
           try {
             fetch(ep, {
               method: 'POST',
@@ -1816,12 +1829,10 @@
             }).catch(() => {});
           } catch(e) {}
 
-          // 3. Invio GET con fetch
           try {
             fetch(`${ep}?${qParams}`, { mode: 'no-cors' }).catch(() => {});
           } catch(e) {}
 
-          // 4. Invio GET tramite Image Beacon (garantito al 100% da qualsiasi browser e smartphone senza blocchi)
           try {
             const beacon = new Image();
             beacon.src = `${ep}?${qParams}`;
@@ -1896,7 +1907,7 @@
                 };
                 const id = String(val(0)).trim();
                 const name = String(val(2) || '').trim();
-                if (!id || id.toLowerCase().includes('id') || !name) return; // salta header o righe vuote
+                if (!id || id.toLowerCase().includes('id') || !name) return;
 
                 const rawDate = val(4);
                 const isoDate = toIso(rawDate);
@@ -1920,7 +1931,6 @@
                   tableFromComande = comandeMap[`${isoDate}_${name.toLowerCase()}`].table;
                 }
 
-                // Se anche in Foglio1 è segnato come Ordinazione Presa:
                 if (!orderStatus && (statusSheet.toLowerCase().includes('ordinat') || statusSheet.toLowerCase().includes('pres') || statusSheet.toLowerCase().includes('prenotat'))) {
                   orderStatus = 'Prenotato';
                 }
@@ -1947,7 +1957,7 @@
           console.warn('Lettura GVIZ Foglio1:', e);
         }
 
-        // 3. Fallback Web App Apps Script (se GVIZ fallisce)
+        // 3. Fallback Apps Script
         if (loaded.length === 0) {
           try {
             const endpoint = (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.googleSheetEndpoint)
@@ -1983,7 +1993,7 @@
 
         allBookings = loaded;
 
-        // Ricostruzione savedOrders ESCLUSIVAMENTE DAL FOGLIO GOOGLE (ZERO LOCALSTORAGE)
+        // Ricostruzione savedOrders in memoria RAM direttamente dal Foglio Google
         savedOrders = {};
         allBookings.forEach(b => {
           const st = String(b.orderStatus || '').toLowerCase();
@@ -1991,7 +2001,7 @@
             savedOrders[b.id] = {
               status: 'presa',
               bookingId: b.id,
-              details: b.orderDetails || 'Ordinazione registrata sul Foglio Google'
+              details: b.orderDetails || 'Ordinazione salvata sul Foglio Google'
             };
           }
         });
@@ -2006,7 +2016,6 @@
           showToastNotification(`Aggiornato dal Foglio Google: ${allBookings.length} prenotazioni sincronizzate`);
         }
       }
-
       function renderTables() {
         const grid = document.getElementById('tables-cards-grid');
         const searchVal = (document.getElementById('search-table-input')?.value || '').toLowerCase().trim();
@@ -2033,11 +2042,10 @@
           for (let n = startNum; n <= endNum; n++) assignedNums.push(n);
           nextTable = endNum + 1;
 
-          const defaultLabel = (needed === 1) 
+          const tableLabel = (needed === 1) 
             ? `T${String(startNum).padStart(2, '0')}` 
             : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
 
-          const tableLabel = (b.tableLabel && b.tableLabel.trim()) ? b.tableLabel : defaultLabel;
           const shiftName = isTurno1(b.time) ? '1° Turno (20:00)' : (isTurno2(b.time) ? '2° Turno (21:30)' : b.time);
           const shiftId = isTurno1(b.time) ? 'T1' : 'T2';
           const tableKey = `${shiftId}_T${String(startNum).padStart(2, '0')}`;
@@ -2066,9 +2074,8 @@
         let countPresa = 0;
 
         activeShiftTables.forEach(t => {
-          // L'ordinazione è presa se e solo se sul Foglio Google risulta 'Prenotato'
-          const orderFromSheet = savedOrders[t.bookingId];
-          const isOrderTaken = (orderFromSheet && orderFromSheet.status === 'presa') ||
+          const order = savedOrders[t.bookingId];
+          const isOrderTaken = (order && order.status === 'presa') ||
                                (t.orderStatus && (t.orderStatus.toLowerCase().includes('prenotat') || t.orderStatus.toLowerCase().includes('ordinat') || t.orderStatus.toLowerCase().includes('pres')));
 
           if (isOrderTaken) {
@@ -2093,7 +2100,7 @@
 
           let previewHtml = '';
           if (isOrderTaken) {
-            const det = t.orderDetails || (orderFromSheet && orderFromSheet.details) || 'Ordinazione salvata sul Foglio Google';
+            const det = t.orderDetails || (order && order.details) || 'Ordinazione salvata sul Foglio Google';
             previewHtml = `
               <div class="order-preview-box">
                 <div class="order-preview-header">
@@ -2108,43 +2115,32 @@
             <div>
               <div class="table-card-top">
                 <div>
-                  <h3 class="table-num-title">${t.tableLabel}</h3>
-                  <span class="table-shift-tag"><i class="fa-solid fa-clock"></i> ${t.shiftTag}</span>
+                  <span class="table-num-title">${t.tableLabel}</span>
+                  <div><span class="table-shift-tag">${t.shiftTag}</span></div>
                 </div>
-                <div>
-                  <span class="status-pill">
-                    ${isOrderTaken 
-                      ? '<i class="fa-solid fa-check"></i> ORDINAZIONE PRESA' 
-                      : '<i class="fa-solid fa-bell"></i> DA SERVIRE'}
-                  </span>
-                </div>
+                <span class="status-pill">
+                  ${isOrderTaken ? '<i class="fa-solid fa-circle-check"></i> ORDINAZIONE PRESA' : '<i class="fa-solid fa-bell"></i> DA SERVIRE'}
+                </span>
               </div>
 
               <div class="table-customer-name">
-                <i class="fa-solid fa-user" style="color: var(--accent-gold); font-size: 0.95rem;"></i>
-                <span>${escapeHtml(t.customerName)}</span>
+                <i class="fa-solid fa-user-tag" style="color: var(--accent-gold); font-size: 0.95rem;"></i>
+                <span>${t.customerName}</span>
               </div>
 
               <div class="table-meta-details">
                 <span><i class="fa-solid fa-clock"></i> ${t.time}</span>
                 <span><i class="fa-solid fa-users"></i> ${t.guests} Persone</span>
-                <span><i class="fa-solid fa-table-cells"></i> ${t.tablesCount} Tavol${t.tablesCount > 1 ? 'i' : 'o'}</span>
+                ${t.tablesCount > 1 ? `<span><i class="fa-solid fa-border-all"></i> ${t.tablesCount} Tavoli</span>` : ''}
+                ${t.notes ? `<span><i class="fa-solid fa-circle-info"></i> ${t.notes}</span>` : ''}
               </div>
-
-              ${t.notes ? `
-                <div style="background: rgba(214, 175, 93, 0.1); border-left: 3px solid var(--accent-gold); padding: 5px 10px; border-radius: 4px; font-size: 0.82rem; color: var(--accent-gold); margin-bottom: 12px;">
-                  <i class="fa-solid fa-circle-info"></i> Note: ${escapeHtml(t.notes)}
-                </div>
-              ` : ''}
 
               ${previewHtml}
             </div>
 
-            <div>
-              <button class="card-action-btn">
-                ${isOrderTaken 
-                  ? '<i class="fa-solid fa-pen-to-square"></i> Modifica o Visualizza Comanda' 
-                  : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
+            <div style="margin-top: 10px;">
+              <button class="card-action-btn" onclick="event.stopPropagation(); openOrderModal(${JSON.stringify(t).replace(/"/g, '&quot;')})">
+                ${isOrderTaken ? '<i class="fa-solid fa-pen-to-square"></i> Modifica Comanda' : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
               </button>
             </div>
           `;
@@ -2152,22 +2148,61 @@
           grid.appendChild(card);
         });
 
-        // Aggiorna conteggi filtri
         document.getElementById('count-all').textContent = activeShiftTables.length;
         document.getElementById('count-da-servire').textContent = countDaServire;
         document.getElementById('count-presa').textContent = countPresa;
 
         if (activeShiftTables.length === 0) {
+          const shiftLabel = (currentShift === '20:00') ? '1° Turno (20:00)' : ((currentShift === '21:30') ? '2° Turno (21:30)' : 'tutta la serata');
           grid.innerHTML = `
-            <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; background: #252022; border-radius: 12px; border: 1px dashed rgba(255, 255, 255, 0.15);">
-              <i class="fa-solid fa-calendar-xmark" style="font-size: 2.4rem; color: var(--text-muted); margin-bottom: 12px;"></i>
-              <h3 style="color: #fff; margin: 0 0 6px;">Nessun tavolo per questa selezione</h3>
-              <p style="color: var(--text-muted); font-size: 0.90rem; margin: 0;">
-                Non ci sono prenotazioni registrate sul Foglio Google per il turno e la data selezionati (${currentDate}).
-              </p>
+            <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted); background: #1e1a1c; border-radius: 12px; border: 1.5px dashed rgba(255,255,255,0.12);">
+              <i class="fa-solid fa-calendar-xmark" style="font-size: 2.8rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
+              <h3 style="color: #fff; margin: 0 0 6px; font-family: var(--font-serif);">Nessun tavolo registrato per il ${formatItalianDate(currentDate)} (${shiftLabel})</h3>
+              <p style="margin: 0; font-size: 0.9rem;">I tavoli appariranno qui automaticamente non appena inseriti nel Foglio Google.</p>
+              <button class="btn-refresh-sync" style="margin-top: 16px;" onclick="syncFromGoogleSheet(true)">
+                <i class="fa-solid fa-arrows-rotate"></i> Aggiorna dal Foglio
+              </button>
             </div>
           `;
         }
+      }
+
+      function setTableFilter(filter) {
+        currentFilter = filter;
+        document.querySelectorAll('.stat-pill-btn').forEach(btn => btn.classList.remove('active'));
+        if (filter === 'all') document.getElementById('filter-all-btn').classList.add('active');
+        if (filter === 'da-servire') document.getElementById('filter-da-servire-btn').classList.add('active');
+        if (filter === 'presa') document.getElementById('filter-presa-btn').classList.add('active');
+        renderTables();
+      }
+
+      // ==========================================================================
+      // POPUP MODALE: VISUALIZZAZIONE MENU IDENTICA A MENU.HTML
+      // ==========================================================================
+
+      function initMenuCategoriesTabs() {
+        const container = document.getElementById('menu-tabs-container');
+        const menuObj = getMenuData();
+        if (!container || !menuObj || !menuObj.categories) return;
+
+        container.innerHTML = '';
+
+        const totalDishes = menuObj.categories.reduce((acc, c) => acc + c.items.length, 0);
+
+        // Tab "TUTTO IL MENU"
+        const allBtn = document.createElement('button');
+        allBtn.className = 'menu-tab-btn-staff active';
+        allBtn.textContent = `TUTTO IL MENU (${totalDishes})`;
+        allBtn.onclick = () => selectMenuCategory('all', allBtn);
+        container.appendChild(allBtn);
+
+        menuObj.categories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = 'menu-tab-btn-staff';
+          btn.textContent = `${cat.name} (${cat.items.length})`;
+          btn.onclick = () => selectMenuCategory(cat.id, btn);
+          container.appendChild(btn);
+        });
       }
 
       function selectMenuCategory(catId, btnEl) {
@@ -2189,7 +2224,6 @@
           Ospite: ${tableObj.customerName} (${tableObj.guests} persone) • ${tableObj.shiftTag}
         `;
 
-        // Visibilità pulsante Reset (solo se già ordinato sul Foglio Google)
         const resetBtn = document.getElementById('btn-reset-order');
         const isAlreadyOrdered = (savedOrders[tableObj.bookingId] && savedOrders[tableObj.bookingId].status === 'presa') ||
                                 (tableObj.orderStatus && tableObj.orderStatus.toLowerCase().includes('prenotat'));
@@ -2224,52 +2258,176 @@
         currentOrderItems = {};
       }
 
+      // Render dei Piatti con Card (.menu-card identiche a menu.html)
+      function renderMenuCards() {
+        const container = document.getElementById('menu-cards-container');
+        const searchVal = (document.getElementById('search-menu-dish')?.value || '').toLowerCase().trim();
+        const clearBtn = document.getElementById('clear-search-btn');
+        const menuObj = getMenuData();
+        if (!container || !menuObj || !menuObj.categories) return;
+
+        if (clearBtn) clearBtn.style.display = searchVal ? 'block' : 'none';
+
+        container.innerHTML = '';
+
+        menuObj.categories.forEach(cat => {
+          if (selectedCategory !== 'all' && cat.id !== selectedCategory) return;
+
+          let items = cat.items || [];
+          if (searchVal) {
+            items = items.filter(it => 
+              it.name.toLowerCase().includes(searchVal) || 
+              (it.description && it.description.toLowerCase().includes(searchVal)) ||
+              (Array.isArray(it.tags) && it.tags.some(t => t.toLowerCase().includes(searchVal)))
+            );
+          }
+
+          if (items.length === 0) return;
+
+          const groupDiv = document.createElement('div');
+          groupDiv.className = 'menu-category-group';
+
+          groupDiv.innerHTML = `
+            <h3 class="category-title">${cat.name}</h3>
+            <p class="category-subtitle">${cat.subtitle || ''}</p>
+            <div class="menu-items-grid-staff"></div>
+          `;
+
+          const gridDiv = groupDiv.querySelector('.menu-items-grid-staff');
+
+          items.forEach(dish => {
+            const currentQty = (currentOrderItems[dish.name] && currentOrderItems[dish.name].qty) ? currentOrderItems[dish.name].qty : 0;
+            const priceNum = parseFloat(dish.price.replace('€', '').replace(',', '.').trim()) || 0;
+
+            const card = document.createElement('div');
+            card.className = `menu-card-staff ${currentQty > 0 ? 'card-selected' : ''}`;
+
+            // Tag alimentari (es. Vegetariano, Piccante)
+            const tagsHtml = (Array.isArray(dish.tags) && dish.tags.length > 0)
+              ? `<div class="menu-tags">${dish.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>`
+              : '';
+
+            // Thumbnail foto piatto (identico a menu.html)
+            const thumbHtml = dish.image 
+              ? `<div class="menu-card-thumb"><img src="${dish.image}" alt="${dish.name}" loading="lazy"></div>` 
+              : '';
+
+            // Controlli Cameriere (Aggiungi o Stepper + / -)
+            let actionHtml = '';
+            if (currentQty === 0) {
+              actionHtml = `
+                <button class="btn-dish-add" onclick="updateItemQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, 1)">
+                  <i class="fa-solid fa-plus"></i> AGGIUNGI AL TAVOLO
+                </button>
+              `;
+            } else {
+              actionHtml = `
+                <div class="dish-qty-stepper">
+                  <button class="btn-stepper-minus" onclick="updateItemQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, -1)" title="Diminuisci">−</button>
+                  <span class="stepper-qty">${currentQty}</span>
+                  <button class="btn-stepper-plus" onclick="updateItemQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, 1)" title="Aggiungi">+</button>
+                </div>
+              `;
+            }
+
+            card.innerHTML = `
+              <div class="menu-card-info">
+                <div>
+                  <div class="menu-item-header">
+                    <h4 class="menu-item-name">${dish.name}</h4>
+                    <span class="menu-item-price">${dish.price}</span>
+                  </div>
+                  <p class="menu-item-desc">${dish.description || ''}</p>
+                  ${tagsHtml}
+                </div>
+                <div class="order-action-row">
+                  <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: 700;">
+                    ${currentQty > 0 ? `Ordinati: <strong style="color: var(--accent-gold);">${currentQty}</strong>` : ''}
+                  </span>
+                  ${actionHtml}
+                </div>
+              </div>
+              ${thumbHtml}
+            `;
+
+            gridDiv.appendChild(card);
+          });
+
+          container.appendChild(groupDiv);
+        });
+
+        if (container.children.length === 0) {
+          container.innerHTML = `
+            <div style="text-align: center; padding: 50px 20px; color: var(--text-muted); background: #221e20; border-radius: 12px; border: 1px dashed rgba(255,255,255,0.1);">
+              <i class="fa-solid fa-magnifying-glass" style="font-size: 2.4rem; margin-bottom: 12px; display: block; color: var(--accent-gold);"></i>
+              Nessun piatto o prodotto trovato per "<strong>${searchVal}</strong>".
+              <div style="margin-top: 14px;">
+                <button class="menu-tab-btn-staff active" onclick="clearMenuSearch()">Mostra Tutto il Menu</button>
+              </div>
+            </div>
+          `;
+        }
+      }
+
+      function filterMenuDishes() {
+        renderMenuCards();
+      }
+
+      function clearMenuSearch(reRender = true) {
+        const input = document.getElementById('search-menu-dish');
+        if (input) input.value = '';
+        const clearBtn = document.getElementById('clear-search-btn');
+        if (clearBtn) clearBtn.style.display = 'none';
+        if (reRender) renderMenuCards();
+      }
+
       function updateItemQty(dishName, priceStr, priceNum, delta) {
         if (!currentOrderItems[dishName]) {
-          if (delta <= 0) return;
           currentOrderItems[dishName] = {
             name: dishName,
             price: priceStr,
             priceNum: priceNum,
-            qty: delta
+            qty: 0
           };
-        } else {
-          currentOrderItems[dishName].qty += delta;
-          if (currentOrderItems[dishName].qty <= 0) {
-            delete currentOrderItems[dishName];
-          }
         }
+
+        currentOrderItems[dishName].qty += delta;
+
+        if (currentOrderItems[dishName].qty <= 0) {
+          delete currentOrderItems[dishName];
+        }
+
         renderMenuCards();
         updateCartDisplay();
       }
 
       function updateCartDisplay() {
-        const listEl = document.getElementById('cart-items-list');
+        const listDiv = document.getElementById('cart-items-list');
         const countEl = document.getElementById('cart-item-count');
         const totalEl = document.getElementById('cart-total-price');
         const saveBtn = document.getElementById('btn-save-order');
 
         const items = Object.values(currentOrderItems);
         const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
-        const totalPrice = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
+        const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
 
-        countEl.textContent = `${totalQty} portat${totalQty === 1 ? 'a' : 'e'}`;
-        totalEl.textContent = `${totalPrice.toFixed(2).replace('.', ',')} €`;
+        countEl.textContent = `${totalQty} ${totalQty === 1 ? 'portata' : 'portate'}`;
+        totalEl.textContent = `${totalPriceNum.toFixed(2).replace('.', ',')} €`;
 
-        if (items.length === 0) {
-          saveBtn.disabled = true;
-          listEl.innerHTML = `
+        if (totalQty === 0) {
+          listDiv.innerHTML = `
             <div class="cart-empty-msg">
-              <i class="fa-solid fa-basket-shopping" style="font-size: 2.2rem; margin-bottom: 12px; color: var(--border-card); display: block;"></i>
+              <i class="fa-solid fa-utensils" style="font-size: 2.2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
               Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI AL TAVOLO</strong> sui piatti del menu a sinistra.
             </div>
           `;
+          saveBtn.disabled = true;
         } else {
           saveBtn.disabled = false;
-          listEl.innerHTML = items.map(it => `
+          listDiv.innerHTML = items.map(it => `
             <div class="cart-item-row">
               <div class="cart-item-top">
-                <span class="cart-item-name">${escapeHtml(it.name)}</span>
+                <span class="cart-item-name">${it.name}</span>
                 <span class="cart-item-price">${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €</span>
               </div>
               <div class="cart-item-controls">
@@ -2296,6 +2454,7 @@
 
         const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
         const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
+        const totalPriceStr = `${totalPriceNum.toFixed(2).replace('.', ',')} €`;
         const notesVal = document.getElementById('order-notes')?.value.trim() || '';
 
         const saveBtn = document.getElementById('btn-save-order');
@@ -2305,7 +2464,7 @@
         }
 
         const itemsSummary = items.map(it => `${it.qty}x ${it.name} (${(it.priceNum * it.qty).toFixed(2)}€)`).join(', ');
-        const fullDetails = `${itemsSummary} | Totale: ${totalPriceNum.toFixed(2).replace('.', ',')} €${notesVal ? ' | Note: ' + notesVal : ''}`;
+        const fullDetails = `${itemsSummary} | Totale: ${totalPriceStr}${notesVal ? ' | Note: ' + notesVal : ''}`;
 
         // Invia aggiornamento in tempo reale al Foglio Google
         await syncOrderToGoogleSheet({
@@ -2354,6 +2513,7 @@
           closeOrderModal();
         }, 1200);
       }
+
       function openMenuConsultationModal() {
         const dummyTable = {
           tableKey: 'CONSULTAZIONE',
@@ -2390,16 +2550,16 @@
       window.filterMenuDishes = filterMenuDishes;
       window.clearMenuSearch = clearMenuSearch;
       window.saveCurrentOrder = saveCurrentOrder;
+      window.revertCurrentOrder = revertCurrentOrder;
       window.setTableFilter = setTableFilter;
       window.syncFromGoogleSheet = syncFromGoogleSheet;
       window.openMenuConsultationModal = openMenuConsultationModal;
-      window.revertCurrentOrder = revertCurrentOrder;
 
       updateDateDisplay();
       initMenuCategoriesTabs();
       syncFromGoogleSheet();
 
-      // Polling automatico multi-dispositivo ogni 30 secondi
+      // Polling automatico dalla rete ogni 30 secondi
       setInterval(() => {
         syncFromGoogleSheet(false);
       }, 30000);
