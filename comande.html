@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <!-- Favicon & Icone Browser Tab -->
+  <link rel="icon" type="image/x-icon" href="favicon.ico?v=6">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico?v=6">
+  <link rel="icon" type="image/png" sizes="32x32" href="icon.png?v=6">
+  <link rel="icon" type="image/png" sizes="16x16" href="icon.png?v=6">
+  <link rel="apple-touch-icon" sizes="180x180" href="icon.png?v=6">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Comande Personale • Tavoli Serata | OL3 Ristorante Pizzeria</title>
+  <meta name="description" content="Interfaccia riservata al personale di sala per la gestione delle comande e presa ordinazioni tavoli della serata.">
+
+  <!-- Font Google -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Stili Principali -->
+  <link rel="stylesheet" href="css/styles.css?v=7.0">
+
+  <style>
+    :root {
+      --order-red: #d1382b;
+      --order-red-bg: #2d191b;
+      --order-red-border: #e64535;
+      --order-grey: #5c5558;
+      --order-grey-bg: #221f21;
+      --order-grey-border: #443e41;
+      --order-green: #25d366;
+    }
+
+    body {
+      background-color: #171415;
+      color: #f5f2eb;
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      padding-bottom: 90px;
+    }
+
+    /* Navbar Personale */
+    .staff-navbar {
+      background: rgba(22, 19, 20, 0.98);
+      border-bottom: 1px solid rgba(214, 175, 93, 0.3);
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(14px);
+    }
+    .staff-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .staff-brand img {
+      height: 42px;
+      width: auto;
+    }
+    .staff-badge {
+      background: var(--bg-card);
+      border: 1px solid var(--accent-gold);
+      color: var(--accent-gold);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+    .staff-nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .btn-nav-staff {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-nav-staff:hover {
+      background: var(--accent-gold);
+      color: #141213;
+      border-color: var(--accent-gold);
+    }
+
+    /* Subheader & Riepilogo Serata */
+    .shift-header {
+      background: #1e1a1c;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 18px 24px;
+    }
+    .shift-header-inner {
+      max-width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .shift-info h1 {
+      font-family: var(--font-serif);
+      font-size: 1.55rem;
+      color: #ffffff;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .shift-info p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      margin: 0;
+    }
+    .shift-stats-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .stat-pill-btn {
+      background: #272224;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: #fff;
+      font-weight: 700;
+      transition: all 0.2s ease;
+    }
+    .stat-pill-btn:hover, .stat-pill-btn.active {
+      border-color: var(--accent-gold);
+      box-shadow: 0 0 10px rgba(214, 175, 93, 0.2);
+    }
+    .stat-pill-btn.pill-red {
+      border-color: var(--order-red);
+      background: rgba(209, 56, 43, 0.15);
+    }
+    .stat-pill-btn.pill-red.active {
+      background: var(--order-red);
+      color: #fff;
+    }
+    .stat-pill-btn.pill-grey {
+      border-color: var(--order-grey);
+      background: rgba(92, 85, 88, 0.2);
+    }
+    .stat-pill-btn.pill-grey.active {
+      background: var(--order-grey);
+      color: #fff;
+    }
+    .count-bubble {
+      background: rgba(0,0,0,0.4);
+      padding: 2px 7px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+    }
+
+    /* Barra Strumenti & Ricerca */
+    .controls-bar {
+      max-width: 1400px;
+      margin: 20px auto 10px;
+      padding: 0 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .search-box {
+      position: relative;
+      flex: 1;
+      max-width: 380px;
+      min-width: 240px;
+    }
+    .search-box input {
+      width: 100%;
+      background: #272224;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 10px 14px 10px 38px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+    .search-box input:focus {
+      border-color: var(--accent-gold);
+    }
+    .search-box i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+    }
+    .btn-add-walkin {
+      background: linear-gradient(135deg, #d6af5d, #b88d3d);
+      color: #1a1718;
+      font-weight: 800;
+      border: none;
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.9rem;
+      transition: all 0.2s ease;
+    }
+    .btn-add-walkin:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(214, 175, 93, 0.35);
+    }
+    .btn-refresh {
+      background: #272224;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .btn-refresh:hover {
+      border-color: #fff;
+    }
+
+    /* Griglia Tavoli Serata */
+    .tables-container {
+      max-width: 1400px;
+      margin: 16px auto;
+      padding: 0 24px;
+    }
+    .tables-grid-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 20px;
+    }
+
+    /* Card Tavolo */
+    .table-card {
+      border-radius: 12px;
+      padding: 18px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      min-height: 220px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .table-card:hover {
+      transform: translateY(-4px);
+    }
+
+    /* STATO ROSSO: DA SERVIRE */
+    .table-card.status-da-servire {
+      background: linear-gradient(145deg, #381a1d, #251214);
+      border: 2px solid var(--order-red-border);
+      box-shadow: 0 6px 22px rgba(209, 56, 43, 0.3);
+    }
+    .table-card.status-da-servire:hover {
+      box-shadow: 0 10px 28px rgba(209, 56, 43, 0.45);
+      border-color: #ff5240;
+    }
+    .table-card.status-da-servire .status-pill {
+      background: var(--order-red);
+      color: #fff;
+      font-weight: 800;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      animation: pulseRed 2.5s infinite;
+    }
+    @keyframes pulseRed {
+      0% { box-shadow: 0 0 0 0 rgba(209, 56, 43, 0.7); }
+      70% { box-shadow: 0 0 0 8px rgba(209, 56, 43, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(209, 56, 43, 0); }
+    }
+
+    /* STATO GRIGIO: ORDINAZIONE PRESA */
+    .table-card.status-presa {
+      background: linear-gradient(145deg, #2a2628, #1f1d1e);
+      border: 2px solid var(--order-grey-border);
+      opacity: 0.92;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+    }
+    .table-card.status-presa:hover {
+      border-color: #82797e;
+      opacity: 1;
+    }
+    .table-card.status-presa .status-pill {
+      background: #474144;
+      color: #ded9dc;
+      font-weight: 700;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Interno Card */
+    .table-card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .table-num-title {
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      color: #ffffff;
+      font-family: var(--font-serif);
+      margin: 0;
+    }
+    .table-customer-name {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: #ffffff;
+      margin: 4px 0 6px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .table-meta-details {
+      display: flex;
+      gap: 12px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+    .table-meta-details span {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* Box Anteprima Ordinazione (nel caso grigio) */
+    .order-preview-box {
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 14px;
+      font-size: 0.86rem;
+      border: 1px dashed rgba(255, 255, 255, 0.1);
+    }
+    .order-preview-box .order-preview-header {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 800;
+      color: var(--accent-gold);
+      margin-bottom: 6px;
+      font-size: 0.88rem;
+    }
+    .order-preview-box ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      max-height: 80px;
+      overflow-y: auto;
+    }
+    .order-preview-box li {
+      color: #ede9de;
+      padding: 2px 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Pulsante Azione Card */
+    .card-action-btn {
+      width: 100%;
+      border: none;
+      padding: 11px 16px;
+      border-radius: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: all 0.2s ease;
+    }
+    .table-card.status-da-servire .card-action-btn {
+      background: linear-gradient(135deg, #d1382b, #b32a1e);
+      color: #ffffff;
+    }
+    .table-card.status-da-servire .card-action-btn:hover {
+      background: #e64535;
+      box-shadow: 0 4px 14px rgba(209, 56, 43, 0.5);
+    }
+    .table-card.status-presa .card-action-btn {
+      background: #3e383b;
+      color: #ede9de;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .table-card.status-presa .card-action-btn:hover {
+      background: #50494d;
+      color: #fff;
+    }
+
+    /* ==========================================================================
+       POPUP / MODAL PRESA ORDINAZIONI CIBO
+       ========================================================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 8, 9, 0.85);
+      backdrop-filter: blur(10px);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .order-modal-window {
+      background: #211c1e;
+      border: 2px solid var(--accent-gold);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 1180px;
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 16px 48px rgba(0, 0, 0, 0.75);
+      overflow: hidden;
+      animation: modalSlideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes modalSlideUp {
+      from { opacity: 0; transform: translateY(24px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Header del Modal */
+    .modal-head {
+      background: #191617;
+      padding: 16px 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+    .modal-head-title h2 {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      color: #fff;
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .modal-head-title p {
+      margin: 0;
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+    .modal-close-btn {
+      background: rgba(255, 255, 255, 0.1);
+      border: none;
+      color: #fff;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .modal-close-btn:hover {
+      background: var(--order-red);
+    }
+
+    /* Corpo del Modal (Layout a 2 Colonne: Menu a sinistra, Comanda a destra) */
+    .modal-body-layout {
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      flex: 1;
+      overflow: hidden;
+    }
+    @media (max-width: 900px) {
+      .modal-body-layout {
+        grid-template-columns: 1fr;
+        overflow-y: auto;
+      }
+    }
+
+    /* Colonna Sinistra: Ricerca, Categorie e Lista Cibo */
+    .menu-selection-col {
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 20px 24px;
+      border-right: 1px solid rgba(255, 255, 255, 0.08);
+      max-height: calc(92vh - 150px);
+    }
+
+    .modal-search-wrapper {
+      margin-bottom: 16px;
+    }
+    .modal-search-wrapper input {
+      width: 100%;
+      background: #2b2528;
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      color: #fff;
+      padding: 12px 16px 12px 42px;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      outline: none;
+    }
+    .modal-search-wrapper input:focus {
+      border-color: var(--accent-gold);
+    }
+
+    /* Barra Categorie Cibo (Pills Orizzontali) */
+    .food-categories-pills {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 12px;
+      margin-bottom: 16px;
+      scrollbar-width: thin;
+    }
+    .food-cat-pill {
+      background: #2d272a;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #f5f2eb;
+      padding: 7px 14px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .food-cat-pill:hover, .food-cat-pill.active {
+      background: var(--accent-gold);
+      color: #171415;
+      border-color: var(--accent-gold);
+    }
+
+    /* Lista Piatti Cibo */
+    .food-category-section {
+      margin-bottom: 24px;
+    }
+    .food-category-heading {
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      color: var(--accent-gold);
+      border-bottom: 1px solid rgba(214, 175, 93, 0.25);
+      padding-bottom: 6px;
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .food-items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    /* Card Piatto Singolo */
+    .food-item-card {
+      background: #282225;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.2s ease;
+    }
+    .food-item-card.has-qty {
+      border-color: var(--accent-gold);
+      background: #30292d;
+    }
+    .food-item-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    .food-item-title {
+      font-size: 0.98rem;
+      font-weight: 800;
+      color: #fff;
+    }
+    .food-item-price {
+      font-weight: 800;
+      color: var(--accent-gold);
+      font-size: 0.95rem;
+      white-space: nowrap;
+    }
+    .food-item-desc {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 10px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Controlli Aggiungi / Stepper + e - */
+    .food-action-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-top: auto;
+    }
+    .btn-add-food {
+      background: #393135;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.82rem;
+      padding: 7px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s ease;
+    }
+    .btn-add-food:hover {
+      background: var(--accent-gold);
+      color: #171415;
+      border-color: var(--accent-gold);
+    }
+
+    /* Stepper Qty quando > 0 */
+    .qty-stepper {
+      display: flex;
+      align-items: center;
+      background: #1c181a;
+      border: 1px solid var(--accent-gold);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .stepper-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.1rem;
+      font-weight: 800;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .stepper-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+    .stepper-btn.minus-btn:hover {
+      background: var(--order-red);
+    }
+    .stepper-btn.plus-btn:hover {
+      background: #25d366;
+    }
+    .stepper-value {
+      font-size: 1rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      min-width: 32px;
+      text-align: center;
+    }
+
+    /* Colonna Destra: Carrello Comanda */
+    .order-cart-col {
+      background: #1a1618;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 22px;
+      max-height: calc(92vh - 150px);
+      overflow-y: auto;
+    }
+    .cart-title {
+      font-family: var(--font-serif);
+      font-size: 1.25rem;
+      color: #fff;
+      margin: 0 0 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .cart-items-list {
+      flex: 1;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      padding-right: 4px;
+    }
+    .cart-empty-msg {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 40px 10px;
+      font-size: 0.95rem;
+    }
+    .cart-item-row {
+      background: #252023;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+      border-left: 3px solid var(--accent-gold);
+    }
+    .cart-item-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4px;
+    }
+    .cart-item-name {
+      font-weight: 700;
+      font-size: 0.92rem;
+      color: #fff;
+    }
+    .cart-item-price {
+      font-weight: 800;
+      color: var(--accent-gold);
+      font-size: 0.92rem;
+    }
+    .cart-item-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82rem;
+    }
+
+    /* Footer Comanda / Bottone Salva */
+    .cart-footer {
+      border-top: 1px solid rgba(255, 255, 255, 0.12);
+      padding-top: 14px;
+    }
+    .cart-total-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 14px;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+    .cart-total-row .total-amount {
+      font-size: 1.45rem;
+      font-weight: 900;
+      color: var(--accent-gold);
+      font-family: var(--font-serif);
+    }
+    .order-notes-input {
+      width: 100%;
+      background: #2b2528;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-bottom: 14px;
+      outline: none;
+      resize: none;
+    }
+    .btn-save-order {
+      width: 100%;
+      background: linear-gradient(135deg, #1ea952, #16803e);
+      border: none;
+      color: #fff;
+      font-weight: 900;
+      font-size: 1.05rem;
+      letter-spacing: 0.5px;
+      padding: 14px;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 16px rgba(30, 169, 82, 0.4);
+    }
+    .btn-save-order:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(30, 169, 82, 0.55);
+    }
+    .btn-save-order:disabled {
+      background: #443e41;
+      box-shadow: none;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* Notifica Toast */
+    .toast-msg {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #1e1a1c;
+      border: 2px solid var(--accent-gold);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      z-index: 3000;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+    .toast-msg.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 640px) {
+      .staff-navbar {
+        padding: 10px 16px;
+      }
+      .shift-header {
+        padding: 14px 16px;
+      }
+      .controls-bar {
+        padding: 0 16px;
+      }
+      .tables-container {
+        padding: 0 16px;
+      }
+      .order-modal-window {
+        max-height: 98vh;
+        border-radius: 12px;
+      }
+      .menu-selection-col {
+        padding: 14px 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Barra Superiore Personale Sala -->
+  <header class="staff-navbar">
+    <div class="staff-brand">
+      <a href="index.html">
+        <img src="foto/logo-2.png" alt="OL3 Ristorante Pizzeria">
+      </a>
+      <span class="staff-badge"><i class="fa-solid fa-bell-concierge"></i> Personale Sala</span>
+    </div>
+
+    <div class="staff-nav-actions">
+      <a href="gestione-prenotazioni.html" class="btn-nav-staff" title="Vai alla Mappa della Sala"><i class="fa-solid fa-table-cells"></i> Mappa Sala</a>
+      <a href="menu.html" class="btn-nav-staff" target="_blank" title="Consulta il Menu"><i class="fa-solid fa-book-open"></i> Menu</a>
+      <a href="index.html" class="btn-nav-staff" title="Torna alla Home"><i class="fa-solid fa-arrow-left"></i> Home</a>
+    </div>
+  </header>
+
+  <!-- Intestazione Serata Odierna & Filtri Rapidi -->
+  <section class="shift-header">
+    <div class="shift-header-inner">
+      <div class="shift-info">
+        <h1><i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> Tavoli della Serata Odierna</h1>
+        <p id="current-shift-date-text">Caricamento data odierna...</p>
+      </div>
+
+      <div class="shift-stats-pills">
+        <button class="stat-pill-btn active" id="filter-all-btn" onclick="setTableFilter('all')">
+          <span>Tutti i Tavoli</span>
+          <span class="count-bubble" id="count-all">0</span>
+        </button>
+
+        <button class="stat-pill-btn pill-red" id="filter-da-servire-btn" onclick="setTableFilter('da-servire')">
+          <i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i>
+          <span>Da Servire (Prendi Ordinazione)</span>
+          <span class="count-bubble" id="count-da-servire">0</span>
+        </button>
+
+        <button class="stat-pill-btn pill-grey" id="filter-presa-btn" onclick="setTableFilter('presa')">
+          <i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i>
+          <span>Ordinazione Presa</span>
+          <span class="count-bubble" id="count-presa">0</span>
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Barra Strumenti & Ricerca Tavolo -->
+  <div class="controls-bar">
+    <div class="search-box">
+      <i class="fa-solid fa-magnifying-glass"></i>
+      <input type="text" id="search-table-input" placeholder="Cerca numero tavolo o nome cliente..." oninput="renderTables()">
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-add-walkin" onclick="promptAddWalkinTable()">
+        <i class="fa-solid fa-plus"></i> Apri Tavolo Libero / Walk-in
+      </button>
+      <button class="btn-refresh" onclick="loadEveningTables(true)" title="Sincronizza prenotazioni">
+        <i class="fa-solid fa-arrows-rotate"></i>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenitore Tavoli della Serata -->
+  <main class="tables-container">
+    <div class="tables-grid-cards" id="tables-cards-grid">
+      <!-- Generato dinamicamente da JavaScript -->
+    </div>
+  </main>
+
+  <!-- ==========================================================================
+       POPUP MODALE: PRESA ORDINAZIONE SOLO CIBO
+       ========================================================================== -->
+  <div class="modal-overlay" id="order-modal-overlay">
+    <div class="order-modal-window">
+      
+      <!-- Head del Modal con info Tavolo -->
+      <div class="modal-head">
+        <div class="modal-head-title">
+          <h2 id="modal-table-label"><i class="fa-solid fa-clipboard-list" style="color: var(--accent-gold);"></i> Ordinazione Tavolo</h2>
+          <p id="modal-table-subtitle">Seleziona i piatti del menu per questo tavolo</p>
+        </div>
+        <button class="modal-close-btn" onclick="closeOrderModal()" aria-label="Chiudi popup">&times;</button>
+      </div>
+
+      <!-- Corpo Modal: Menu Cibo a sinistra, Carrello a destra -->
+      <div class="modal-body-layout">
+        
+        <!-- Colonna Selezione Piatti (Solo Cibo) -->
+        <div class="menu-selection-col">
+          <!-- Ricerca Rapida Piatto -->
+          <div class="modal-search-wrapper">
+            <div class="search-box" style="max-width: 100%;">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="search-food-input" placeholder="Cerca pizza, carne, antipasto o ingrediente..." oninput="filterFoodList()">
+            </div>
+          </div>
+
+          <!-- Filtri Categorie Cibo (Pills Orizzontali) -->
+          <div class="food-categories-pills" id="food-categories-pills">
+            <!-- Generato dinamicamente con le sole categorie CIBO -->
+          </div>
+
+          <!-- Elenco Piatti Raggruppati -->
+          <div id="food-items-container">
+            <!-- Piatti renderizzati da JavaScript -->
+          </div>
+        </div>
+
+        <!-- Colonna Destra: Riepilogo Comanda del Tavolo -->
+        <div class="order-cart-col">
+          <div>
+            <div class="cart-title">
+              <span><i class="fa-solid fa-receipt" style="color: var(--accent-gold);"></i> Comanda Tavolo</span>
+              <span id="cart-item-count" style="font-size: 0.85rem; color: var(--text-muted); font-family: var(--font-sans);">0 portate</span>
+            </div>
+
+            <!-- Lista Piatti Selezionati -->
+            <div class="cart-items-list" id="cart-items-list">
+              <div class="cart-empty-msg">
+                <i class="fa-solid fa-utensils" style="font-size: 2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
+                Nessun piatto ancora aggiunto.<br>Seleziona i piatti dal menu a sinistra.
+              </div>
+            </div>
+          </div>
+
+          <!-- Footer Carrello con Note e Salvataggio -->
+          <div class="cart-footer">
+            <label for="order-notes" style="font-size: 0.8rem; color: var(--text-muted); display: block; margin-bottom: 4px; font-weight: 700;">Note Cucina (opzionale):</label>
+            <textarea id="order-notes" class="order-notes-input" rows="2" placeholder="Es. Senza cipolla sul panino, cottura carne al sangue, pizze servite insieme..."></textarea>
+
+            <div class="cart-total-row">
+              <span>Totale Cibo:</span>
+              <span class="total-amount" id="cart-total-price">0,00 €</span>
+            </div>
+
+            <button class="btn-save-order" id="btn-save-order" onclick="saveCurrentOrder()" disabled>
+              <i class="fa-solid fa-check"></i> Salva Ordinazione
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Notifica Toast -->
+  <div class="toast-msg" id="toast-msg">
+    <i class="fa-solid fa-circle-check" style="color: var(--order-green); font-size: 1.2rem;"></i>
+    <span id="toast-text">Ordinazione salvata con successo!</span>
+  </div>
+
+  <!-- File di Configurazione Menu -->
+  <script src="js/config.js"></script>
+
+  <script>
+    /**
+     * GESTIONE COMANDE TAVOLI DELLA SERATA (PERSONALE SALA)
+     * - Mostra solo i tavoli della serata odierna
+     * - Rosso: Da servire / ordinazione da prendere
+     * - Grigio: Ordinazione già presa
+     * - Popup menu cibo completo con categorie e pulsanti + e -
+     * - Salvataggio locale e predisposizione per sincronizzazione remota
+     */
+
+    const SHEET_ID = '1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI';
+    const GVIZ_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&tq=select%20*`;
+    const APPS_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyFO2Zf7hi5SjHnMQLM2o9pt2CEKlXqQlRfmBueAWOiDz5REyTUpWpK39W270ktiNI5RA/exec';
+
+    // Data odierna formato YYYY-MM-DD
+    function getTodayIso() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, '0');
+      const day = String(d.getDate()).padStart(2, '0');
+      return `${y}-${m}-${day}`;
+    }
+
+    const TODAY_ISO = getTodayIso();
+    const STORAGE_ORDERS_KEY = `ol3_comande_${TODAY_ISO}`;
+
+    // Stato dell'applicazione
+    let eveningTables = [];
+    let savedOrders = {}; // key: tableKey (es. "T04"), value: order object
+    let currentActiveTable = null; // tavolo attualmente aperto nel popup
+    let currentOrderItems = {}; // key: dishName, value: { name, price, priceNum, qty, category }
+    let currentFilter = 'all'; // 'all', 'da-servire', 'presa'
+    let selectedFoodCategory = 'all';
+
+    // Inizializzazione al caricamento
+    document.addEventListener('DOMContentLoaded', () => {
+      initDateDisplay();
+      loadSavedOrders();
+      loadEveningTables();
+      initFoodCategories();
+    });
+
+    // 1. Data e orario serata
+    function initDateDisplay() {
+      const el = document.getElementById('current-shift-date-text');
+      const now = new Date();
+      const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+      const dateStr = now.toLocaleDateString('it-IT', options);
+      const capDate = dateStr.charAt(0).toUpperCase() + dateStr.slice(1);
+      if (el) {
+        el.innerHTML = `<strong>${capDate}</strong> • Turno Serale 19:30 - 23:30`;
+      }
+    }
+
+    // 2. Caricamento ordini salvati per oggi dal LocalStorage
+    function loadSavedOrders() {
+      try {
+        const raw = localStorage.getItem(STORAGE_ORDERS_KEY);
+        if (raw) {
+          savedOrders = JSON.parse(raw);
+        } else {
+          savedOrders = {};
+        }
+      } catch (e) {
+        console.warn('Errore lettura ordini da localStorage:', e);
+        savedOrders = {};
+      }
+    }
+
+    function persistSavedOrders() {
+      try {
+        localStorage.setItem(STORAGE_ORDERS_KEY, JSON.stringify(savedOrders));
+      } catch (e) {
+        console.error('Errore salvataggio comande su localStorage:', e);
+      }
+    }
+
+    // 3. Caricamento Tavoli della Serata Odierna
+    async function loadEveningTables(showToast = false) {
+      let bookings = [];
+
+      // Canale 1: GVIZ da Google Sheet
+      try {
+        const res = await fetch(GVIZ_URL);
+        const txt = await res.text();
+        const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+        if (match) {
+          const json = JSON.parse(match[1]);
+          if (json && json.table && Array.isArray(json.table.rows)) {
+            json.table.rows.forEach(r => {
+              if (!r || !r.c) return;
+              const c = r.c;
+              const val = idx => (c[idx] && (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx] && c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : ''));
+              const id = String(val(0));
+              if (!id || id.toLowerCase().includes('id')) return;
+              
+              const rawDate = String(val(4) || '');
+              let isoDate = '';
+              if (rawDate.includes('/')) {
+                const parts = rawDate.split('/');
+                if (parts.length === 3) isoDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+              } else if (rawDate.includes('-')) {
+                isoDate = rawDate.split('T')[0];
+              }
+
+              // FILTRO STRETTO: Solo prenotazioni della serata odierna!
+              if (isoDate === TODAY_ISO) {
+                const status = String(val(8) || 'Confermata');
+                if (!status.toLowerCase().includes('annull')) {
+                  bookings.push({
+                    id: id,
+                    name: String(val(2) || 'Cliente Serata'),
+                    phone: String(val(3) || ''),
+                    date: isoDate,
+                    time: String(val(5) || '20:30'),
+                    guests: parseInt(val(6), 10) || 2,
+                    tablesCount: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
+                    status: status,
+                    notes: String(val(9) || '')
+                  });
+                }
+              }
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('GVIZ load failed, tentando Apps Script o cache:', e);
+      }
+
+      // Canale 2: Apps Script Web App (se GVIZ vuoto)
+      if (bookings.length === 0) {
+        try {
+          const resp = await fetch(APPS_SCRIPT_URL);
+          const res = await resp.json();
+          if (res && res.status === 'success' && Array.isArray(res.data)) {
+            res.data.forEach(b => {
+              if (!b || !b.id) return;
+              let isoDate = '';
+              const rawDate = String(b.date || '');
+              if (rawDate.includes('/')) {
+                const parts = rawDate.split('/');
+                if (parts.length === 3) isoDate = `${parts[2]}-${parts[1].padStart(2, '0')}-${parts[0].padStart(2, '0')}`;
+              } else if (rawDate.includes('-')) {
+                isoDate = rawDate.split('T')[0];
+              }
+
+              if (isoDate === TODAY_ISO && !String(b.status || '').toLowerCase().includes('annull')) {
+                bookings.push({
+                  id: String(b.id),
+                  name: b.name || 'Cliente Serata',
+                  phone: b.phone || '',
+                  date: isoDate,
+                  time: String(b.time || '20:30'),
+                  guests: parseInt(b.guests, 10) || 2,
+                  tablesCount: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
+                  status: b.status || 'Confermata',
+                  notes: b.notes || ''
+                });
+              }
+            });
+          }
+        } catch (err) {
+          console.warn('Apps Script load fallback:', err);
+        }
+      }
+
+      // Costruzione dell'elenco tavoli per la serata
+      let tableCounter = 1;
+      const tablesList = [];
+
+      // Se ci sono prenotazioni reali per oggi dal foglio:
+      if (bookings.length > 0) {
+        bookings.forEach(b => {
+          const needed = b.tablesCount || Math.ceil(b.guests / 2);
+          const startNum = tableCounter;
+          const endNum = Math.min(50, tableCounter + needed - 1);
+          tableCounter = endNum + 1;
+
+          const tableKey = (needed === 1) ? `T${String(startNum).padStart(2, '0')}` : `T${String(startNum).padStart(2, '0')}-T${String(endNum).padStart(2, '0')}`;
+          const tableLabel = (needed === 1) ? `Tavolo ${startNum}` : `Tavoli Uniti ${startNum}-${endNum}`;
+
+          tablesList.push({
+            tableKey: tableKey,
+            tableNum: startNum,
+            tableLabel: tableLabel,
+            customerName: b.name,
+            phone: b.phone,
+            time: b.time,
+            guests: b.guests,
+            tablesCount: needed,
+            isWalkin: false,
+            notes: b.notes
+          });
+        });
+      } else {
+        // Se per oggi non ci sono ancora prenotazioni online, precarichiamo i tavoli della sala
+        // o eventuali tavoli aperti localmente dal personale, così la pagina è subito utilizzabile!
+        const initialTables = [
+          { num: 1, name: "Famiglia De Santis", time: "20:30", guests: 4 },
+          { num: 2, name: "Tavolo Coppia (Prenotato)", time: "21:00", guests: 2 },
+          { num: 3, name: "Gruppo Amici", time: "21:30", guests: 6 },
+          { num: 4, name: "Tavolo Walk-in", time: "20:00", guests: 2 },
+          { num: 5, name: "Tavolo Sala Centrale", time: "20:45", guests: 4 },
+          { num: 6, name: "Tavolo Veranda", time: "21:15", guests: 3 }
+        ];
+
+        initialTables.forEach(t => {
+          const needed = Math.ceil(t.guests / 2);
+          const tableKey = `T${String(t.num).padStart(2, '0')}`;
+          tablesList.push({
+            tableKey: tableKey,
+            tableNum: t.num,
+            tableLabel: `Tavolo ${t.num}`,
+            customerName: t.name,
+            phone: "",
+            time: t.time,
+            guests: t.guests,
+            tablesCount: needed,
+            isWalkin: false,
+            notes: ""
+          });
+        });
+      }
+
+      // Aggiungiamo eventuali tavoli aggiuntivi aperti come Walk-in dal personale salvati in localStorage
+      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}`;
+      try {
+        const extraRaw = localStorage.getItem(walkinKey);
+        if (extraRaw) {
+          const extraTables = JSON.parse(extraRaw);
+          extraTables.forEach(et => {
+            if (!tablesList.some(t => t.tableKey === et.tableKey)) {
+              tablesList.push(et);
+            }
+          });
+        }
+      } catch (e) {}
+
+      // Ordinamento per numero di tavolo
+      tablesList.sort((a, b) => a.tableNum - b.tableNum);
+
+      eveningTables = tablesList;
+      renderTables();
+
+      if (showToast) {
+        showToastNotification(`Aggiornati ${eveningTables.length} tavoli per la serata`);
+      }
+    }
+
+    // 4. Render dei Tavoli (Rosso = Da servire, Grigio = Presa)
+    function renderTables() {
+      const grid = document.getElementById('tables-cards-grid');
+      const searchVal = (document.getElementById('search-table-input')?.value || '').toLowerCase().trim();
+      if (!grid) return;
+
+      grid.innerHTML = '';
+
+      let countDaServire = 0;
+      let countPresa = 0;
+
+      eveningTables.forEach(t => {
+        const order = savedOrders[t.tableKey];
+        const isOrderTaken = (order && order.status === 'presa' && order.items && order.items.length > 0);
+
+        if (isOrderTaken) {
+          countPresa++;
+        } else {
+          countDaServire++;
+        }
+
+        // Filtro per stato tab
+        if (currentFilter === 'da-servire' && isOrderTaken) return;
+        if (currentFilter === 'presa' && !isOrderTaken) return;
+
+        // Filtro per testo ricerca
+        if (searchVal) {
+          const matchNum = t.tableLabel.toLowerCase().includes(searchVal) || t.tableKey.toLowerCase().includes(searchVal);
+          const matchName = t.customerName.toLowerCase().includes(searchVal);
+          if (!matchNum && !matchName) return;
+        }
+
+        // Creazione Card Tavolo
+        const card = document.createElement('div');
+        card.className = `table-card ${isOrderTaken ? 'status-presa' : 'status-da-servire'}`;
+        card.onclick = () => openOrderModal(t);
+
+        // Header della card
+        let previewHtml = '';
+        if (isOrderTaken) {
+          const totalItems = order.items.reduce((sum, it) => sum + it.qty, 0);
+          const itemsListHtml = order.items.slice(0, 4).map(it => `
+            <li>
+              <span><strong>${it.qty}x</strong> ${it.name}</span>
+              <span>${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €</span>
+            </li>
+          `).join('');
+          const moreCount = order.items.length > 4 ? `<li style="font-style: italic; color: var(--accent-gold);">+ altre ${order.items.length - 4} portate...</li>` : '';
+
+          previewHtml = `
+            <div class="order-preview-box">
+              <div class="order-preview-header">
+                <span><i class="fa-solid fa-receipt"></i> ${totalItems} Portate inserite</span>
+                <span>Tot: ${order.totalPrice}</span>
+              </div>
+              <ul>
+                ${itemsListHtml}
+                ${moreCount}
+              </ul>
+            </div>
+          `;
+        }
+
+        card.innerHTML = `
+          <div>
+            <div class="table-card-top">
+              <span class="table-num-title">${t.tableLabel}</span>
+              <span class="status-pill">
+                ${isOrderTaken ? '<i class="fa-solid fa-circle-check"></i> ORDINAZIONE PRESA' : '<i class="fa-solid fa-bell"></i> DA SERVIRE'}
+              </span>
+            </div>
+
+            <div class="table-customer-name">
+              <i class="fa-solid fa-user-tag" style="color: var(--accent-gold); font-size: 0.9rem;"></i>
+              <span>${t.customerName}</span>
+            </div>
+
+            <div class="table-meta-details">
+              <span><i class="fa-solid fa-clock"></i> ${t.time || '19:30'}</span>
+              <span><i class="fa-solid fa-users"></i> ${t.guests} Coperti</span>
+              ${t.tablesCount > 1 ? `<span><i class="fa-solid fa-border-all"></i> ${t.tablesCount} Tavoli</span>` : ''}
+            </div>
+
+            ${previewHtml}
+          </div>
+
+          <div style="margin-top: 10px;">
+            <button class="card-action-btn" onclick="event.stopPropagation(); openOrderModal(${JSON.stringify(t).replace(/"/g, '&quot;')})">
+              ${isOrderTaken ? '<i class="fa-solid fa-pen-to-square"></i> Vedi / Modifica Comanda' : '<i class="fa-solid fa-clipboard-check"></i> Prendi Ordinazione'}
+            </button>
+          </div>
+        `;
+
+        grid.appendChild(card);
+      });
+
+      // Aggiorna contatori statistiche
+      document.getElementById('count-all').textContent = eveningTables.length;
+      document.getElementById('count-da-servire').textContent = countDaServire;
+      document.getElementById('count-presa').textContent = countPresa;
+
+      if (grid.children.length === 0) {
+        grid.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: var(--text-muted);">
+            <i class="fa-solid fa-circle-exclamation" style="font-size: 2.5rem; margin-bottom: 12px; display: block;"></i>
+            Nessun tavolo corrisponde ai criteri di ricerca o al filtro selezionato.
+          </div>
+        `;
+      }
+    }
+
+    // 5. Filtri Tab
+    function setTableFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.stat-pill-btn').forEach(btn => btn.classList.remove('active'));
+      if (filter === 'all') document.getElementById('filter-all-btn').classList.add('active');
+      if (filter === 'da-servire') document.getElementById('filter-da-servire-btn').classList.add('active');
+      if (filter === 'presa') document.getElementById('filter-presa-btn').classList.add('active');
+      renderTables();
+    }
+
+    // 6. Apertura Rapida Tavolo Walk-in (clienti che entrano senza prenotazione)
+    function promptAddWalkinTable() {
+      const numStr = prompt("Inserisci il numero del tavolo libero da aprire per la serata (es. 7):");
+      if (!numStr) return;
+      const num = parseInt(numStr.replace(/\D/g, ''), 10);
+      if (!num || num < 1 || num > 50) {
+        alert("Inserisci un numero di tavolo valido compreso tra 1 e 50.");
+        return;
+      }
+
+      const tableKey = `T${String(num).padStart(2, '0')}`;
+      if (eveningTables.some(t => t.tableKey === tableKey)) {
+        alert(`Il Tavolo ${num} è già presente nella lista della serata! Cliccaci sopra per prendere l'ordinazione.`);
+        return;
+      }
+
+      const guestsStr = prompt(`Quante persone si accomodano al Tavolo ${num}?`, "2");
+      const guests = parseInt(guestsStr, 10) || 2;
+      const nameStr = prompt(`Nome o riferimento per il Tavolo ${num} (opzionale):`, `Walk-in T${num}`) || `Walk-in T${num}`;
+
+      const newTable = {
+        tableKey: tableKey,
+        tableNum: num,
+        tableLabel: `Tavolo ${num}`,
+        customerName: nameStr,
+        phone: "",
+        time: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+        guests: guests,
+        tablesCount: Math.ceil(guests / 2),
+        isWalkin: true,
+        notes: "Aperto direttamente in sala"
+      };
+
+      eveningTables.push(newTable);
+      eveningTables.sort((a, b) => a.tableNum - b.tableNum);
+
+      // Salva in localStorage walk-in
+      const walkinKey = `ol3_walkin_tables_${TODAY_ISO}`;
+      try {
+        const extra = eveningTables.filter(t => t.isWalkin);
+        localStorage.setItem(walkinKey, JSON.stringify(extra));
+      } catch (e) {}
+
+      renderTables();
+      showToastNotification(`Tavolo ${num} aperto per la serata!`);
+      // Apri subito il popup di presa comanda
+      openOrderModal(newTable);
+    }
+
+    // ==========================================================================
+    // LOGICA POPUP PRESA ORDINAZIONI (SOLO CIBO)
+    // ==========================================================================
+
+    // Categorie di CIBO (escluse bevande e cocktail)
+    const FOOD_CATEGORY_IDS = [
+      'pizze-classiche',
+      'pizze-ol3',
+      'carni',
+      'panini',
+      'primi',
+      'fritti-antipasti',
+      'contorni'
+    ];
+
+    function initFoodCategories() {
+      const container = document.getElementById('food-categories-pills');
+      if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+
+      container.innerHTML = '';
+
+      // Tasto "Tutto il Cibo"
+      const allPill = document.createElement('button');
+      allPill.className = 'food-cat-pill active';
+      allPill.textContent = 'Tutto il Cibo';
+      allPill.onclick = () => selectCategory('all', allPill);
+      container.appendChild(allPill);
+
+      // Categorie reali dal config.js
+      window.SITE_CONFIG.menu.categories.forEach(cat => {
+        if (!FOOD_CATEGORY_IDS.includes(cat.id)) return; // SOLO CIBO
+
+        const pill = document.createElement('button');
+        pill.className = 'food-cat-pill';
+        pill.textContent = cat.name;
+        pill.onclick = () => selectCategory(cat.id, pill);
+        container.appendChild(pill);
+      });
+    }
+
+    function selectCategory(catId, btnEl) {
+      selectedFoodCategory = catId;
+      document.querySelectorAll('.food-cat-pill').forEach(p => p.classList.remove('active'));
+      if (btnEl) btnEl.classList.add('active');
+      filterFoodList();
+    }
+
+    // Apertura Modal con numero tavolo automatico
+    function openOrderModal(tableObj) {
+      currentActiveTable = tableObj;
+      currentOrderItems = {};
+
+      // Imposta intestazione tavolo
+      document.getElementById('modal-table-label').innerHTML = `
+        <i class="fa-solid fa-utensils" style="color: var(--accent-gold);"></i> 
+        ${tableObj.tableLabel} • Ordinazione Cibo
+      `;
+      document.getElementById('modal-table-subtitle').textContent = `
+        Cliente: ${tableObj.customerName} (${tableObj.guests} persone) • Serata di Oggi
+      `;
+
+      // Se il tavolo ha già un'ordinazione salvata, ricaricala per permettere modifiche o aggiunte!
+      const existing = savedOrders[tableObj.tableKey];
+      if (existing && Array.isArray(existing.items)) {
+        existing.items.forEach(it => {
+          currentOrderItems[it.name] = {
+            name: it.name,
+            price: it.price,
+            priceNum: it.priceNum,
+            qty: it.qty,
+            category: it.category || ''
+          };
+        });
+        document.getElementById('order-notes').value = existing.notes || '';
+      } else {
+        document.getElementById('order-notes').value = '';
+      }
+
+      // Reset ricerca e categoria
+      document.getElementById('search-food-input').value = '';
+      selectedFoodCategory = 'all';
+      document.querySelectorAll('.food-cat-pill').forEach((p, idx) => {
+        if (idx === 0) p.classList.add('active');
+        else p.classList.remove('active');
+      });
+
+      renderFoodList();
+      updateCartDisplay();
+
+      // Mostra overlay
+      document.getElementById('order-modal-overlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-modal-overlay').classList.remove('active');
+      document.body.style.overflow = '';
+      currentActiveTable = null;
+      currentOrderItems = {};
+    }
+
+    // Render della lista dei piatti di CIBO con categorie
+    function renderFoodList() {
+      const container = document.getElementById('food-items-container');
+      const searchVal = (document.getElementById('search-food-input')?.value || '').toLowerCase().trim();
+      if (!container || !window.SITE_CONFIG || !window.SITE_CONFIG.menu) return;
+
+      container.innerHTML = '';
+
+      const categories = window.SITE_CONFIG.menu.categories.filter(c => FOOD_CATEGORY_IDS.includes(c.id));
+
+      categories.forEach(cat => {
+        // Filtro categoria selezionata
+        if (selectedFoodCategory !== 'all' && cat.id !== selectedFoodCategory) return;
+
+        // Filtro piatti per ricerca
+        let items = cat.items || [];
+        if (searchVal) {
+          items = items.filter(it => 
+            it.name.toLowerCase().includes(searchVal) || 
+            (it.description && it.description.toLowerCase().includes(searchVal))
+          );
+        }
+
+        if (items.length === 0) return;
+
+        const secDiv = document.createElement('div');
+        secDiv.className = 'food-category-section';
+
+        secDiv.innerHTML = `
+          <div class="food-category-heading">
+            <span>${cat.name}</span>
+            <span style="font-size: 0.8rem; font-family: var(--font-sans); color: var(--text-muted);">${items.length} portate</span>
+          </div>
+          <div class="food-items-grid"></div>
+        `;
+
+        const gridDiv = secDiv.querySelector('.food-items-grid');
+
+        items.forEach(dish => {
+          const currentQty = (currentOrderItems[dish.name] && currentOrderItems[dish.name].qty) ? currentOrderItems[dish.name].qty : 0;
+          const priceNum = parseFloat(dish.price.replace('€', '').replace(',', '.').trim()) || 0;
+
+          const itemCard = document.createElement('div');
+          itemCard.className = `food-item-card ${currentQty > 0 ? 'has-qty' : ''}`;
+          itemCard.id = `food-card-${dish.name.replace(/\s+/g, '-').replace(/[^a-zA-Z0-9-]/g, '')}`;
+
+          // Controlli azione: o pulsante Aggiungi, o stepper con + e -
+          let actionHtml = '';
+          if (currentQty === 0) {
+            actionHtml = `
+              <button class="btn-add-food" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)">
+                <i class="fa-solid fa-plus"></i> AGGIUNGI
+              </button>
+            `;
+          } else {
+            actionHtml = `
+              <div class="qty-stepper">
+                <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', -1)" title="Rimuovi uno">−</button>
+                <span class="stepper-value">${currentQty}</span>
+                <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(dish.name)}', '${dish.price}', ${priceNum}, '${escapeHtml(cat.name)}', 1)" title="Aggiungi un altro">+</button>
+              </div>
+            `;
+          }
+
+          itemCard.innerHTML = `
+            <div>
+              <div class="food-item-header">
+                <span class="food-item-title">${dish.name}</span>
+                <span class="food-item-price">${dish.price}</span>
+              </div>
+              <p class="food-item-desc">${dish.description || ''}</p>
+            </div>
+            <div class="food-action-row">
+              ${actionHtml}
+            </div>
+          `;
+
+          gridDiv.appendChild(itemCard);
+        });
+
+        container.appendChild(secDiv);
+      });
+
+      if (container.children.length === 0) {
+        container.innerHTML = `
+          <div style="text-align: center; padding: 40px 10px; color: var(--text-muted);">
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 2rem; margin-bottom: 8px; display: block;"></i>
+            Nessun piatto trovato per "<strong>${searchVal}</strong>".
+          </div>
+        `;
+      }
+    }
+
+    function filterFoodList() {
+      renderFoodList();
+    }
+
+    // Modifica quantità con tasto aggiungi e tasti + e -
+    function changeFoodQty(dishName, priceStr, priceNum, category, delta) {
+      if (!currentOrderItems[dishName]) {
+        currentOrderItems[dishName] = {
+          name: dishName,
+          price: priceStr,
+          priceNum: priceNum,
+          qty: 0,
+          category: category
+        };
+      }
+
+      currentOrderItems[dishName].qty += delta;
+
+      if (currentOrderItems[dishName].qty <= 0) {
+        delete currentOrderItems[dishName];
+      }
+
+      renderFoodList();
+      updateCartDisplay();
+    }
+
+    // Aggiornamento Carrello Comanda
+    function updateCartDisplay() {
+      const listDiv = document.getElementById('cart-items-list');
+      const countEl = document.getElementById('cart-item-count');
+      const totalEl = document.getElementById('cart-total-price');
+      const saveBtn = document.getElementById('btn-save-order');
+
+      const items = Object.values(currentOrderItems);
+      const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+      const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
+
+      countEl.textContent = `${totalQty} ${totalQty === 1 ? 'portata' : 'portate'}`;
+      totalEl.textContent = `${totalPriceNum.toFixed(2).replace('.', ',')} €`;
+
+      if (totalQty === 0) {
+        listDiv.innerHTML = `
+          <div class="cart-empty-msg">
+            <i class="fa-solid fa-utensils" style="font-size: 2rem; margin-bottom: 12px; color: #443e41; display: block;"></i>
+            Nessun piatto ancora aggiunto.<br>Tocca <strong>AGGIUNGI</strong> o usa i tasti <strong>+</strong> e <strong>-</strong> sui piatti a sinistra.
+          </div>
+        `;
+        saveBtn.disabled = true;
+      } else {
+        saveBtn.disabled = false;
+        listDiv.innerHTML = items.map(it => `
+          <div class="cart-item-row">
+            <div class="cart-item-top">
+              <span class="cart-item-name">${it.name}</span>
+              <span class="cart-item-price">${(it.priceNum * it.qty).toFixed(2).replace('.', ',')} €</span>
+            </div>
+            <div class="cart-item-controls">
+              <span style="color: var(--text-muted);">${it.price} cad.</span>
+              <div class="qty-stepper" style="transform: scale(0.9); transform-origin: right center;">
+                <button class="stepper-btn minus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', -1)">−</button>
+                <span class="stepper-value">${it.qty}</span>
+                <button class="stepper-btn plus-btn" onclick="changeFoodQty('${escapeHtml(it.name)}', '${it.price}', ${it.priceNum}, '${escapeHtml(it.category)}', 1)">+</button>
+              </div>
+            </div>
+          </div>
+        `).join('');
+      }
+    }
+
+    // 7. Salvataggio dell'ordinazione presa (Passaggio Tavolo da ROSSO a GRIGIO)
+    function saveCurrentOrder() {
+      if (!currentActiveTable) return;
+
+      const items = Object.values(currentOrderItems);
+      if (items.length === 0) {
+        alert("Aggiungi almeno un piatto prima di salvare la comanda!");
+        return;
+      }
+
+      const totalQty = items.reduce((sum, it) => sum + it.qty, 0);
+      const totalPriceNum = items.reduce((sum, it) => sum + (it.priceNum * it.qty), 0);
+      const notesVal = document.getElementById('order-notes')?.value.trim() || '';
+
+      const orderData = {
+        tableKey: currentActiveTable.tableKey,
+        tableNum: currentActiveTable.tableNum,
+        tableLabel: currentActiveTable.tableLabel,
+        customerName: currentActiveTable.customerName,
+        guests: currentActiveTable.guests,
+        timeTaken: new Date().toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit' }),
+        date: TODAY_ISO,
+        items: items,
+        totalItems: totalQty,
+        totalPrice: `${totalPriceNum.toFixed(2).replace('.', ',')} €`,
+        totalPriceNum: totalPriceNum,
+        notes: notesVal,
+        status: 'presa' // Segna come presa (diventa GRIGIO)
+      };
+
+      // Salva nel dizionario locale
+      savedOrders[currentActiveTable.tableKey] = orderData;
+      persistSavedOrders();
+
+      // Feedback visivo
+      showToastNotification(`Comanda salvata per ${currentActiveTable.tableLabel} (${totalQty} portate)`);
+
+      // Chiudi il popup
+      closeOrderModal();
+
+      // Ridisegna i tavoli: il tavolo passa immediatamente da ROSSO a GRIGIO!
+      renderTables();
+    }
+
+    // Toast notifica
+    function showToastNotification(text) {
+      const toast = document.getElementById('toast-msg');
+      const txtEl = document.getElementById('toast-text');
+      if (!toast || !txtEl) return;
+
+      txtEl.textContent = text;
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 3200);
+    }
+
+    // Helper per escape virgolette e caratteri speciali
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/'/g, "\'");
+    }
+  </script>
+</body>
+</html>
