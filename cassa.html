@@ -1806,10 +1806,10 @@
         table.paymentStatus = newPayStatus;
         table.orderStatus = newOrderStatus;
 
-        showToast(markPaid ? `Conto saldato per ${table.tableLabel}!` : `Conto riaperto come Da Saldare per ${table.tableLabel}`);
+        showToast(markPaid ? `Conto saldato per ${table.tableLabel}!` : `Conto riaperto per ${table.tableLabel}`);
         renderCassaCards(); // Aggiornamento visivo immediato a schermo
 
-        // Invia aggiornamento multi-canale (scrive sia su Colonna K 'Saldato' sia su Colonna M 'Saldato')
+        // 1. Aggiorna Foglio 2 Comande (Col K e Col M)
         await sendUpdateToAppsScript({
           action: 'update_order',
           id: table.id,
@@ -1821,9 +1821,17 @@
           details: table.orderDetails
         });
 
+        // 2. Aggiorna anche Foglio 1 (Col I Stato) per massima ridondanza
+        await sendUpdateToAppsScript({
+          action: 'update_status',
+          id: table.id,
+          status: newOrderStatus
+        });
+
+        // Attesa di 3 secondi per consentire a Google Sheets di salvare prima del refresh
         setTimeout(() => {
           syncFromGoogleSheet(false);
-        }, 1200);
+        }, 3000);
       }
 
       async function markActiveTablePaid() {
