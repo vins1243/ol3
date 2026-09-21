@@ -95,6 +95,71 @@ function ensureComandeSheet(ss) {
   return sheet;
 }
 
+// Sincronizza automaticamente qualsiasi prenotazione da Foglio 1 a Foglio Comande se mancante
+function syncBookingsToComande(ss) {
+  try {
+    const bookSheet = getBookingsSheet(ss);
+    const comandeSheet = ensureComandeSheet(ss);
+    if (!bookSheet || !comandeSheet) return;
+
+    const bRows = bookSheet.getDataRange().getValues();
+    const cRows = comandeSheet.getDataRange().getValues();
+
+    const existingIds = new Set();
+    for (let i = 1; i < cRows.length; i++) {
+      if (cRows[i][0]) existingIds.add(String(cRows[i][0]).trim());
+    }
+
+    let occupiedTurno1 = 0;
+    let occupiedTurno2 = 0;
+
+    for (let i = 1; i < bRows.length; i++) {
+      const r = bRows[i];
+      const bId = String(r[0] || '').trim();
+      if (!bId) continue;
+
+      const rDate = normalizeDate(r[4]);
+      const rTurno = String(r[5] || '');
+      const guests = parseInt(r[6], 10) || 2;
+      const needed = parseInt(r[7], 10) || Math.ceil(guests / 2);
+      const rStatus = String(r[8] || '').trim();
+
+      if (!existingIds.has(bId)) {
+        const startNum = isTurno1(rTurno) ? (occupiedTurno1 + 1) : (occupiedTurno2 + 1);
+        const endNum = Math.min(MAX_TABLES, startNum + needed - 1);
+        const tableLabel = (needed === 1) 
+          ? `T${String(startNum).padStart(2, '0')}` 
+          : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
+
+        const orderStatus = (rStatus.toLowerCase().includes('ordinat') || rStatus.toLowerCase().includes('pres')) ? 'Prenotato' : '';
+
+        comandeSheet.appendRow([
+          bId,
+          String(r[1] || ''),
+          rDate,
+          isTurno1(rTurno) ? "1° Turno (20:00 - 21:30)" : "2° Turno (dalle 21:30)",
+          String(r[5] || '20:00'),
+          tableLabel,
+          String(r[2] || ''),
+          String(r[3] || ''),
+          guests,
+          String(r[9] || r[7] || ''),
+          orderStatus,
+          ''
+        ]);
+        existingIds.add(bId);
+      }
+
+      if (isTurno1(rTurno)) occupiedTurno1 += needed;
+      else occupiedTurno2 += needed;
+    }
+  } catch(e) {
+    Logger.log("Errore syncBookingsToComande: " + e.toString());
+  }
+}
+
+
+
 // Funzione unificata di registrazione prenotazione (scrive su entrambi i fogli)
 function processBooking(payload) {
   const ss = getSpreadsheet();
@@ -249,6 +314,7 @@ function updateOrderStatus(params) {
 function doGet(e) {
   try {
     const ss = getSpreadsheet();
+    syncBookingsToComande(ss);
     const params = e ? e.parameter : {};
 
     // 1. AGGIORNAMENTO ORDINAZIONE DA COMANDI SITO (INTERATTIVITÀ MULTI-DISPOSITIVO)
@@ -396,6 +462,7 @@ function doPost(e) {
     }
 
     const ss = getSpreadsheet();
+    syncBookingsToComande(ss);
     const bookSheet = getBookingsSheet(ss);
 
     // 2. Aggiornamento stato prenotazione o cancellazione
