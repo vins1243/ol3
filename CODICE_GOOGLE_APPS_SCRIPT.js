@@ -1,9 +1,14 @@
 /**
- * BACKEND GOOGLE APPS SCRIPT - OL3 RISTORANTE PIZZERIA (VERSIONE COMPLETA)
- * Capienza: 50 tavoli da 2 posti = 100 posti massimi.
- * Formula tavoli: Math.ceil(ospiti / 2) -> 5 persone = 3 tavoli da 2.
- * Turni: 1° Turno (20:00 - 21:30) | 2° Turno (dalle 21:30 in poi).
- * Supporta sia POST che GET per garantire il 100% della sincronizzazione da mobile e desktop.
+ * BACKEND GOOGLE APPS SCRIPT - OL3 RISTORANTE PIZZERIA (VERSIONE MULTI-FOGLIO)
+ * Gestione sincronizzata a 2 Fogli:
+ *  - Foglio 1 ("Prenotazioni" / "Foglio1"): Archivio storico delle prenotazioni clienti
+ *  - Foglio 2 ("Comande"): Monitoraggio ordinazioni ai tavoli in tempo reale con colonna "Stato Ordinazione"
+ * 
+ * Regola interattività richiesta:
+ *  - Nuova prenotazione: cella "Stato Ordinazione" VUOTA (tavolo Da Servire - ROSSO).
+ *  - Ordinazione presa dal sito: cella "Stato Ordinazione" impostata su "Prenotato" (tavolo Ordinazione Presa - GRIGIO).
+ *  - Interattività multi-dispositivo: qualunque cameriere o smartphone apra la pagina web
+ *    legge direttamente il Foglio Google e vede istantaneamente quali tavoli sono già stati ordinati.
  */
 
 const SPREADSHEET_ID = "1u5aKXWIb00V_u038qUka_eje1f8DpvLuG0wznZmRpcI";
@@ -42,7 +47,7 @@ function normalizeDate(d) {
   return s;
 }
 
-function getTargetSheet() {
+function getSpreadsheet() {
   let ss;
   try {
     ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -53,18 +58,56 @@ function getTargetSheet() {
     } catch(e) {}
   }
   if (!ss) throw new Error("Foglio Google non raggiungibile");
-  return ss.getSheetByName("Prenotazioni") || ss.getSheets()[0];
+  return ss;
 }
 
-// Funzione unificata di registrazione prenotazione
+function getBookingsSheet(ss) {
+  return ss.getSheetByName("Prenotazioni") || ss.getSheetByName("Foglio1") || ss.getSheets()[0];
+}
+
+function getComandeSheet(ss) {
+  let sheet = ss.getSheetByName("Comande") || ss.getSheetByName("Foglio2");
+  if (!sheet && ss.getSheets().length > 1) {
+    sheet = ss.getSheets()[1];
+  }
+  return sheet;
+}
+
+function ensureComandeSheet(ss) {
+  let sheet = getComandeSheet(ss);
+  if (!sheet) {
+    sheet = ss.insertSheet("Comande");
+    sheet.appendRow([
+      "ID Prenotazione",
+      "Data Richiesta",
+      "Data Prenotazione",
+      "Turno",
+      "Orario",
+      "Numero Tavolo",
+      "Nome e Cognome",
+      "Telefono WhatsApp",
+      "Numero Ospiti",
+      "Note",
+      "Stato Ordinazione",
+      "Dettaglio Piatti Comanda"
+    ]);
+  }
+  return sheet;
+}
+
+// Funzione unificata di registrazione prenotazione (scrive su entrambi i fogli)
 function processBooking(payload) {
-  const sheet = getTargetSheet();
+  const ss = getSpreadsheet();
+  const bookSheet = getBookingsSheet(ss);
+  const comandeSheet = ensureComandeSheet(ss);
+
   const targetDate = normalizeDate(payload.date);
   const guests = parseInt(payload.guests, 10) || 2;
   const tablesNeeded = calculateTables(guests);
   const chosenTurno = String(payload.time || '').trim();
 
-  const rows = sheet.getDataRange().getValues();
+  // Verifica occupazione nel turno
+  const rows = bookSheet.getDataRange().getValues();
   let occupied = 0;
 
   for (let i = 1; i < rows.length; i++) {
@@ -95,9 +138,17 @@ function processBooking(payload) {
 
   const bookingId = payload.id || ('OL3_' + Date.now());
   const createdAt = new Date().toLocaleString('it-IT');
-  const displayTurno = chosenTurno.includes("20:00") ? "1° Turno (20:00 - 21:30)" : "2° Turno (dalle 21:30)";
+  const displayTurno = isTurno1(chosenTurno) ? "1° Turno (20:00 - 21:30)" : "2° Turno (dalle 21:30)";
 
-  sheet.appendRow([
+  // Calcolo etichetta tavolo
+  const startNum = occupied + 1;
+  const endNum = Math.min(MAX_TABLES, startNum + tablesNeeded - 1);
+  const tableLabel = (tablesNeeded === 1) 
+    ? `T${String(startNum).padStart(2, '0')}` 
+    : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
+
+  // 1. Inserimento in Foglio 1 (Prenotazioni)
+  bookSheet.appendRow([
     bookingId,
     createdAt,
     payload.name || '',
@@ -110,22 +161,90 @@ function processBooking(payload) {
     payload.notes || ''
   ]);
 
+  // 2. Inserimento in Foglio 2 (Comande) con Stato Ordinazione inizialmente VUOTO ('')
+  comandeSheet.appendRow([
+    bookingId,
+    createdAt,
+    targetDate,
+    displayTurno,
+    chosenTurno,
+    tableLabel,
+    payload.name || '',
+    payload.phone || '',
+    guests,
+    payload.notes || '',
+    '', // Cella inizialmente vuota (ordinazione non ancora presa)
+    ''  // Dettaglio piatti vuoto
+  ]);
+
   return {
     status: "success",
     confirmed: true,
     bookingId: bookingId,
+    tableAssigned: tableLabel,
     tablesAssigned: tablesNeeded,
     tablesLeft: (MAX_TABLES - (occupied + tablesNeeded))
   };
 }
 
+// Aggiorna lo stato dell'ordinazione nel Foglio "Comande" (Col K = "Prenotato" o vuoto)
+function updateOrderStatus(params) {
+  const ss = getSpreadsheet();
+  const comandeSheet = ensureComandeSheet(ss);
+  const targetId = String(params.id || '').trim();
+  const targetStatus = (params.status !== undefined) ? String(params.status).trim() : 'Prenotato';
+  const targetDetails = String(params.details || '').trim();
+  const targetDate = normalizeDate(params.date);
+  const targetTable = String(params.table || '').trim();
+
+  const data = comandeSheet.getDataRange().getValues();
+  let updated = false;
+
+  for (let i = 1; i < data.length; i++) {
+    const rowId = String(data[i][0]).trim();
+    const rowDate = normalizeDate(data[i][2]);
+    const rowTable = String(data[i][5]).trim();
+
+    const matchId = targetId && (rowId === targetId);
+    const matchTableDate = !targetId && targetDate && targetTable && (rowDate === targetDate && (rowTable.includes(targetTable) || targetTable.includes(rowTable)));
+
+    if (matchId || matchTableDate) {
+      // Col K: Stato Ordinazione (indice 11 in Apps Script 1-based)
+      comandeSheet.getRange(i + 1, 11).setValue(targetStatus);
+      if (targetDetails) {
+        // Col L: Dettaglio Piatti Comanda (indice 12)
+        comandeSheet.getRange(i + 1, 12).setValue(targetDetails);
+      }
+      updated = true;
+      break;
+    }
+  }
+
+  return {
+    status: updated ? "success" : "not_found",
+    updated: updated,
+    order_status: targetStatus
+  };
+}
+
 function doGet(e) {
   try {
-    const sheet = getTargetSheet();
-    const rows = sheet.getDataRange().getValues();
+    const ss = getSpreadsheet();
     const params = e ? e.parameter : {};
 
-    // 1. REGISTRAZIONE VIA GET (FALLBACK SENZA PROBLEMI CORS)
+    // 1. AGGIORNAMENTO ORDINAZIONE DA COMANDI SITO (INTERATTIVITÀ MULTI-DISPOSITIVO)
+    if (params && (params.action === "update_order" || params.action === "save_order")) {
+      const lock = LockService.getScriptLock();
+      try {
+        lock.waitLock(15000);
+        const res = updateOrderStatus(params);
+        return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
+      } finally {
+        lock.releaseLock();
+      }
+    }
+
+    // 2. REGISTRAZIONE VIA GET (FALLBACK SENZA PROBLEMI CORS)
     if (params && params.action === "book") {
       const lock = LockService.getScriptLock();
       try {
@@ -137,8 +256,10 @@ function doGet(e) {
       }
     }
 
-    // 2. VERIFICA DISPONIBILITA IN TEMPO REALE
+    // 3. VERIFICA DISPONIBILITÀ
     if (params && params.action === "check_availability") {
+      const bookSheet = getBookingsSheet(ss);
+      const rows = bookSheet.getDataRange().getValues();
       const targetDate = normalizeDate(params.date);
       const guests = parseInt(params.guests, 10) || 2;
       const tablesNeeded = calculateTables(guests);
@@ -176,7 +297,36 @@ function doGet(e) {
       })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // 3. ELENCO COMPLETO PRENOTAZIONI (PER LA PIANTINA DEI TAVOLI)
+    // 4. ELENCO COMPLETO: LEGGE DAL FOGLIO "COMANDE" (CON STATO ORDINAZIONE)
+    const comandeSheet = getComandeSheet(ss);
+    if (comandeSheet) {
+      const cRows = comandeSheet.getDataRange().getValues();
+      const data = [];
+      for (let i = 1; i < cRows.length; i++) {
+        const r = cRows[i];
+        if (!r[0]) continue;
+        data.push({
+          id: String(r[0]),
+          created_at: String(r[1]),
+          date: normalizeDate(r[2]),
+          turno: String(r[3]),
+          time: String(r[4]),
+          table: String(r[5]),
+          name: String(r[6]),
+          phone: String(r[7]),
+          guests: String(r[8]),
+          notes: String(r[9] || ''),
+          order_status: String(r[10] || '').trim(), // "Prenotato" o ""
+          order_details: String(r[11] || '').trim()
+        });
+      }
+      return ContentService.createTextOutput(JSON.stringify({ status: "success", source: "comande", data: data }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+
+    // Fallback su foglio prenotazioni standard
+    const bookSheet = getBookingsSheet(ss);
+    const rows = bookSheet.getDataRange().getValues();
     const data = [];
     for (let i = 1; i < rows.length; i++) {
       const row = rows[i];
@@ -191,11 +341,12 @@ function doGet(e) {
         guests: String(row[6]),
         tables: String(row[7] || calculateTables(row[6])),
         status: String(row[8] || 'Confermata'),
-        notes: String(row[9] || '')
+        notes: String(row[9] || ''),
+        order_status: ''
       });
     }
 
-    return ContentService.createTextOutput(JSON.stringify({ status: "success", data: data }))
+    return ContentService.createTextOutput(JSON.stringify({ status: "success", source: "prenotazioni", data: data }))
       .setMimeType(ContentService.MimeType.JSON);
 
   } catch (err) {
@@ -219,14 +370,21 @@ function doPost(e) {
       payload = e.parameter;
     }
 
-    const sheet = getTargetSheet();
+    // 1. Aggiornamento stato ordinazione (da comande.html)
+    if (payload.action === "update_order" || payload.action === "save_order") {
+      const res = updateOrderStatus(payload);
+      return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
+    }
 
-    // Aggiornamento stato o rimozione
+    const ss = getSpreadsheet();
+    const bookSheet = getBookingsSheet(ss);
+
+    // 2. Aggiornamento stato prenotazione o cancellazione
     if (payload.action === "update_status") {
-      const data = sheet.getDataRange().getValues();
+      const data = bookSheet.getDataRange().getValues();
       for (let i = 1; i < data.length; i++) {
         if (String(data[i][0]) === String(payload.id)) {
-          sheet.getRange(i + 1, 9).setValue(payload.status);
+          bookSheet.getRange(i + 1, 9).setValue(payload.status);
           return ContentService.createTextOutput(JSON.stringify({ status: "success", updated: true })).setMimeType(ContentService.MimeType.JSON);
         }
       }
@@ -234,17 +392,17 @@ function doPost(e) {
     }
 
     if (payload.action === "delete_booking") {
-      const data = sheet.getDataRange().getValues();
+      const data = bookSheet.getDataRange().getValues();
       for (let i = 1; i < data.length; i++) {
         if (String(data[i][0]) === String(payload.id)) {
-          sheet.deleteRow(i + 1);
+          bookSheet.deleteRow(i + 1);
           return ContentService.createTextOutput(JSON.stringify({ status: "success", deleted: true })).setMimeType(ContentService.MimeType.JSON);
         }
       }
       return ContentService.createTextOutput(JSON.stringify({ status: "not_found" })).setMimeType(ContentService.MimeType.JSON);
     }
 
-    // Nuova prenotazione
+    // 3. Nuova prenotazione
     const res = processBooking(payload);
     return ContentService.createTextOutput(JSON.stringify(res)).setMimeType(ContentService.MimeType.JSON);
 

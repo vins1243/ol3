@@ -705,383 +705,320 @@
       box-shadow: 0 4px 14px rgba(209, 56, 43, 0.45);
     }
 
-    @media (max-width: 768px) {
-      .menu-tabs-staff {
-        flex-wrap: nowrap;
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        padding-bottom: 12px;
-        scrollbar-width: thin;
-      }
-    }
-
-    /* Sezioni Gruppi Categoria (come in menu.html) */
-    .menu-category-group {
-      margin-bottom: 40px;
-    }
-    .category-title {
-      font-family: var(--font-serif);
-      font-size: 1.6rem;
-      letter-spacing: 1.5px;
-      color: #ffffff;
-      text-transform: uppercase;
-      margin: 0 0 4px 0;
-    }
-    .category-subtitle {
-      font-size: 0.90rem;
-      color: var(--accent-gold);
-      margin-bottom: 20px;
-      font-style: italic;
-    }
-
-    /* Griglia Piatti identica a menu.html (.menu-items-grid) */
-    .menu-items-grid-staff {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 20px;
-    }
-    @media (max-width: 1200px) {
-      .menu-items-grid-staff {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    /* Card Piatto identica a menu.html (.menu-card) */
-    .menu-card-staff {
-      display: flex;
-      justify-content: space-between;
-      gap: 16px;
-      background-color: var(--bg-secondary);
-      border: 1px solid var(--border-card);
-      padding: 18px;
-      border-radius: 8px;
-      transition: var(--transition);
-      position: relative;
-    }
-    .menu-card-staff:hover {
-      background-color: var(--bg-card);
-      border-color: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-    .menu-card-staff.card-selected {
-      border-color: var(--accent-gold);
-      background-color: #30282c;
-      box-shadow: 0 4px 16px rgba(214, 175, 93, 0.2);
-    }
-
-    .menu-card-info {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .menu-item-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      gap: 12px;
-      margin-bottom: 6px;
-    }
-    .menu-item-name {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #fff;
-      margin: 0;
-    }
-    .menu-item-price {
-      font-weight: 800;
-      color: var(--accent-gold);
-      font-size: 1.05rem;
-      white-space: nowrap;
-    }
-    .menu-item-desc {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      line-height: 1.45;
-      margin-bottom: 10px;
-    }
-    .menu-tags {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      margin-bottom: 12px;
-    }
-    .tag-badge {
-      font-size: 0.72rem;
-      padding: 3px 9px;
-      background: rgba(255, 255, 255, 0.08);
-      border-radius: 20px;
-      color: var(--accent-gold);
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .menu-card-thumb {
-      width: 90px;
-      height: 90px;
-      border-radius: 8px;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #191617;
-    }
-    .menu-card-thumb img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    /* Controlli di Ordinazione Integrati nella Card del Menu */
-    .order-action-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-top: 10px;
-      border-top: 1px dashed rgba(255, 255, 255, 0.1);
-      margin-top: auto;
-    }
-    .btn-dish-add {
-      background: #393236;
-      border: 1.5px solid rgba(255, 255, 255, 0.15);
-      color: #fff;
-      font-weight: 800;
-      font-size: 0.84rem;
-      padding: 8px 18px;
-      border-radius: 6px;
-      cursor: pointer;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.2s ease;
-      margin-left: auto;
-    }
-    .btn-dish-add:hover {
-      background: var(--accent-gold);
-      color: #171415;
-      border-color: var(--accent-gold);
-    }
-
-    .dish-qty-stepper {
-      display: flex;
-      align-items: center;
-      background: #141113;
-      border: 1.5px solid var(--accent-gold);
-      border-radius: 8px;
-      overflow: hidden;
-      margin-left: auto;
-    }
-    .btn-stepper-minus, .btn-stepper-plus {
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.2rem;
-      font-weight: 900;
-      width: 38px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-    .btn-stepper-minus:hover {
-      background: var(--order-red);
-    }
-    .btn-stepper-plus:hover {
-      background: var(--order-green);
-    }
-    .stepper-qty {
-      font-size: 1.05rem;
-      font-weight: 900;
-      color: var(--accent-gold);
-      min-width: 36px;
-      text-align: center;
-    }
-
-    /* Colonna Destra: Carrello Comanda */
-    .order-cart-col {
-      background: #171415;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 24px;
-      max-height: calc(94vh - 150px);
-      overflow-y: auto;
-    }
-    .cart-title {
-      font-family: var(--font-serif);
-      font-size: 1.3rem;
-      color: #fff;
-      margin: 0 0 16px;
-      padding-bottom: 10px;
-      border-bottom: 1.5px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .cart-items-list {
-      flex: 1;
-      overflow-y: auto;
-      margin-bottom: 16px;
-      padding-right: 4px;
-    }
-    .cart-empty-msg {
-      text-align: center;
-      color: var(--text-muted);
-      padding: 50px 10px;
-      font-size: 0.95rem;
-    }
-    .cart-item-row {
-      background: #231e21;
-      border-radius: 8px;
-      padding: 11px 14px;
-      margin-bottom: 10px;
-      border-left: 3.5px solid var(--accent-gold);
-    }
-    .cart-item-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-    }
-    .cart-item-name {
-      font-weight: 800;
-      font-size: 0.94rem;
-      color: #fff;
-    }
-    .cart-item-price {
-      font-weight: 800;
-      color: var(--accent-gold);
-      font-size: 0.95rem;
-    }
-    .cart-item-controls {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.84rem;
-    }
-
-    .cart-footer {
-      border-top: 1.5px solid rgba(255, 255, 255, 0.12);
-      padding-top: 16px;
-    }
-    .cart-total-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 14px;
-      font-size: 1.05rem;
-      font-weight: 700;
-    }
-    .cart-total-row .total-amount {
-      font-size: 1.55rem;
-      font-weight: 900;
-      color: var(--accent-gold);
-      font-family: var(--font-serif);
-    }
-    .order-notes-input {
-      width: 100%;
-      background: #252022;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      color: #fff;
-      padding: 10px 12px;
-      border-radius: 6px;
-      font-size: 0.88rem;
-      margin-bottom: 14px;
-      outline: none;
-      resize: none;
+    /* ==========================================================================
+       RESPONSIVE DESIGN PER SMARTPHONE & TABLET (PERFETTO ALLINEAMENTO E CENTRATURA)
+       ========================================================================== */
+    * {
       box-sizing: border-box;
     }
-    .order-notes-input:focus {
-      border-color: var(--accent-gold);
-    }
-    .btn-save-order {
+
+    html, body {
+      overflow-x: hidden;
+      max-width: 100vw;
       width: 100%;
-      background: linear-gradient(135deg, #1ea952, #16803e);
-      border: none;
-      color: #fff;
-      font-weight: 900;
-      font-size: 1.05rem;
-      letter-spacing: 0.5px;
-      padding: 15px;
-      border-radius: 10px;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Stile per pulsante reset ordinazione */
+    .btn-reset-order {
+      width: 100%;
+      background: rgba(209, 56, 43, 0.15);
+      border: 1px solid var(--accent-red);
+      color: #ff786b;
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      transition: all 0.2s ease;
-      box-shadow: 0 4px 16px rgba(30, 169, 82, 0.4);
-    }
-    .btn-save-order:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(30, 169, 82, 0.55);
-    }
-    .btn-save-order:disabled {
-      background: #443e41;
-      box-shadow: none;
-      cursor: not-allowed;
-      opacity: 0.6;
-    }
-
-    .toast-msg {
-      position: fixed;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%) translateY(100px);
-      background: #1e1a1c;
-      border: 2px solid var(--accent-gold);
-      color: #fff;
-      padding: 12px 24px;
-      border-radius: 30px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-      z-index: 3000;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      pointer-events: none;
-    }
-    .toast-msg.show {
-      transform: translateX(-50%) translateY(0);
-    }
-
-    .sheet-sync-status {
-      display: inline-flex;
-      align-items: center;
       gap: 6px;
-      font-size: 0.82rem;
-      color: var(--accent-gold);
-      background: rgba(214, 175, 93, 0.1);
-      padding: 4px 12px;
-      border-radius: 14px;
-      border: 1px solid rgba(214, 175, 93, 0.25);
+      margin-top: 10px;
+      transition: all 0.2s ease;
+    }
+    .btn-reset-order:hover {
+      background: var(--accent-red);
+      color: #ffffff;
     }
 
     @media (max-width: 768px) {
+      /* Navbar Personale Sala Mobile */
       .staff-navbar {
-        padding: 10px 16px;
+        padding: 10px 12px;
+        flex-direction: column;
+        gap: 10px;
+        align-items: stretch;
       }
+      .staff-brand {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+      }
+      .staff-brand img {
+        height: 34px !important;
+        width: auto;
+      }
+      .staff-badge {
+        font-size: 0.72rem;
+        padding: 4px 10px;
+        gap: 4px;
+      }
+      .staff-nav-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr auto;
+        gap: 6px;
+        width: 100%;
+      }
+      .staff-nav-actions .btn-nav-staff {
+        padding: 8px 6px;
+        font-size: 0.78rem;
+        justify-content: center;
+        text-align: center;
+        white-space: nowrap;
+      }
+
+      /* Intestazione Data & Stato Sincronizzazione */
       .shift-header {
-        padding: 14px 16px;
+        padding: 14px 12px;
       }
+      .shift-header-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 10px;
+        width: 100%;
+      }
+      .shift-info {
+        text-align: center;
+        width: 100%;
+      }
+      .shift-info h1 {
+        font-size: 1.25rem;
+        justify-content: center;
+        text-align: center;
+        gap: 8px;
+      }
+      .shift-info p {
+        font-size: 0.82rem;
+        text-align: center;
+      }
+      .sync-actions-row {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+        width: 100%;
+      }
+      .sheet-sync-status {
+        font-size: 0.76rem;
+        padding: 5px 10px;
+        text-align: center;
+      }
+      .btn-refresh-sync {
+        font-size: 0.76rem;
+        padding: 5px 12px;
+      }
+
+      /* Pannello Controlli Data e Turni */
       .controls-panel {
-        padding: 12px 14px;
-        margin: 12px 14px 10px;
+        padding: 12px 10px;
+        margin: 10px 10px 8px;
+        width: calc(100% - 20px);
+        max-width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
       }
+      .date-control-group {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 4px;
+      }
+      .date-input-styled {
+        flex: 1;
+        min-width: 0;
+        text-align: center;
+        font-size: 0.88rem;
+        padding: 8px 4px;
+      }
+      .nav-date-btn {
+        padding: 8px 10px;
+        font-size: 0.82rem;
+        flex-shrink: 0;
+      }
+
+      /* Pulsantiera Turni su 3 colonne uguali e centrate */
+      .shift-toggle-group {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+        padding: 4px;
+        box-sizing: border-box;
+      }
+      .shift-btn {
+        padding: 8px 2px;
+        font-size: 0.74rem;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        white-space: normal;
+        line-height: 1.15;
+        border-radius: 6px;
+      }
+      .shift-btn .shift-label {
+        font-weight: 800;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+      }
+      .shift-btn .shift-sub {
+        font-size: 0.68rem;
+        opacity: 0.85;
+        font-weight: 500;
+      }
+
+      /* Sottobarra Ricerca e Filtri Stato */
       .subcontrols-bar {
-        padding: 0 14px;
+        padding: 0 10px;
+        margin: 8px 10px 12px;
+        width: calc(100% - 20px);
+        max-width: 100%;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
       }
+      .search-tables-wrapper {
+        width: 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+      .search-tables-wrapper input {
+        font-size: 0.85rem;
+        padding: 10px 12px 10px 36px;
+      }
+      .filter-pills-row {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 4px;
+      }
+      .stat-pill-btn {
+        padding: 7px 3px;
+        font-size: 0.72rem;
+        text-align: center;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        gap: 3px;
+        white-space: normal;
+        line-height: 1.15;
+        border-radius: 6px;
+      }
+      .count-bubble {
+        padding: 2px 6px;
+        font-size: 0.72rem;
+      }
+
+      /* Contenitore Griglia Tavoli */
       .tables-container {
-        padding: 0 14px;
+        padding: 0 10px;
+        margin: 10px auto 20px;
+        width: 100%;
+        box-sizing: border-box;
+      }
+      .tables-grid-cards {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .table-card {
+        padding: 16px 14px;
+        border-radius: 12px;
+        min-height: auto;
+      }
+      .table-card-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 8px;
+      }
+      .table-num-title {
+        font-size: 1.25rem;
+        line-height: 1.2;
+        word-break: normal;
+      }
+      .table-card.status-da-servire .status-pill,
+      .table-card.status-presa .status-pill {
+        font-size: 0.72rem;
+        padding: 4px 8px;
+        white-space: nowrap;
+        flex-shrink: 0;
+        border-radius: 16px;
+      }
+      .table-customer-name {
+        font-size: 1.05rem;
+        margin: 4px 0 6px;
+      }
+      .table-meta-details {
+        font-size: 0.80rem;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .card-action-btn {
+        padding: 11px 14px;
+        font-size: 0.90rem;
+      }
+
+      /* Popup Modale a Schermo Intero su Smartphone */
+      .modal-overlay {
+        padding: 0;
       }
       .order-modal-window {
-        max-height: 98vh;
-        border-radius: 12px;
+        width: 100%;
+        height: 100vh;
+        max-height: 100vh;
+        border-radius: 0;
+      }
+      .modal-head {
+        padding: 12px 14px;
+      }
+      .modal-head-title h2 {
+        font-size: 1.15rem;
+      }
+      .modal-body-layout {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 65px);
+        overflow-y: auto;
       }
       .menu-selection-col {
-        padding: 16px 14px;
+        padding: 14px 10px;
+        max-height: none;
+      }
+      .order-cart-col {
+        padding: 16px 12px 24px;
+        border-left: none;
+        border-top: 1.5px solid rgba(255, 255, 255, 0.12);
+        max-height: none;
+      }
+      .menu-items-grid-staff {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+      .menu-card-staff {
+        padding: 14px;
       }
     }
   </style>
@@ -1118,7 +1055,7 @@
         <p id="current-shift-date-text">Caricamento data...</p>
       </div>
 
-      <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+      <div class="sync-actions-row">
         <span class="sheet-sync-status" id="sheet-sync-indicator">
           <i class="fa-solid fa-circle-notch fa-spin"></i> Connessione Foglio Google...
         </span>
@@ -1142,13 +1079,16 @@
     <!-- Divisione 1° Turno (20:00) e 2° Turno (21:30) -->
     <div class="shift-toggle-group">
       <button class="shift-btn active" id="btn-turno-1">
-        <i class="fa-solid fa-clock"></i> 1° Turno (20:00 - 21:30)
+        <span class="shift-label"><i class="fa-solid fa-clock"></i> 1° Turno</span>
+        <span class="shift-sub">20:00 - 21:30</span>
       </button>
       <button class="shift-btn" id="btn-turno-2">
-        <i class="fa-solid fa-clock"></i> 2° Turno (dalle 21:30)
+        <span class="shift-label"><i class="fa-solid fa-clock"></i> 2° Turno</span>
+        <span class="shift-sub">dalle 21:30</span>
       </button>
       <button class="shift-btn" id="btn-turno-all">
-        <i class="fa-solid fa-list-check"></i> Tutti i Turni
+        <span class="shift-label"><i class="fa-solid fa-list-check"></i> Tutti</span>
+        <span class="shift-sub">Tutti i turni</span>
       </button>
     </div>
   </div>
@@ -1167,14 +1107,12 @@
       </button>
 
       <button class="stat-pill-btn pill-red" id="filter-da-servire-btn" onclick="setTableFilter('da-servire')">
-        <i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i>
-        <span>Da Servire (Rosso)</span>
+        <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-circle" style="color: #ff5240; font-size: 0.65rem;"></i> Da Servire</span>
         <span class="count-bubble" id="count-da-servire">0</span>
       </button>
 
       <button class="stat-pill-btn pill-grey" id="filter-presa-btn" onclick="setTableFilter('presa')">
-        <i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i>
-        <span>Ordinazione Presa (Grigio)</span>
+        <span style="display:inline-flex; align-items:center; gap:4px;"><i class="fa-solid fa-circle-check" style="color: #bbb; font-size: 0.75rem;"></i> Ordinazione Presa</span>
         <span class="count-bubble" id="count-presa">0</span>
       </button>
     </div>
@@ -1255,6 +1193,10 @@
             <button class="btn-save-order" id="btn-save-order" onclick="saveCurrentOrder()" disabled>
               <i class="fa-solid fa-check"></i> Salva Ordinazione Tavolo
             </button>
+
+            <button type="button" class="btn-reset-order" id="btn-reset-order" onclick="revertCurrentOrder()" style="display: none;">
+              <i class="fa-solid fa-rotate-left"></i> Annulla Ordinazione (Rimetti Da Servire)
+            </button>
           </div>
         </div>
 
@@ -1316,6 +1258,7 @@
       let currentFilter = 'all';  // 'all', 'da-servire', 'presa'
       let activeShiftTables = [];
       let savedOrders = {};
+      let serverOrdersById = {};
       let currentActiveTable = null;
       let currentOrderItems = {};
       let selectedCategory = 'all';
@@ -1475,19 +1418,50 @@
         } catch(e) {}
       }
 
-      // Connessione reale al Foglio Google
+      // Sincronizzazione interattiva stato con Foglio Google (Foglio 'Comande' Colonna K)
+      async function syncOrderToGoogleSheet(data) {
+        const endpoint = (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.googleSheetEndpoint)
+          ? window.SITE_CONFIG.googleSheetEndpoint
+          : APPS_SCRIPT_URL;
+
+        if (!endpoint) return;
+
+        const params = new URLSearchParams({
+          action: 'update_order',
+          id: data.id || '',
+          table: data.table || '',
+          date: data.date || '',
+          status: (data.status !== undefined) ? data.status : 'Prenotato',
+          details: data.details || ''
+        });
+
+        const url = `${endpoint}?${params.toString()}`;
+
+        try {
+          // Invio via GET no-cors (100% supportato da mobile/Safari/Chrome senza blocchi di rete)
+          await fetch(url, { mode: 'no-cors' });
+          console.log('Stato ordinazione inviato al Foglio Google:', data.status);
+        } catch(err) {
+          console.warn('Errore sincronizzazione comanda su Foglio Google:', err);
+        }
+      }
+
+      // Connessione reale al Foglio Google (supporto Multi-Foglio: Foglio 2 Comande + Foglio 1 Prenotazioni)
       async function syncFromGoogleSheet(showToast = false) {
         if (syncEl) syncEl.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Sincronizzazione Foglio Google...';
         let loaded = [];
 
-        // Canale 1: GVIZ
+        const GVIZ_COMANDE_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?sheet=Comande&tqx=out:json`;
+        const GVIZ_STANDARD_URL = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json`;
+
+        // Canale 1: GVIZ Foglio "Comande" (include Colonna K 'Stato Ordinazione')
         try {
-          const res = await fetch(GVIZ_URL);
+          const res = await fetch(GVIZ_COMANDE_URL);
           const txt = await res.text();
           const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
           if (match) {
             const json = JSON.parse(match[1]);
-            if (json && json.table && Array.isArray(json.table.rows)) {
+            if (json && json.table && Array.isArray(json.table.rows) && json.table.rows.length > 0) {
               json.table.rows.forEach(r => {
                 if (!r || !r.c) return;
                 const c = r.c;
@@ -1496,31 +1470,46 @@
                   return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
                 };
                 const id = String(val(0));
-                if (!id || id.toLowerCase().includes('id')) return;
-                const rawDate = val(4);
+                if (!id || id.toLowerCase().includes('id') || id.toLowerCase().includes('prenotazione')) return;
+
+                // Foglio Comande:
+                // Col A(0): ID, Col B(1): Creazione, Col C(2): Data, Col D(3): Turno, Col E(4): Orario,
+                // Col F(5): Tavolo, Col G(6): Nome, Col H(7): Telefono, Col I(8): Ospiti, Col J(9): Note,
+                // Col K(10): Stato Ordinazione ('Prenotato' o ''), Col L(11): Dettaglio Piatti Comanda
+                const rawDate = val(2);
+                const orderStatus = String(val(10) || '').trim();
+                const orderDetails = String(val(11) || '').trim();
+
                 loaded.push({
                   id: id,
                   created_at: String(val(1)),
-                  name: String(val(2)),
-                  phone: String(val(3)),
                   date: toIso(rawDate),
-                  time: String(val(5)),
-                  guests: parseInt(val(6), 10) || 2,
-                  tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
-                  status: String(val(8) || 'Confermata'),
-                  notes: String(val(9) || '')
+                  time: String(val(4) || val(3) || ''),
+                  tableLabel: String(val(5) || ''),
+                  name: String(val(6)),
+                  phone: String(val(7)),
+                  guests: parseInt(val(8), 10) || 2,
+                  tables: Math.ceil((parseInt(val(8), 10) || 2) / 2),
+                  status: 'Confermata',
+                  notes: String(val(9) || ''),
+                  orderStatus: orderStatus,
+                  orderDetails: orderDetails
                 });
               });
             }
           }
         } catch(e) {
-          console.warn('GVIZ load fallback:', e);
+          console.warn('GVIZ Comande fallback:', e);
         }
 
-        // Canale 2: Apps Script Web App
+        // Canale 2: Apps Script Web App (se GVIZ Comande non ha ancora dati)
         if (loaded.length === 0) {
           try {
-            const resp = await fetch(APPS_SCRIPT_URL);
+            const endpoint = (typeof window !== 'undefined' && window.SITE_CONFIG && window.SITE_CONFIG.googleSheetEndpoint)
+              ? window.SITE_CONFIG.googleSheetEndpoint
+              : APPS_SCRIPT_URL;
+
+            const resp = await fetch(endpoint);
             const res = await resp.json();
             if (res && res.status === 'success' && Array.isArray(res.data)) {
               res.data.forEach(b => {
@@ -1531,29 +1520,88 @@
                   name: b.name || 'Cliente',
                   phone: b.phone || '',
                   date: toIso(b.date),
-                  time: String(b.time || ''),
+                  time: String(b.time || b.turno || ''),
+                  tableLabel: b.table || '',
                   guests: parseInt(b.guests, 10) || 2,
                   tables: parseInt(b.tables, 10) || Math.ceil((parseInt(b.guests, 10) || 2) / 2),
                   status: b.status || 'Confermata',
-                  notes: b.notes || ''
+                  notes: b.notes || '',
+                  orderStatus: String(b.order_status || '').trim(),
+                  orderDetails: String(b.order_details || '').trim()
                 });
               });
             }
           } catch(err) {
-            console.warn('Lettura Apps Script:', err);
+            console.warn('Lettura Apps Script fallback:', err);
+          }
+        }
+
+        // Canale 3: GVIZ Standard (Foglio 1) come fallback di riserva
+        if (loaded.length === 0) {
+          try {
+            const res = await fetch(GVIZ_STANDARD_URL);
+            const txt = await res.text();
+            const match = txt.match(/google\.visualization\.Query\.setResponse\((.*)\);/);
+            if (match) {
+              const json = JSON.parse(match[1]);
+              if (json && json.table && Array.isArray(json.table.rows)) {
+                json.table.rows.forEach(r => {
+                  if (!r || !r.c) return;
+                  const c = r.c;
+                  const val = idx => {
+                    if (!c[idx]) return '';
+                    return (c[idx].f !== null && c[idx].f !== undefined && c[idx].f !== '') ? c[idx].f : (c[idx].v !== null && c[idx].v !== undefined ? c[idx].v : '');
+                  };
+                  const id = String(val(0));
+                  if (!id || id.toLowerCase().includes('id')) return;
+                  const rawDate = val(4);
+                  loaded.push({
+                    id: id,
+                    created_at: String(val(1)),
+                    name: String(val(2)),
+                    phone: String(val(3)),
+                    date: toIso(rawDate),
+                    time: String(val(5)),
+                    guests: parseInt(val(6), 10) || 2,
+                    tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
+                    status: String(val(8) || 'Confermata'),
+                    notes: String(val(9) || ''),
+                    orderStatus: '',
+                    orderDetails: ''
+                  });
+                });
+              }
+            }
+          } catch(e) {
+            console.warn('GVIZ Standard fallback:', e);
           }
         }
 
         allBookings = loaded;
 
+        // Mappatura stato ordinazioni provenienti dal Foglio Google
+        serverOrdersById = {};
+        allBookings.forEach(b => {
+          if (b.orderStatus) {
+            const st = b.orderStatus.toLowerCase();
+            if (st.includes('prenotat') || st.includes('ordinat') || st.includes('pres')) {
+              serverOrdersById[b.id] = {
+                status: 'presa',
+                bookingId: b.id,
+                details: b.orderDetails || 'Ordinazione salvata sul Foglio Google'
+              };
+            }
+          }
+        });
+
         if (syncEl) {
-          syncEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Sincronizzato con il Foglio (${allBookings.length} prenotazioni)`;
+          syncEl.innerHTML = `<i class="fa-solid fa-circle-check" style="color: var(--order-green);"></i> Sincronizzato (${allBookings.length} prenotazioni)`;
         }
 
         renderTables();
 
         if (showToast) {
-          showToastNotification(`Aggiornato dal Foglio: ${allBookings.length} prenotazioni`);
+          showToastNotification(`Aggiornato dal Foglio Google: ${allBookings.length} prenotazioni`);
         }
       }
 
@@ -1584,9 +1632,10 @@
           for (let n = startNum; n <= endNum; n++) assignedNums.push(n);
           nextTable = endNum + 1;
 
-          const tableLabel = (needed === 1) 
+          const defaultLabel = (needed === 1) 
             ? `T${String(startNum).padStart(2, '0')}` 
             : `Tavoli Uniti T${String(startNum).padStart(2, '0')} - T${String(endNum).padStart(2, '0')}`;
+          const tableLabel = (b.tableLabel && b.tableLabel.trim()) ? b.tableLabel : defaultLabel;
 
           const shiftName = isTurno1(b.time) ? '1° Turno (20:00)' : (isTurno2(b.time) ? '2° Turno (21:30)' : b.time);
           const shiftId = isTurno1(b.time) ? 'T1' : 'T2';
@@ -1614,8 +1663,13 @@
         let countPresa = 0;
 
         activeShiftTables.forEach(t => {
-          const order = savedOrders[t.tableKey];
-          const isOrderTaken = (order && order.status === 'presa' && Array.isArray(order.items) && order.items.length > 0);
+          const orderFromSheet = serverOrdersById[t.bookingId];
+          const orderFromLocal = savedOrders[t.tableKey];
+
+          // Se sul Foglio Google c'è 'Prenotato' oppure localmente è salvata l'ordinazione:
+          const isOrderTaken = (orderFromSheet && orderFromSheet.status === 'presa') ||
+                               (orderFromLocal && orderFromLocal.status === 'presa' && Array.isArray(orderFromLocal.items) && orderFromLocal.items.length > 0);
+          const order = orderFromLocal || orderFromSheet;
 
           if (isOrderTaken) {
             countPresa++;
@@ -1788,6 +1842,14 @@
           document.getElementById('order-notes').value = existing.notes || '';
         } else {
           document.getElementById('order-notes').value = '';
+        }
+
+        // Visibilità pulsante Rimetti Da Servire
+        const resetBtn = document.getElementById('btn-reset-order');
+        const isAlreadyOrdered = (serverOrdersById[tableObj.bookingId] && serverOrdersById[tableObj.bookingId].status === 'presa') ||
+                                (existing && existing.status === 'presa');
+        if (resetBtn) {
+          resetBtn.style.display = isAlreadyOrdered ? 'flex' : 'none';
         }
 
         clearMenuSearch(false);
@@ -2025,9 +2087,56 @@
         };
 
         savedOrders[currentActiveTable.tableKey] = orderRecord;
+        if (orderRecord.bookingId) {
+          serverOrdersById[orderRecord.bookingId] = {
+            status: 'presa',
+            bookingId: orderRecord.bookingId,
+            details: `${totalQty} portate (${orderRecord.totalPrice})`
+          };
+        }
         persistSavedOrders();
 
-        showToastNotification(`Comanda salvata per ${currentActiveTable.tableLabel} (${totalQty} portate)`);
+        // Sincronizzazione interattiva multi-dispositivo sul Foglio Google (Foglio 'Comande' Col K = 'Prenotato')
+        const itemsSummary = items.map(it => `${it.qty}x ${it.name} (${(it.priceNum * it.qty).toFixed(2)}€)`).join(', ');
+        const fullDetails = `${itemsSummary} | Totale: ${orderRecord.totalPrice} ${notesVal ? ' | Note: ' + notesVal : ''}`;
+        
+        syncOrderToGoogleSheet({
+          id: currentActiveTable.bookingId || '',
+          table: currentActiveTable.tableLabel || currentActiveTable.tableKey,
+          date: currentDate,
+          status: 'Prenotato',
+          details: fullDetails
+        });
+
+        showToastNotification(`Comanda salvata per ${currentActiveTable.tableLabel} e sincronizzata sul Foglio Google!`);
+        closeOrderModal();
+        renderTables();
+      }
+
+      function revertCurrentOrder() {
+        if (!currentActiveTable) return;
+        if (!confirm(`Vuoi davvero annullare l'ordinazione per ${currentActiveTable.tableLabel} e rimetterlo DA SERVIRE?`)) return;
+
+        const bId = currentActiveTable.bookingId || '';
+        const tKey = currentActiveTable.tableKey;
+
+        // Rimuove stato ordinazione locale
+        delete savedOrders[tKey];
+        if (bId && serverOrdersById[bId]) {
+          delete serverOrdersById[bId];
+        }
+        persistSavedOrders();
+
+        // Invia cella vuota al Foglio Google (Col K = "")
+        syncOrderToGoogleSheet({
+          id: bId,
+          table: currentActiveTable.tableLabel || currentActiveTable.tableKey,
+          date: currentDate,
+          status: '', // cella vuota
+          details: ''
+        });
+
+        showToastNotification(`Tavolo ${currentActiveTable.tableLabel} rimesso DA SERVIRE`);
         closeOrderModal();
         renderTables();
       }
@@ -2071,10 +2180,16 @@
       window.setTableFilter = setTableFilter;
       window.syncFromGoogleSheet = syncFromGoogleSheet;
       window.openMenuConsultationModal = openMenuConsultationModal;
+      window.revertCurrentOrder = revertCurrentOrder;
 
       updateDateDisplay();
       initMenuCategoriesTabs();
       syncFromGoogleSheet();
+
+      // Polling automatico multi-dispositivo ogni 30 secondi
+      setInterval(() => {
+        syncFromGoogleSheet(false);
+      }, 30000);
     })();
   </script>
 </body>
