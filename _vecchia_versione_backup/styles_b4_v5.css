@@ -876,32 +876,32 @@ img {
   width: 100%;
   height: 48px;
   padding: 0 16px;
-  background-color: #141213 !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
-  color: #ffffff !important;
+  background-color: #faf2e1 !important;
+  border: 1.5px solid rgba(43, 39, 41, 0.25) !important;
+  color: #110e0f !important;
   border-radius: 6px;
   font-family: inherit;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
   outline: none;
   box-sizing: border-box;
-  color-scheme: dark;
+  color-scheme: light;
   transition: var(--transition);
 }
 
 .form-group textarea {
   width: 100%;
   padding: 14px 16px;
-  background-color: #141213 !important;
-  border: 1.5px solid rgba(255, 255, 255, 0.22) !important;
-  color: #ffffff !important;
+  background-color: #faf2e1 !important;
+  border: 1.5px solid rgba(43, 39, 41, 0.25) !important;
+  color: #110e0f !important;
   border-radius: 6px;
   font-family: inherit;
   font-size: 0.95rem;
-  font-weight: 500;
+  font-weight: 600;
   outline: none;
   box-sizing: border-box;
-  color-scheme: dark;
+  color-scheme: light;
   transition: var(--transition);
 }
 
@@ -1941,7 +1941,7 @@ img {
   transform: translateX(-50%);
   max-width: 850px;
   width: calc(100% - 40px);
-  background-color: var(--bg-card, #242022);
+  background-color: var(--bg-card, #f1e1c0);
   border: 2px solid var(--accent-red, #d63e30);
   border-radius: 12px;
   padding: 16px 22px;
