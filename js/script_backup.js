@@ -256,8 +256,8 @@ function renderMenu() {
         <h3 class="category-title">${cat.name}</h3>
         <p class="category-subtitle">${cat.subtitle}</p>
         <div class="menu-items-grid">
-          ${cat.items.map((dish, dishIdx) => `
-            <div class="menu-card" data-category-id="${cat.id}" data-dish-index="${dishIdx}" data-dish-name="${dish.name.replace(/"/g, '&quot;')}" title="Clicca per visualizzare dettagli a 360° e ingredienti">
+          ${cat.items.map(dish => `
+            <div class="menu-card">
               <div class="menu-card-info">
                 <div class="menu-item-header">
                   <h4 class="menu-item-name">${dish.name}</h4>
@@ -290,241 +290,6 @@ function renderMenu() {
       displayCategories(catId);
     }
   });
-
-  // Interattività click sui singoli pasti del menu
-  listContainer.addEventListener('click', (e) => {
-    const card = e.target.closest('.menu-card');
-    if (!card) return;
-    const catId = card.getAttribute('data-category-id');
-    const dishIdx = parseInt(card.getAttribute('data-dish-index'), 10);
-    const dishName = card.getAttribute('data-dish-name');
-
-    const cat = SITE_CONFIG.menu.categories.find(c => c.id === catId);
-    let dish = null;
-    let categoryName = cat ? cat.name : '';
-    if (cat && cat.items && cat.items[dishIdx]) {
-      dish = cat.items[dishIdx];
-    } else {
-      for (const c of SITE_CONFIG.menu.categories) {
-        const found = c.items.find(i => i.name === dishName);
-        if (found) {
-          dish = found;
-          categoryName = c.name;
-          break;
-        }
-      }
-    }
-
-    if (dish) {
-      openDishModal(dish, categoryName);
-    }
-  });
-
-  initDishModal();
-}
-
-function initDishModal() {
-  const modal = document.getElementById('dish-modal-overlay');
-  if (!modal || modal.dataset.initialized === 'true') return;
-  modal.dataset.initialized = 'true';
-
-  const closeBtn = document.getElementById('dish-modal-close');
-  const backdrop = document.getElementById('dish-modal-backdrop');
-  const btnReplay = document.getElementById('btn-replay-360');
-
-  if (closeBtn) {
-    closeBtn.addEventListener('click', closeDishModal);
-  }
-  if (backdrop) {
-    backdrop.addEventListener('click', closeDishModal);
-  }
-
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) {
-      closeDishModal();
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && modal.classList.contains('active')) {
-      closeDishModal();
-    }
-  });
-
-  if (btnReplay) {
-    btnReplay.addEventListener('click', () => {
-      const videoEl = document.getElementById('dish-modal-video');
-      const imgEl = document.getElementById('dish-modal-image');
-      const badgeSpinning = document.getElementById('badge-pill-spinning');
-      if (!videoEl || !videoEl.src) return;
-
-      if (imgEl) imgEl.style.opacity = '0';
-      videoEl.style.display = 'block';
-      videoEl.style.opacity = '1';
-      if (badgeSpinning) badgeSpinning.style.display = 'inline-flex';
-      btnReplay.style.display = 'none';
-
-      videoEl.currentTime = 0;
-      videoEl.play().catch(err => console.log('Replay error:', err));
-    });
-  }
-}
-
-function openDishModal(dish, categoryName) {
-  const modal = document.getElementById('dish-modal-overlay');
-  if (!modal) return;
-
-  const categoryEl = document.getElementById('dish-modal-category');
-  const titleEl = document.getElementById('dish-modal-title');
-  const priceEl = document.getElementById('dish-modal-price');
-  const tagsEl = document.getElementById('dish-modal-tags');
-  const ingredientsEl = document.getElementById('dish-modal-ingredients');
-  const notesEl = document.getElementById('dish-modal-notes');
-  const notesSection = document.getElementById('dish-modal-notes-section');
-  const allergensEl = document.getElementById('dish-modal-allergens');
-  
-  const videoEl = document.getElementById('dish-modal-video');
-  const imgEl = document.getElementById('dish-modal-image');
-  const badgeSpinning = document.getElementById('badge-pill-spinning');
-  const btnReplay = document.getElementById('btn-replay-360');
-
-  if (categoryEl) categoryEl.textContent = categoryName || 'SPECIALITÀ OL3';
-  if (titleEl) titleEl.textContent = dish.name;
-  if (priceEl) priceEl.textContent = dish.price;
-
-  if (tagsEl) {
-    if (dish.tags && dish.tags.length > 0) {
-      tagsEl.innerHTML = dish.tags.map(t => `<span class="tag-badge">${t}</span>`).join('');
-      tagsEl.style.display = 'flex';
-    } else {
-      tagsEl.style.display = 'none';
-    }
-  }
-
-  // Descrizione Ingredienti a destra
-  if (ingredientsEl) {
-    if (dish.ingredientsDetail && dish.ingredientsDetail.length > 0) {
-      ingredientsEl.innerHTML = dish.ingredientsDetail.map(ing => `
-        <div class="ingredient-item">
-          <div class="ingredient-bullet"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="ingredient-body">
-            <span class="ingredient-title">${ing.name}</span>
-            <p class="ingredient-desc">${ing.description}</p>
-          </div>
-        </div>
-      `).join('');
-    } else if (dish.description) {
-      const parts = dish.description.split(',').map(s => s.trim()).filter(Boolean);
-      ingredientsEl.innerHTML = parts.map(part => `
-        <div class="ingredient-item">
-          <div class="ingredient-bullet"><i class="fa-solid fa-circle-check"></i></div>
-          <div class="ingredient-body">
-            <span class="ingredient-title">${part}</span>
-          </div>
-        </div>
-      `).join('');
-    } else {
-      ingredientsEl.innerHTML = `<p style="color: var(--text-muted); font-size: 0.95rem;">Ingredienti freschi selezionati dallo chef.</p>`;
-    }
-  }
-
-  // Note di preparazione / cottura
-  if (notesSection && notesEl) {
-    if (dish.notes) {
-      notesEl.textContent = dish.notes;
-      notesSection.style.display = 'block';
-    } else if (dish.name.toLowerCase().includes('margherita') || dish.name.toLowerCase().includes('pizza') || (categoryName && categoryName.toLowerCase().includes('pizz'))) {
-      notesEl.textContent = "Impasto artigianale a lenta maturazione naturale (48-72 ore) ad altissima idratazione. Steso a mano e cotto ad alta temperatura per una perfetta alveolatura e fragranza.";
-      notesSection.style.display = 'block';
-    } else {
-      notesSection.style.display = 'none';
-    }
-  }
-
-  // Allergeni
-  if (allergensEl) {
-    if (dish.allergens && dish.allergens.length > 0) {
-      allergensEl.innerHTML = `
-        <span class="allergens-label"><i class="fa-solid fa-triangle-exclamation"></i> Allergeni:</span>
-        ${dish.allergens.map(a => `<span class="allergen-pill">${a}</span>`).join('')}
-      `;
-      allergensEl.style.display = 'flex';
-    } else {
-      allergensEl.style.display = 'none';
-    }
-  }
-
-  // Media: Video a 360° -> Fermata su Immagine Statica
-  const staticImgSrc = dish.image || 'foto/foto pizze/margherita.png';
-  const videoSrc = dish.video360 || (dish.name.toLowerCase().includes('margherita') ? 'video/margherita-360.mp4' : '');
-
-  if (imgEl) {
-    imgEl.src = staticImgSrc;
-    imgEl.alt = dish.name;
-    imgEl.style.opacity = videoSrc ? '0' : '1';
-  }
-
-  if (videoEl && videoSrc) {
-    videoEl.src = videoSrc;
-    videoEl.style.display = 'block';
-    videoEl.style.opacity = '1';
-
-    if (badgeSpinning) badgeSpinning.style.display = 'inline-flex';
-    if (btnReplay) btnReplay.style.display = 'none';
-
-    videoEl.currentTime = 0;
-    
-    // Al termine della rotazione a 360°, si ferma e visualizza l'immagine statica
-    videoEl.onended = function() {
-      videoEl.style.opacity = '0';
-      if (imgEl) imgEl.style.opacity = '1';
-      if (badgeSpinning) badgeSpinning.style.display = 'none';
-      if (btnReplay) btnReplay.style.display = 'inline-flex';
-    };
-
-    videoEl.onerror = function() {
-      console.warn("Video 360 non disponibile:", videoSrc);
-      videoEl.style.display = 'none';
-      if (imgEl) imgEl.style.opacity = '1';
-      if (badgeSpinning) badgeSpinning.style.display = 'none';
-      if (btnReplay) btnReplay.style.display = 'none';
-    };
-
-    const playPromise = videoEl.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(err => {
-        console.warn("Autoplay bloccato:", err);
-        videoEl.style.opacity = '0';
-        if (imgEl) imgEl.style.opacity = '1';
-        if (badgeSpinning) badgeSpinning.style.display = 'none';
-        if (btnReplay) btnReplay.style.display = 'inline-flex';
-      });
-    }
-  } else if (videoEl) {
-    videoEl.pause();
-    videoEl.src = '';
-    videoEl.style.display = 'none';
-    if (imgEl) imgEl.style.opacity = '1';
-    if (badgeSpinning) badgeSpinning.style.display = 'none';
-    if (btnReplay) btnReplay.style.display = 'none';
-  }
-
-  modal.classList.add('active');
-  modal.setAttribute('aria-hidden', 'false');
-  document.body.style.overflow = 'hidden';
-}
-
-function closeDishModal() {
-  const modal = document.getElementById('dish-modal-overlay');
-  if (!modal) return;
-  modal.classList.remove('active');
-  modal.setAttribute('aria-hidden', 'true');
-  document.body.style.overflow = '';
-
-  const videoEl = document.getElementById('dish-modal-video');
-  if (videoEl) {
-    videoEl.pause();
-  }
 }
 
 function renderContactMap() {
@@ -621,11 +386,11 @@ function initReservationForm() {
             if (!bId || bId.toLowerCase() === 'id' || bId.toLowerCase() === 'id prenotazione') return;
             list.push({
               id: bId,
-              date: toIsoDate(val(4)),
-              time: String(val(5)),
-              guests: parseInt(val(6), 10) || 2,
-              tables: parseInt(val(7), 10) || Math.ceil((parseInt(val(6), 10) || 2) / 2),
-              status: String(val(8) || 'Confermata')
+              date: toIsoDate(val(2)),
+              time: String(val(4) || val(3) || ''),
+              guests: parseInt(val(8), 10) || 2,
+              tables: parseInt(val(9), 10) || Math.ceil((parseInt(val(8), 10) || 2) / 2),
+              status: String(val(11) || 'Confermata')
             });
           });
           cachedBookings = list;
@@ -771,7 +536,7 @@ function initReservationForm() {
       status: 'Confermata'
     };
 
-    // Sincronizzazione con Google Sheet via Google Apps Script (POST + GET Fallback)
+    // Sincronizzazione con Google Sheet via Google Apps Script (POST con Fallback GET sequenziale)
     const endpoint = getGoogleSheetEndpoint();
     if (endpoint) {
       fetch(endpoint, {
@@ -779,21 +544,22 @@ function initReservationForm() {
         mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         body: JSON.stringify(booking)
-      }).catch(err => console.log('Sincronizzazione POST Sheet:', err));
-
-      const getParams = new URLSearchParams({
-        action: 'book',
-        id: booking.id,
-        name: booking.name,
-        phone: booking.phone,
-        date: booking.date,
-        time: booking.time,
-        guests: booking.guests,
-        tables: String(booking.tables),
-        notes: booking.notes
+      }).catch(err => {
+        console.log('POST non riuscita, attivo Fallback GET:', err);
+        const getParams = new URLSearchParams({
+          action: 'book',
+          id: booking.id,
+          name: booking.name,
+          phone: booking.phone,
+          date: booking.date,
+          time: booking.time,
+          guests: booking.guests,
+          tables: String(booking.tables),
+          notes: booking.notes
+        });
+        fetch(endpoint + '?' + getParams.toString(), { mode: 'no-cors' })
+          .catch(e => console.log('Errore anche su fallback GET:', e));
       });
-      fetch(endpoint + '?' + getParams.toString(), { mode: 'no-cors' })
-        .catch(err => console.log('Sincronizzazione GET Sheet:', err));
     }
 
     cachedBookings = null;

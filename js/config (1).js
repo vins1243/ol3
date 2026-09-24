@@ -108,7 +108,7 @@ const SITE_CONFIG = {
             "Vegetariano"
           ],
           "image": "foto/foto pizze/margherita.png",
-          "video360": "video/margherita-360.mp4",
+          "video360": "", // Inserisci il percorso del video reale quando pronto (es. video/margherita-360.mp4)
           "ingredientsDetail": [
             {
               "name": "Pomodoro Pelati San Marzano DOP",

@@ -107,35 +107,7 @@ const SITE_CONFIG = {
             "Classica",
             "Vegetariano"
           ],
-          "image": "foto/foto pizze/margherita.png",
-          "video360": "video/margherita-360.mp4",
-          "ingredientsDetail": [
-            {
-              "name": "Pomodoro Pelati San Marzano DOP",
-              "description": "Dolcezza naturale, polpa ricca e acidità perfettamente bilanciata dell'Agro Sarnese-Nocerino, schiacciati a mano."
-            },
-            {
-              "name": "Fior di Latte Fresco Artigianale",
-              "description": "Prodotto da latte fresco vaccino selezionato, morbido, cremoso e tagliato al coltello a listelle."
-            },
-            {
-              "name": "Basilico Fresco Profumato",
-              "description": "Foglie fresche selezionate e aggiunte a crudo per preservare tutti gli oli essenziali e l'aroma mediterraneo."
-            },
-            {
-              "name": "Olio Extravergine d'Oliva EVO 100% Italiano",
-              "description": "Spremuto a freddo da cultivar calabresi, dal sentore fruttato e leggero a crudo."
-            },
-            {
-              "name": "Impasto a Lunga Lievitazione (48-72h)",
-              "description": "Farine di tipo 1 ad alta idratazione (75%), maturazione a temperatura controllata per un'altissima digeribilità."
-            }
-          ],
-          "allergens": [
-            "Glutine",
-            "Latticini"
-          ],
-          "notes": "Cotta ad altissima temperatura su pietra refrattaria: cornicione gonfio, dorato e alveolato, cuore morbido e profumato."
+          "image": "foto/foto pizze/margherita.png"
         },
         {
           "name": "Focaccia all'Olio EVO",

@@ -105,66 +105,6 @@
     </div>
   </footer>
 
-    <!-- Modal Interattivo Dettaglio Piatto (Video 360° + Immagine Statica + Ingredienti) -->
-  <div id="dish-modal-overlay" class="dish-modal-overlay" aria-hidden="true" role="dialog" aria-modal="true">
-    <div class="dish-modal-backdrop" id="dish-modal-backdrop"></div>
-    <div class="dish-modal-dialog">
-      <button class="dish-modal-close" id="dish-modal-close" aria-label="Chiudi dettaglio piatto">&times;</button>
-      
-      <div class="dish-modal-grid">
-        <!-- Colonna Sinistra: Media Interattivo (Video 360° e Immagine Statica) -->
-        <div class="dish-modal-media-col">
-          <div class="dish-modal-media-box">
-            <!-- Video 360° -->
-            <video id="dish-modal-video" class="dish-modal-video" playsinline muted autoplay></video>
-            <!-- Immagine Statica su cui si ferma la rotazione -->
-            <img id="dish-modal-image" class="dish-modal-image" src="" alt="">
-            
-            <!-- Badge di stato rotazione / Bottone Replay 360° -->
-            <div class="dish-modal-badge" id="dish-modal-badge">
-              <span class="badge-pill" id="badge-pill-spinning">
-                <i class="fa-solid fa-arrows-rotate fa-spin"></i> Vista a 360°
-              </span>
-              <button class="btn-replay-360" id="btn-replay-360" style="display:none;" title="Rivedi animazione 360°">
-                <i class="fa-solid fa-rotate-right"></i> Rivedi 360°
-              </button>
-            </div>
-          </div>
-          <p class="dish-modal-hint"><i class="fa-solid fa-circle-info"></i> Rotazione panoramica 360° del piatto con transizione a foto reale</p>
-        </div>
-
-        <!-- Colonna Destra: Informazioni e Descrizione Ingredienti -->
-        <div class="dish-modal-info-col">
-          <span class="dish-modal-category" id="dish-modal-category">PIZZE CLASSICHE</span>
-          <div class="dish-modal-header">
-            <h2 class="dish-modal-title" id="dish-modal-title">Margherita</h2>
-            <span class="dish-modal-price" id="dish-modal-price">7,50 €</span>
-          </div>
-          
-          <div class="dish-modal-tags" id="dish-modal-tags"></div>
-
-          <div class="dish-modal-divider"></div>
-
-          <div class="dish-modal-section">
-            <h3 class="dish-section-title">
-              <i class="fa-solid fa-wheat-awn"></i> INGREDIENTI SELEZIONATI
-            </h3>
-            <div class="dish-ingredients-list" id="dish-modal-ingredients"></div>
-          </div>
-
-          <div class="dish-modal-section" id="dish-modal-notes-section">
-            <h3 class="dish-section-title">
-              <i class="fa-solid fa-fire-flame-curved"></i> PREPARAZIONE & COTTURA
-            </h3>
-            <p class="dish-modal-notes" id="dish-modal-notes"></p>
-          </div>
-
-          <div class="dish-modal-allergens" id="dish-modal-allergens"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- File JavaScript -->
   <script src="js/config.js"></script>
   <script src="js/script.js?v=5.0"></script>

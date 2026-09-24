@@ -456,7 +456,7 @@ function openDishModal(dish, categoryName) {
 
   // Media: Video a 360° -> Fermata su Immagine Statica
   const staticImgSrc = dish.image || 'foto/foto pizze/margherita.png';
-  const videoSrc = dish.video360 || (dish.name.toLowerCase().includes('margherita') ? 'video/margherita-360.mp4' : '');
+  const videoSrc = dish.video360 || '';
 
   if (imgEl) {
     imgEl.src = staticImgSrc;
